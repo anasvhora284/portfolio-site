@@ -1,0 +1,55 @@
+.ContactPageMainDiv {
+  width: 100%;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.SectionHeading {
+  font-size: xx-large;
+  border-bottom: 5px #fdc435 solid;
+  padding-bottom: 10px;
+  margin-bottom: 5rem;
+  font-weight: bold;
+}
+
+.ContactForm {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  width: 70%;
+}
+
+.ContactForm .contact-page-input-fields {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  width: 100%;
+}
+
+.contact-page-input-fields > div {
+  width: 50%;
+}
+
+.contact-page-message-input-div > div {
+  width: 100%;
+}
+
+.contact-page-submit-btn {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.SendBtn {
+  width: 20%;
+  background-color: #fdc435 !important;
+  color: black !important;
+  font-family: "Roboto" !important;
+  border-radius: 8px !important;
+  text-transform: unset !important;
+  font-size: medium !important;
+}

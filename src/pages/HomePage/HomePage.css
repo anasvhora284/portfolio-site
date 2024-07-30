@@ -1,0 +1,94 @@
+.HomepageMainContainer {
+  background-color: #fff;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.ImagesContainer {
+  width: auto;
+  height: auto;
+  z-index: 0;
+}
+
+.YellowBgSvg {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+}
+
+.SplineScene {
+  position: absolute;
+  left: 22%;
+  bottom: 12%;
+}
+
+.SplineScene > canvas {
+  scale: 0.6;
+  cursor: unset;
+}
+
+.InfoTextContainer {
+  width: 60%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: left;
+}
+
+.MyHomepageInfo {
+  width: 60%;
+  display: flex;
+  flex-direction: column;
+  margin: 0px 13%;
+}
+
+.MyHomepageInfo h3 {
+  color: #fdc435;
+}
+
+.MyHomepageInfo .HelloText {
+  font-family: "Playfair";
+  font-size: xx-large;
+  font-weight: bold;
+  width: 55%;
+  text-align: justify;
+  margin-top: 0px;
+}
+
+.MyHomepageInfo .Mydescription {
+  color: #828282;
+  width: 80%;
+  font-size: large;
+  text-align: justify;
+  margin-bottom: 40px;
+  line-height: 1.6;
+}
+
+.HomePageButtonsContainer {
+  display: flex;
+  gap: 20px;
+}
+
+.ProjectsBtn,
+.LinkedInBtn {
+  width: 20% !important;
+  color: black !important;
+  font-family: "Roboto" !important;
+  border-radius: 8px !important;
+  text-transform: unset !important;
+  font-size: medium !important;
+}
+
+.ProjectsBtn {
+  background-color: #fdc435 !important;
+}
+
+.LinkedInBtn {
+  border-width: 2px !important;
+  border-color: black !important;
+}

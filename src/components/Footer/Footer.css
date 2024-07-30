@@ -1,0 +1,21 @@
+.VectorContainer img {
+  width: 30px;
+  height: 30px;
+}
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.VectorContainer {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.FooterText {
+  color: #828282 !important;
+}
