@@ -9,7 +9,7 @@
 }
 
 .AboutUsPageMainDiv > .Text {
-  width: 47%;
+  width: 100%;
 }
 
 .AboutUsPageMainDiv > .Text > .Heading {
@@ -17,6 +17,17 @@
   font-weight: bold;
   text-align: justify;
   margin-top: 0px;
+}
+
+.abutus-page-img-text-container {
+  display: flex;
+  flex-direction: row-reverse;
+  gap: 40px;
+}
+
+.Heading {
+  display: flex;
+  justify-content: center;
 }
 
 .Heading h3 {
@@ -33,7 +44,7 @@
 .AboutUsBtnContainer {
   display: flex;
   gap: 20px;
-  margin-top: 40px;
+  margin: 40px auto;
 }
 
 .ResumeBtn,
@@ -64,4 +75,28 @@
 
 .AboutUsImage img {
   height: 50vh;
+}
+
+@media screen and (max-width: 768px) {
+  .AboutUsPageMainDiv {
+    max-width: 90%;
+    flex-direction: column;
+  }
+
+  .AboutUsPageMainDiv > .Text {
+    width: 90%;
+  }
+
+  .abutus-page-img-text-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .ResumeBtn,
+  .CvBtn {
+    width: 50% !important;
+    text-align: center;
+  }
 }

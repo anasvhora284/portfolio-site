@@ -2,29 +2,138 @@
   cursor: pointer;
 }
 
-.links {
-  align-items: center;
+.nav_bar {
+  background-color: transparent;
+  position: relative;
   display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  gap: 20px;
-  text-align: center;
-  padding: 0px 20px;
+  transition: 0.4s;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  border-radius: 15px;
+  cursor: pointer;
 }
 
-.links * {
+.bar1,
+.bar2,
+.bar3_h,
+.bar4 {
+  border-radius: 30px;
+  background-color: rgb(0, 0, 0);
+  width: 50px;
+  height: 5px;
+  transition: 0.4s;
+}
+
+.bar2 {
+  opacity: 0;
+}
+
+.bar1 {
+  margin-bottom: 15px;
+}
+
+.bar4 {
+  margin-top: 15px;
+}
+
+.nav_bar.open .bar3_h {
+  position: absolute;
+  top: 45%;
+  transform: rotate(-45deg);
+}
+
+.nav_bar.open .bar2 {
+  position: absolute;
+  top: 45%;
+  opacity: 1;
+  transform: rotate(45deg);
+}
+
+.nav_bar.open .bar1,
+.nav_bar.open .bar4 {
+  opacity: 0;
+  width: 30px;
+}
+
+.links {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  text-align: center;
+}
+
+.links-container-div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  text-align: center;
+  gap: 20px;
+  padding: 0px 20px;
+  width: 100%;
+  margin: auto;
+}
+
+.links .links-container-div * {
   color: black;
   text-decoration: none !important;
   width: max-content;
   padding-bottom: 7px;
 }
 
-.links *:hover {
+.links .links-container-div *:hover {
   transform: scale(1.2, 1.2);
   transition: transform 0.1s linear;
 }
 
-.links .active {
+.links .links-container-div .active {
   border-bottom: black 2px solid;
-  transition: border-bottom 0.3s ease-in-out; /* Add this line */
+  transition: border-bottom 0.3s ease-in-out;
+}
+
+/* Responsive Styles */
+@media (max-width: 767px) {
+  .NavbarComponent {
+    border-radius: 0px !important;
+  }
+
+  .nav_bar {
+    display: flex;
+    scale: 0.6;
+  }
+
+  .links {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+    padding: 10px 0;
+
+    /*Navbar Bg Style*/
+    background: #fcfcfe;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 30px 0px 0px 30px;
+    position: absolute;
+    top: 100%; /* Adjust based on your header height */
+    right: 0;
+  }
+
+  .links.open {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 100%;
+    right: 0px;
+    max-width: 60%;
+    height: 100vh;
+  }
+
+  .links-container-div {
+    flex-direction: column;
+  }
 }

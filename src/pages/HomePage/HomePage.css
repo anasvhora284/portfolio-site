@@ -20,14 +20,19 @@
   height: 100%;
 }
 
+.mobile-yellow-bg-svg {
+  opacity: 0;
+}
+
 .SplineScene {
   position: absolute;
-  left: 22%;
+  left: 18%;
   bottom: 12%;
+  max-width: 100vw;
 }
 
 .SplineScene > canvas {
-  scale: 0.6;
+  scale: 0.55;
   cursor: unset;
 }
 
@@ -36,15 +41,15 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: left;
+  justify-content: flex-start;
+  z-index: 1;
 }
 
 .MyHomepageInfo {
   width: 60%;
   display: flex;
   flex-direction: column;
-  margin: 0px 13%;
+  margin: 10% 13% 0% 13%;
 }
 
 .MyHomepageInfo h3 {
@@ -55,8 +60,8 @@
   font-family: "Playfair";
   font-size: xx-large;
   font-weight: bold;
-  width: 55%;
-  text-align: justify;
+  width: 65%;
+  text-align: left;
   margin-top: 0px;
 }
 
@@ -91,4 +96,114 @@
 .LinkedInBtn {
   border-width: 2px !important;
   border-color: black !important;
+}
+
+@media only screen and (min-width: 769px) and (max-width: 1024px) {
+  .SplineScene {
+    display: none;
+    left: 11%;
+    bottom: 14%;
+  }
+
+  .SplineScene > canvas {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    scale: unset;
+  }
+
+  .MyHomepageInfo {
+    z-index: 1;
+  }
+
+  .MyHomepageInfo .HelloText {
+    width: 75%;
+    font-size: x-large;
+  }
+
+  .MyHomepageInfo .Mydescription {
+    width: 90%;
+    font-size: medium;
+  }
+
+  .ProjectsBtn,
+  .LinkedInBtn {
+    width: 40% !important;
+  }
+}
+
+@media only screen and (min-width: 1025px) and (max-width: 1200px) {
+  .SplineScene {
+    max-width: 80vw;
+    position: absolute;
+    left: 20%;
+  }
+}
+
+@media screen and (min-width: 0px) and (max-width: 768px) {
+  .YellowBgSvg {
+    opacity: 0;
+  }
+
+  .mobile-yellow-bg-svg {
+    opacity: 1;
+    height: 100%;
+    max-width: 100vw;
+    top: -10px;
+    position: absolute;
+    z-index: -1;
+  }
+
+  .SplineScene {
+    display: none;
+  }
+
+  .HomepageMainContainer {
+    display: flex;
+    justify-content: center;
+    background: url("../../assets/Images/mobile-yellow-bg.svg") no-repeat;
+    background-size: auto;
+  }
+
+  .InfoTextContainer {
+    background-color: #fdc435;
+    max-height: 50vh;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-content: center;
+  }
+
+  .MyHomepageInfo {
+    width: 100%;
+    margin: 8% 1% 0 8%;
+    align-items: unset;
+  }
+
+  .MyHomepageInfo .HelloText {
+    width: 100%;
+    color: white;
+  }
+
+  .MyHomepageInfo .Mydescription {
+    margin-bottom: 20px;
+    width: 92%;
+    color: black;
+  }
+
+  .MyHomepageInfo h3 {
+    color: black;
+  }
+
+  .ProjectsBtn {
+    background-color: #fff !important;
+    color: #fdc435 !important;
+    box-shadow: none !important;
+  }
+
+  .ProjectsBtn,
+  .LinkedInBtn {
+    width: 40% !important;
+  }
 }

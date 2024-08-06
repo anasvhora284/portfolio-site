@@ -53,3 +53,9 @@
   text-transform: unset !important;
   font-size: medium !important;
 }
+
+@media screen and (max-width: 768px) {
+  .SendBtn {
+    width: 50% !important;
+  }
+}

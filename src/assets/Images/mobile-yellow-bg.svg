@@ -1,0 +1,32 @@
+<svg width="1194" height="834" viewBox="0 0 1194 834" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_284_139)">
+<rect width="1194" height="834" fill="white"/>
+<path d="M235.5 692.5C191.5 692.5 131.498 732.13 98.5 675.5C65.5023 618.87 68.9999 662.427 41 675.5C13.0001 688.573 -11 639.37 -3.57628e-06 597.5C11 555.63 -3.8147e-06 536 -3.8147e-06 536V290.5V169V0H1194V63.5V169V412V495.5V582.5C1194 582.5 1155 660 1107 660H1042C993 660 1052.5 675.5 979.5 675.5C906.5 675.5 963.5 692.5 899.5 692.5H785C710.5 692.5 731.5 684.5 663.5 692.5C595.5 700.5 666.5 692.5 608 692.5H553H452H368.5C289 692.5 372.5 702 305.5 702C238.5 702 279.5 692.5 235.5 692.5Z" fill="#FDC435"/>
+<circle cx="984" cy="616" r="90" fill="white"/>
+<circle cx="984" cy="616" r="55" fill="#FDC435"/>
+<circle cx="1104" cy="706" r="90" fill="white"/>
+<circle cx="1104" cy="706" r="55" fill="#FDC435"/>
+<circle cx="1194" cy="598" r="90" fill="white"/>
+<circle cx="1194" cy="598" r="55" fill="#FDC435"/>
+<circle cx="707" cy="633" r="90" fill="white"/>
+<circle cx="707" cy="633" r="55" fill="#FDC435"/>
+<circle cx="562" cy="728" r="90" fill="white"/>
+<circle cx="562" cy="728" r="55" fill="#FDC435"/>
+<circle cx="417" cy="633" r="90" fill="white"/>
+<circle cx="417" cy="633" r="55" fill="#FDC435"/>
+<circle cx="272" cy="693" r="90" fill="white"/>
+<circle cx="272" cy="693" r="55" fill="#FDC435"/>
+<circle cx="140" cy="623" r="90" fill="white"/>
+<circle cx="140" cy="623" r="55" fill="#FDC435"/>
+<rect x="1138.09" y="-119.177" width="240" height="240" rx="50" transform="rotate(40 1138.09 -119.177)" stroke="white" stroke-width="40" stroke-miterlimit="1.23474" stroke-linejoin="round"/>
+<circle cx="852" cy="706" r="90" fill="white"/>
+<circle cx="852" cy="706" r="55" fill="#FDC435"/>
+<circle cy="688" r="90" fill="white"/>
+<circle cy="688" r="55" fill="#FDC435"/>
+</g>
+<defs>
+<clipPath id="clip0_284_139">
+<rect width="1194" height="834" fill="white"/>
+</clipPath>
+</defs>
+</svg>

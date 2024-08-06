@@ -1,0 +1,106 @@
+.project-page-main-div {
+  width: 100%;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top: 40px;
+}
+
+.project-page-main-div > .SectionHeading {
+  width: max-content;
+}
+
+.project-list-div {
+  max-width: 80%;
+}
+
+.project-container {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-around;
+  margin: auto;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.project-container.even {
+  flex-direction: row;
+}
+
+.project-container.even .project-details > div {
+  display: flex;
+  flex-direction: column;
+  margin-top: auto;
+  margin-bottom: auto;
+  text-align: justify;
+  padding-left: 4%;
+  padding-right: 4%;
+  gap: 20px;
+}
+
+.project-details {
+  display: flex;
+}
+
+.project-details > div {
+  display: flex;
+  flex-direction: column;
+  margin-top: auto;
+  margin-bottom: auto;
+  text-align: justify;
+  padding-left: 10%;
+  gap: 20px;
+}
+
+.project-name {
+  font-size: 40px;
+  font-weight: 800;
+}
+
+.project-description {
+  max-width: 90%;
+}
+
+.project-container img {
+  height: 377px;
+  width: 600px;
+  border-radius: 15px;
+
+  /* border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+  border-top-left-radius: 15px;
+  border-bottom-left-radius: 15px; */
+}
+
+.Gesture-Based-Smart-Home-Automation-Image {
+  aspect-ratio: 16/9;
+  width: 600px;
+}
+
+.Invoice-Generator-PWA-Image {
+  height: 350px;
+}
+
+@media screen and (max-width: 768px) {
+  .project-container {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .project-container.even {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .project-list-div {
+    max-width: 90%;
+  }
+
+  .project-list-div img {
+    max-width: 80vw;
+    height: auto;
+    aspect-ratio: 16 / 9 !important;
+  }
+}
