@@ -40,6 +40,10 @@
   gap: 20px;
 }
 
+.project-container:contains("Pay Slip Pro") .project-details {
+  max-width: 50%;
+}
+
 .project-details {
   display: flex;
 }

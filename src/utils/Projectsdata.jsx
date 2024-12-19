@@ -6,14 +6,21 @@ import WiAttendImage from "../assets/Images/Projects/WiAttendImage.png";
 import SmartHomeImage from "../assets/Images/Projects/SmartHomeImage.png";
 import InvoiceWebsiteImage from "../assets/Images/Projects/InvoiceWebsiteImage.png";
 import RishtaWebsiteImage from "../assets/Images/Projects/RishtaWebsite.gif";
+import PaySlipProImage from "../assets/Images/Projects/PaySlipProImage.png";
 
 const projectsData = [
+  {
+    name: "Pay Slip Pro",
+    description:
+      "Pay Slip Pro is a comprehensive application designed to streamline the process of generating and managing salary slips for employees. This project showcases my expertise in both frontend and backend development using modern technologies like React Native, React Navigation, React Native Paper, Axios, Node.js, Express, MongoDB, Git, GitHub, Android Studio, and more.",
+    image: PaySlipProImage,
+    link: "https://lnkd.in/d2wEqVTR",
+  },
   {
     name: "Invoice Generator PWA",
     description:
       "This is an Invoice generator Progressive Web App which is used by Organisation to generate quick receipts for the donation they recieve. PWA based on React + Vite, Google Script, and Excel and MUI. It has Attractive, Clean and simple UI & A very great UX. at the before reaching the end of journey you need to enter the password to generate Invoice PDF & also the Pdf generator's name. - By Anas Vhora & Ayaz Vhora",
     image: InvoiceWebsiteImage,
-
     link: "https://www.linkedin.com/posts/anas-vhora-28455a1a1_innovation-techforgood-communityempowerment-activity-7180723081395511296-Vzqg/?utm_source=share&utm_medium=member_desktop",
   },
   {

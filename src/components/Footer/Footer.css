@@ -8,14 +8,48 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding: 20px;
 }
 
 .VectorContainer {
   display: flex;
   justify-content: center;
   gap: 15px;
+  flex-wrap: wrap;
 }
 
 .FooterText {
   color: #828282 !important;
+  text-align: center;
+  margin-top: 10px;
+}
+
+@media screen and (max-width: 768px) {
+  .VectorContainer img {
+    width: 25px;
+    height: 25px;
+  }
+
+  .footer {
+    padding: 15px;
+  }
+
+  .VectorContainer {
+    gap: 10px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .VectorContainer img {
+    width: 20px;
+    height: 20px;
+  }
+
+  .footer {
+    padding: 10px;
+  }
+
+  .FooterText {
+    font-size: 14px;
+  }
 }

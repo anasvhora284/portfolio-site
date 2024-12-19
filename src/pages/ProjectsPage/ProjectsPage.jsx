@@ -23,7 +23,9 @@ const ProjectsPage = () => {
                 <div>
                   <div className="project-name">{project.name}</div>
                   <div className="project-description">
-                    {project.description}
+                    {project.description.split("\n").map((line, index) => (
+                      <p key={index}>{line}</p>
+                    ))}
                   </div>
                   <div className="view-more-btn">
                     <Button

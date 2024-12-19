@@ -1,5 +1,5 @@
 .ContactPageMainDiv {
-  width: 100%;
+  width: 100vw;
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
@@ -55,6 +55,18 @@
 }
 
 @media screen and (max-width: 768px) {
+  .ContactForm {
+    width: 90%;
+  }
+
+  .ContactForm .contact-page-input-fields {
+    flex-direction: column;
+  }
+
+  .contact-page-input-fields > div {
+    width: 100%;
+  }
+
   .SendBtn {
     width: 50% !important;
   }
