@@ -1,0 +1,221 @@
+.hero-section {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: var(--spacing-2xl) var(--spacing-md);
+  overflow: hidden;
+}
+
+.hero-content {
+  max-width: 1400px;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-3xl);
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+
+.hero-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.hero-headline {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-6xl);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.1;
+  margin: 0;
+  color: var(--color-text-primary);
+}
+
+.hero-headline .word {
+  display: inline-block;
+  margin-right: 0.3em;
+}
+
+.hero-subheading {
+  font-size: var(--font-size-xl);
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  max-width: 600px;
+  margin: 0;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-md);
+}
+
+.hero-button {
+  padding: var(--spacing-md) var(--spacing-xl);
+  font-size: var(--font-size-lg);
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.hero-3d {
+  width: 100%;
+  height: 600px;
+  position: relative;
+}
+
+.floating-cards {
+  position: absolute;
+  left: var(--spacing-2xl);
+  bottom: var(--spacing-2xl);
+  display: flex;
+  gap: var(--spacing-md);
+  z-index: 3;
+}
+
+.stat-card {
+  padding: var(--spacing-md) var(--spacing-lg);
+  min-width: 120px;
+  text-align: center;
+  transition: all var(--transition-base);
+}
+
+.stat-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-lg), var(--shadow-glow-primary);
+}
+
+.stat-number {
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-bold);
+  margin: 0;
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin: var(--spacing-xs) 0 0 0;
+}
+
+.scroll-indicator {
+  position: absolute;
+  bottom: var(--spacing-xl);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xs);
+  z-index: 3;
+  cursor: pointer;
+}
+
+.scroll-arrow {
+  width: 24px;
+  height: 24px;
+  border-left: 2px solid var(--color-accent-primary);
+  border-bottom: 2px solid var(--color-accent-primary);
+  transform: rotate(-45deg);
+  animation: bounce 2s infinite;
+}
+
+.scroll-text {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0) rotate(-45deg);
+  }
+  50% {
+    transform: translateY(10px) rotate(-45deg);
+  }
+}
+
+@media (max-width: 1200px) {
+  .hero-content {
+    gap: var(--spacing-2xl);
+  }
+
+  .hero-headline {
+    font-size: var(--font-size-5xl);
+  }
+
+  .hero-3d {
+    height: 500px;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-section {
+    padding: var(--spacing-xl) var(--spacing-md);
+    min-height: auto;
+    padding-top: 100px;
+  }
+
+  .hero-content {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-xl);
+  }
+
+  .hero-text {
+    order: 1;
+    text-align: center;
+    align-items: center;
+  }
+
+  .hero-headline {
+    font-size: var(--font-size-3xl);
+  }
+
+  .hero-subheading {
+    font-size: var(--font-size-base);
+    text-align: center;
+  }
+
+  .hero-buttons {
+    flex-direction: column;
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .hero-button {
+    width: 100%;
+    padding: var(--spacing-sm) var(--spacing-lg);
+    font-size: var(--font-size-base);
+  }
+
+  .hero-3d {
+    order: 2;
+    height: 300px;
+  }
+
+  .floating-cards {
+    position: relative;
+    left: auto;
+    bottom: auto;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: var(--spacing-xl);
+  }
+
+  .stat-card {
+    min-width: 100px;
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+
+  .stat-number {
+    font-size: var(--font-size-2xl);
+  }
+
+  .scroll-indicator {
+    display: none;
+  }
+}

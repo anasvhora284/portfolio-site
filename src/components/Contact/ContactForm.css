@@ -1,0 +1,209 @@
+.contact-form-container {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xl);
+  padding: var(--spacing-3xl) var(--spacing-md);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.contact-form {
+  width: 100%;
+  padding: var(--spacing-3xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.form-title {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  margin: 0;
+  text-align: center;
+}
+
+.form-subtitle {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  margin: 0;
+  text-align: center;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.field-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.field-input {
+  padding: var(--spacing-md);
+  background: var(--glass-bg-light);
+  border: 2px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-base);
+  font-family: var(--font-family-primary);
+  transition: all var(--transition-base);
+  outline: none;
+}
+
+.field-input:focus {
+  background: var(--glass-bg-medium);
+  border-color: var(--color-accent-primary);
+  box-shadow: 0 0 0 4px rgba(0, 212, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.field-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.field-input.error {
+  border-color: var(--color-accent-tertiary);
+}
+
+.field-textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.error-message {
+  font-size: var(--font-size-xs);
+  color: var(--color-accent-tertiary);
+  margin-top: 4px;
+  animation: shake 0.3s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
+}
+
+.submit-button {
+  margin-top: var(--spacing-md);
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-xl);
+  font-size: var(--font-size-lg);
+  position: relative;
+  overflow: hidden;
+}
+
+.submit-button.disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--color-text-primary);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.checkmark {
+  font-size: var(--font-size-2xl);
+  animation: scale-in 0.3s ease-out;
+}
+
+@keyframes scale-in {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.send-icon {
+  font-size: var(--font-size-xl);
+}
+
+.contact-info {
+  display: flex;
+  gap: var(--spacing-md);
+  width: 100%;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.contact-info-card {
+  padding: var(--spacing-md) var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-sm);
+  min-width: 120px;
+  text-decoration: none;
+  transition: all var(--transition-base);
+}
+
+.contact-info-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-lg), var(--shadow-glow-primary);
+  border-color: var(--color-accent-primary);
+}
+
+.info-icon {
+  font-size: var(--font-size-3xl);
+}
+
+.info-text {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-medium);
+}
+
+@media (max-width: 768px) {
+  .contact-form-container {
+    padding: var(--spacing-2xl) var(--spacing-sm);
+  }
+
+  .contact-form {
+    padding: var(--spacing-xl);
+  }
+
+  .form-title {
+    font-size: var(--font-size-3xl);
+  }
+
+  .contact-info {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .contact-info-card {
+    width: 100%;
+  }
+}
