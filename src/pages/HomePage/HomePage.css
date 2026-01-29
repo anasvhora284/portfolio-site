@@ -1,6 +1,6 @@
 .homepage-container {
   min-height: 100vh;
-  width: 100%;
-  background: var(--gradient-primary);
+  width: 100vw;
   position: relative;
+  overflow: hidden;
 }

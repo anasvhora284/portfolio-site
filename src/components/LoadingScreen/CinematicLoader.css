@@ -1,0 +1,205 @@
+.cinematic-loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #000000;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: background-color 0.3s ease;
+}
+
+.grain-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='2' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: 0.05;
+  animation: grain-move 8s steps(10) infinite;
+  pointer-events: none;
+}
+
+@keyframes grain-move {
+  0%, 100% { transform: translate(0, 0); }
+  10% { transform: translate(-5%, -5%); }
+  20% { transform: translate(5%, 0%); }
+  30% { transform: translate(-3%, 5%); }
+  40% { transform: translate(5%, 5%); }
+  50% { transform: translate(-5%, 0%); }
+  60% { transform: translate(3%, -5%); }
+  70% { transform: translate(-5%, 3%); }
+  80% { transform: translate(5%, -3%); }
+  90% { transform: translate(0%, 5%); }
+}
+
+.ripple {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  animation: ripple-expand 1s ease-out forwards;
+}
+
+@keyframes ripple-expand {
+  0% {
+    width: 20px;
+    height: 20px;
+    opacity: 1;
+  }
+  100% {
+    width: 200px;
+    height: 200px;
+    opacity: 0;
+  }
+}
+
+.loader-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xl);
+}
+
+.loader-text {
+  font-size: var(--font-size-xl);
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-light);
+  letter-spacing: 2px;
+  margin: 0;
+}
+
+.loader-instruction {
+  font-size: var(--font-size-base);
+  color: var(--color-accent-primary);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.fade-in {
+  animation: fade-in-up 1s ease-out;
+}
+
+.fade-in-delayed {
+  animation: fade-in-up 1s ease-out 0.5s backwards;
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.movement-tracker {
+  width: 200px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: var(--spacing-lg);
+}
+
+.movement-fill {
+  height: 100%;
+  background: var(--gradient-accent);
+  transition: width 0.1s ease-out;
+  box-shadow: 0 0 10px var(--color-accent-primary);
+}
+
+.activation-circle {
+  width: 100px;
+  height: 100px;
+  position: relative;
+  animation: breathe-in 1.5s ease-in-out;
+  transform-origin: center;
+}
+
+.circle-inner {
+  width: 100%;
+  height: 100%;
+  border: 3px solid var(--color-accent-primary);
+  border-radius: 50%;
+  box-shadow: 
+    0 0 20px var(--color-accent-primary),
+    0 0 40px var(--color-accent-primary),
+    inset 0 0 20px rgba(0, 212, 255, 0.2);
+  animation: pulse-circle 0.8s ease-in-out infinite;
+}
+
+@keyframes breathe-in {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse-circle {
+  0%, 100% {
+    box-shadow: 
+      0 0 20px var(--color-accent-primary),
+      0 0 40px var(--color-accent-primary),
+      inset 0 0 20px rgba(0, 212, 255, 0.2);
+  }
+  50% {
+    box-shadow: 
+      0 0 30px var(--color-accent-primary),
+      0 0 60px var(--color-accent-primary),
+      inset 0 0 30px rgba(0, 212, 255, 0.4);
+  }
+}
+
+.cursor-line-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.phase-transitioning {
+  animation: white-flash 0.5s ease-out forwards;
+}
+
+@keyframes white-flash {
+  to {
+    background: #ffffff;
+  }
+}
+
+@media (max-width: 768px) {
+  .loader-text {
+    font-size: var(--font-size-lg);
+  }
+  
+  .loader-instruction {
+    font-size: var(--font-size-sm);
+  }
+}
