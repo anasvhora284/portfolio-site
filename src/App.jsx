@@ -1,34 +1,13 @@
-import {
-  Navigate,
-  RouterProvider,
-  createBrowserRouter,
-} from "react-router-dom";
-import HomePage from "./pages/HomePage/HomePage.jsx";
-import AboutUsPage from "./pages/AboutUsPage/AboutUsPage.jsx";
-import ContactPage from "./pages/ContactPage/ContactPage";
-import ProjectsPage from "./pages/ProjectsPage/ProjectsPage.jsx";
+import { Navigate, RouterProvider, createBrowserRouter } from "react-router-dom";
+import UniverseShell from "./universe/UniverseShell.jsx";
 
 const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Navigate to="/home" />,
-  },
-  {
-    path: "/home",
-    element: <HomePage location="/home" />,
-  },
-  {
-    path: "/about",
-    element: <AboutUsPage location="/about" />,
-  },
-  {
-    path: "/contact",
-    element: <ContactPage location="/contact" />,
-  },
-  {
-    path: "/projects",
-    element: <ProjectsPage location="/projects" />,
-  },
+  { path: "/", element: <UniverseShell /> },
+  { path: "/work/:slug", element: <UniverseShell /> },
+  { path: "/about", element: <UniverseShell /> },
+  { path: "/contact", element: <UniverseShell /> },
+  { path: "/home", element: <Navigate to="/" replace /> },
+  { path: "/projects", element: <Navigate to="/" replace /> },
 ]);
 
 const App = () => {
