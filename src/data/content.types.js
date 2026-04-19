@@ -28,7 +28,12 @@
  * @property {string} [tagline]
  * @property {string} description
  * @property {unknown[]} [body] Portable Text blocks
- * @property {string} image
+ * @property {string} [image] Optional — constellation falls back to a
+ *   grid-patterned monospace-name placeholder when omitted.
+ * @property {"screenshot" | "logo"} [imageKind] Controls how the sidebar
+ *   preview renders the image. "screenshot" (default) uses cover-fit so
+ *   the shot fills the frame edge-to-edge. "logo" contains the asset on a
+ *   themed backdrop — use for square app icons / brand marks.
  * @property {string} link
  * @property {string} [repoUrl]
  * @property {string} [articleUrl]

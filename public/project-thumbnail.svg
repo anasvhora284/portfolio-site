@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Common thumbnail for the constellation preview card on the home page.
+  Used as a consistent branded backdrop behind every project's name, so
+  the home HUD stays clean. Individual project screenshots only appear
+  inside the detail panel (ProjectPanel).
+
+  Aspect ~ 1.64:1 (matches the 180x110 desktop card and 160x100 mobile
+  card). Canvas2D draws the project's name directly on top of this.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 220" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <!-- Deep-space radial gradient background. -->
+    <radialGradient id="bg" cx="50%" cy="42%" r="78%">
+      <stop offset="0%"  stop-color="#1a2044"/>
+      <stop offset="55%" stop-color="#0b1024"/>
+      <stop offset="100%" stop-color="#04060f"/>
+    </radialGradient>
+    <!-- Subtle gold gradient for the hexagon marker. -->
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#ffe19c"/>
+      <stop offset="55%"  stop-color="#ffd27a"/>
+      <stop offset="100%" stop-color="#c88a2c"/>
+    </linearGradient>
+    <!-- Soft glow so the hexagon feels like it's emitting light. -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="2.4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <!-- Tiny starfield pattern tile, reused across the whole canvas. -->
+    <pattern id="stars" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
+      <circle cx="8"  cy="14" r="0.6" fill="#ffffff" opacity="0.55"/>
+      <circle cx="34" cy="7"  r="0.9" fill="#ffffff" opacity="0.75"/>
+      <circle cx="22" cy="30" r="0.5" fill="#ffffff" opacity="0.45"/>
+      <circle cx="50" cy="22" r="0.7" fill="#ffe19c" opacity="0.6"/>
+      <circle cx="14" cy="46" r="1.1" fill="#ffffff" opacity="0.85"/>
+      <circle cx="42" cy="52" r="0.5" fill="#ffffff" opacity="0.5"/>
+      <circle cx="56" cy="42" r="0.4" fill="#ffffff" opacity="0.4"/>
+    </pattern>
+  </defs>
+
+  <!-- Background + starfield -->
+  <rect width="360" height="220" fill="url(#bg)"/>
+  <rect width="360" height="220" fill="url(#stars)"/>
+
+  <!-- Faint perspective-grid bottom gradient so the card has depth. -->
+  <rect y="140" width="360" height="80" fill="url(#bg)" opacity="0.4"/>
+
+  <!-- Corner brackets (HUD). -->
+  <g stroke="#ffffff" stroke-width="0.9" fill="none" opacity="0.38">
+    <path d="M 12 12 L 12 28 M 12 12 L 28 12"/>
+    <path d="M 348 12 L 348 28 M 348 12 L 332 12"/>
+    <path d="M 12 208 L 12 192 M 12 208 L 28 208"/>
+    <path d="M 348 208 L 348 192 M 348 208 L 332 208"/>
+  </g>
+
+  <!-- Eyebrow label top-center. -->
+  <text x="180" y="30" text-anchor="middle"
+        font-family="JetBrains Mono, IBM Plex Mono, ui-monospace, monospace"
+        font-size="9" letter-spacing="4"
+        fill="#ffd27a" opacity="0.78">PORTFOLIO · OBJECT</text>
+
+  <!-- Tiny side coordinates, HUD-style. -->
+  <text x="22"  y="116" font-family="JetBrains Mono, monospace" font-size="7"
+        fill="#ffffff" opacity="0.28" letter-spacing="1.5">ANV-01</text>
+  <text x="338" y="116" text-anchor="end"
+        font-family="JetBrains Mono, monospace" font-size="7"
+        fill="#ffffff" opacity="0.28" letter-spacing="1.5">NAV · v1.0</text>
+
+  <!-- Central hexagon marker with dashed outer ring. -->
+  <g transform="translate(180 112)">
+    <circle r="48" stroke="#ffd27a" stroke-width="0.75" fill="none"
+            opacity="0.35" stroke-dasharray="2.5 5"/>
+    <circle r="38" stroke="#ffd27a" stroke-width="0.5" fill="none"
+            opacity="0.2"/>
+    <!-- Crosshair ticks around the hexagon. -->
+    <g stroke="#ffd27a" stroke-width="0.9" opacity="0.7">
+      <line x1="0"   y1="-52" x2="0"   y2="-44"/>
+      <line x1="0"   y1="44"  x2="0"   y2="52"/>
+      <line x1="-52" y1="0"   x2="-44" y2="0"/>
+      <line x1="44"  y1="0"   x2="52"  y2="0"/>
+    </g>
+    <!-- Hexagon body. -->
+    <polygon points="0,-28 24.2,-14 24.2,14 0,28 -24.2,14 -24.2,-14"
+             fill="none" stroke="url(#gold)" stroke-width="2.2"
+             filter="url(#glow)"/>
+    <polygon points="0,-22 19,-11 19,11 0,22 -19,11 -19,-11"
+             fill="none" stroke="url(#gold)" stroke-width="0.9"
+             opacity="0.55"/>
+    <!-- Singularity dot at the core. -->
+    <circle r="2.6" fill="#ffe19c" opacity="0.95"/>
+    <circle r="2.6" fill="#ffd27a" filter="url(#glow)"/>
+  </g>
+
+  <!-- Bottom coordinate readout. -->
+  <text x="180" y="202" text-anchor="middle"
+        font-family="JetBrains Mono, monospace" font-size="7"
+        letter-spacing="3" fill="#ffffff" opacity="0.38">[ CONSTELLATION · SELECT TO ENGAGE ]</text>
+</svg>

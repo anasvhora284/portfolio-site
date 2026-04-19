@@ -36,9 +36,26 @@ export function ProjectPanel({ project, onClose }) {
             ))}
           </ul>
         ) : null}
-        <div className="hud-panel__media">
-          <img src={project.image} alt="" />
-        </div>
+        {project.image ? (
+          <figure
+            className="hud-panel__media"
+            data-kind={project.imageKind === "logo" ? "logo" : "screenshot"}
+          >
+            <span className="hud-panel__media-eyebrow">
+              {project.imageKind === "logo" ? "Mark" : "Preview"} · {project.slug?.toUpperCase()}
+            </span>
+            <img
+              src={project.image}
+              alt={
+                project.imageKind === "logo"
+                  ? `${project.name} logo`
+                  : `${project.name} screenshot`
+              }
+              loading="lazy"
+              decoding="async"
+            />
+          </figure>
+        ) : null}
         <div className="hud-panel__body">
           {body.length ? (
             <PortableText value={body} />

@@ -35,6 +35,13 @@ const CARD_W_NARROW = 132;
 const CARD_H_NARROW = 84;
 const CARD_GAP_NARROW = 20;
 
+/**
+ * Shared branded thumbnail rendered behind EVERY project's constellation
+ * preview card on the home page. The actual per-project screenshot only
+ * shows up inside the ProjectPanel sidebar — keeps the HUD consistent.
+ */
+const COMMON_THUMBNAIL_URL = "/project-thumbnail.svg";
+
 function seeded(seed) {
   let s = seed >>> 0;
   return () => {
@@ -441,7 +448,7 @@ function drawActiveNode(ctx, x, y, node, t) {
   ctx.restore();
 }
 
-function drawCard(ctx, cx, cy, node, imgCache, gridPattern, w, h) {
+function drawCard(ctx, cx, cy, node, commonThumb, gridPattern, w, h) {
   /**
    * On narrow viewports the thumbnail floats to the SIDE of the node (opposite
    * the node's column) so the vertical-zig-zag layout stays readable. On wider
@@ -506,9 +513,13 @@ function drawCard(ctx, cx, cy, node, imgCache, gridPattern, w, h) {
   ctx.fill();
   ctx.clip();
 
-  const entry = imgCache[node.slug];
-  if (entry && entry.loaded) {
-    const img = entry.img;
+  /**
+   * Background: always the shared branded thumbnail so every project on
+   * the constellation gets a consistent HUD feel. Falls back to the grid
+   * pattern on the first frame before the SVG has decoded.
+   */
+  if (commonThumb && commonThumb.loaded) {
+    const img = commonThumb.img;
     const ir = img.width / img.height;
     const cr = cardW / cardH;
     let dw;
@@ -527,27 +538,38 @@ function drawCard(ctx, cx, cy, node, imgCache, gridPattern, w, h) {
       dy = cardY + (cardH - dh) / 2;
     }
     ctx.drawImage(img, dx, dy, dw, dh);
-    ctx.fillStyle = "rgba(5,7,18,0.32)";
-    ctx.fillRect(cardX, cardY, cardW, cardH);
-  } else {
-    if (gridPattern) {
-      const pat = ctx.createPattern(gridPattern, "repeat");
-      if (pat) {
-        ctx.fillStyle = pat;
-        ctx.fillRect(cardX, cardY, cardW, cardH);
-      }
+  } else if (gridPattern) {
+    const pat = ctx.createPattern(gridPattern, "repeat");
+    if (pat) {
+      ctx.fillStyle = pat;
+      ctx.fillRect(cardX, cardY, cardW, cardH);
     }
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.font =
-      '600 11px "JetBrains Mono","IBM Plex Mono","Fira Code",ui-monospace,monospace';
-    ctx.fillStyle = "rgba(255,255,255,0.82)";
-    const lines = wrapLines(ctx, (node.project.name || "").toUpperCase(), cardW - 24);
-    const lineH = narrow ? 12 : 14;
-    const startY = cardY + cardH / 2 - ((lines.length - 1) * lineH) / 2;
-    for (let i = 0; i < lines.length; i += 1) {
-      ctx.fillText(lines[i], anchorX, startY + i * lineH);
-    }
+  }
+
+  /** Legibility overlay so the project name reads well on the backdrop. */
+  const nameBandH = narrow ? 28 : 34;
+  const bandY = cardY + cardH - nameBandH;
+  const bandGrad = ctx.createLinearGradient(0, bandY, 0, cardY + cardH);
+  bandGrad.addColorStop(0, "rgba(5,7,18,0)");
+  bandGrad.addColorStop(0.35, "rgba(5,7,18,0.55)");
+  bandGrad.addColorStop(1, "rgba(5,7,18,0.92)");
+  ctx.fillStyle = bandGrad;
+  ctx.fillRect(cardX, bandY - 4, cardW, nameBandH + 4);
+
+  /** Project name, centered in the HUD band. */
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.font = narrow
+    ? '600 9px "JetBrains Mono","IBM Plex Mono","Fira Code",ui-monospace,monospace'
+    : '600 10.5px "JetBrains Mono","IBM Plex Mono","Fira Code",ui-monospace,monospace';
+  ctx.fillStyle = `rgba(${PALETTE.active},0.98)`;
+  const rawName = (node.project.name || "").toUpperCase();
+  const lines = wrapLines(ctx, rawName, cardW - 20).slice(0, 2);
+  const lineH = narrow ? 11 : 13;
+  const textMidY = bandY + nameBandH / 2;
+  const startY = textMidY - ((lines.length - 1) * lineH) / 2;
+  for (let i = 0; i < lines.length; i += 1) {
+    ctx.fillText(lines[i], anchorX, startY + i * lineH);
   }
   ctx.restore();
 
@@ -621,18 +643,19 @@ export default function UniverseCanvas({ projects, onStarSelect }) {
     dust: [],
     nodes: [],
     card: { x: 0, y: 0, initialized: false },
-    images: {},
+    commonThumb: null,
     gridPattern: null,
     projects,
   });
 
-  /** Preload project screenshots once. */
+  /**
+   * Preload the shared constellation thumbnail once. Per-project
+   * screenshots are loaded lazily by ProjectPanel's <img> on panel open —
+   * no reason to blast the browser with megabytes of PNGs up-front.
+   */
   useEffect(() => {
     const s = stateRef.current;
-    s.images = s.images || {};
-    for (const p of projects) {
-      if (!p.slug || !p.image) continue;
-      if (s.images[p.slug]) continue;
+    if (!s.commonThumb) {
       const entry = { img: new Image(), loaded: false };
       entry.img.onload = () => {
         entry.loaded = true;
@@ -640,11 +663,11 @@ export default function UniverseCanvas({ projects, onStarSelect }) {
       entry.img.onerror = () => {
         entry.loaded = false;
       };
-      entry.img.src = p.image;
-      s.images[p.slug] = entry;
+      entry.img.src = COMMON_THUMBNAIL_URL;
+      s.commonThumb = entry;
     }
     if (!s.gridPattern) s.gridPattern = makeGridPattern();
-  }, [projects]);
+  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -846,7 +869,7 @@ export default function UniverseCanvas({ projects, onStarSelect }) {
           s.card.x += (activeX - s.card.x) * 0.18;
           s.card.y += (activeY - s.card.y) * 0.18;
         }
-        drawCard(ctx, s.card.x, s.card.y, activeNode, s.images, s.gridPattern, w, h);
+        drawCard(ctx, s.card.x, s.card.y, activeNode, s.commonThumb, s.gridPattern, w, h);
         drawActiveNode(ctx, activeX, activeY, activeNode, s.time);
       }
 

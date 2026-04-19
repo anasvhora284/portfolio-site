@@ -73,18 +73,71 @@
 }
 
 .hud-panel__media {
-  margin-bottom: 1rem;
+  position: relative;
+  margin: 0 0 1rem;
   border-radius: 12px;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 210, 100, 0.18);
+  background: linear-gradient(180deg, rgba(20, 26, 52, 0.6), rgba(8, 11, 22, 0.85));
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.03),
+    0 18px 40px -22px rgba(255, 210, 100, 0.25);
+}
+
+.hud-panel__media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(120% 80% at 50% -20%, rgba(255, 210, 100, 0.12), transparent 60%);
+}
+
+.hud-panel__media-eyebrow {
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  z-index: 2;
+  padding: 3px 8px;
+  font-family: "JetBrains Mono", "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 210, 100, 0.85);
+  background: rgba(5, 7, 18, 0.6);
+  border: 1px solid rgba(255, 210, 100, 0.25);
+  border-radius: 999px;
+  backdrop-filter: blur(6px);
 }
 
 .hud-panel__media img {
   display: block;
   width: 100%;
   height: auto;
-  max-height: 220px;
+  max-height: 240px;
   object-fit: cover;
+  object-position: center top;
+}
+
+/* Logo / app-icon treatment — contain the mark on a dark nebula field. */
+.hud-panel__media[data-kind="logo"] {
+  display: grid;
+  place-items: center;
+  min-height: 220px;
+  padding: 1.5rem;
+  background:
+    radial-gradient(120% 90% at 50% 30%, rgba(255, 210, 100, 0.12), transparent 65%),
+    radial-gradient(80% 60% at 50% 110%, rgba(100, 60, 180, 0.18), transparent 70%),
+    linear-gradient(180deg, rgba(18, 24, 48, 0.9), rgba(6, 9, 20, 0.95));
+}
+
+.hud-panel__media[data-kind="logo"] img {
+  width: auto;
+  max-width: 60%;
+  max-height: 170px;
+  object-fit: contain;
+  object-position: center;
+  filter: drop-shadow(0 12px 28px rgba(255, 210, 100, 0.22))
+    drop-shadow(0 2px 6px rgba(0, 0, 0, 0.4));
 }
 
 .hud-panel__body {
@@ -175,6 +228,8 @@
   .hud-panel__tagline { font-size: 0.95rem; }
   .hud-panel__body { font-size: 0.9rem; }
   .hud-panel__media img { max-height: 180px; }
+  .hud-panel__media[data-kind="logo"] { min-height: 170px; padding: 1.1rem; }
+  .hud-panel__media[data-kind="logo"] img { max-height: 130px; max-width: 55%; }
   .hud-panel__actions .hud-btn { flex: 1 1 auto; text-align: center; justify-content: center; }
 }
 
@@ -182,6 +237,8 @@
 @media (max-height: 480px) and (orientation: landscape) {
   .hud-panel { padding-top: 3.5rem; }
   .hud-panel__media img { max-height: 140px; }
+  .hud-panel__media[data-kind="logo"] { min-height: 130px; padding: 0.9rem; }
+  .hud-panel__media[data-kind="logo"] img { max-height: 100px; max-width: 45%; }
 }
 
 .hud-about__frame {
