@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <radialGradient id="og-bg" cx="50%" cy="45%" r="70%">
+      <stop offset="0%" stop-color="#121a36"/>
+      <stop offset="60%" stop-color="#070a18"/>
+      <stop offset="100%" stop-color="#03040a"/>
+    </radialGradient>
+    <linearGradient id="og-gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fff8ea"/>
+      <stop offset="55%" stop-color="#e8c547"/>
+      <stop offset="100%" stop-color="#9b6d1b"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#og-bg)"/>
+
+  <!-- star field -->
+  <g fill="#ffffff" opacity="0.85">
+    <circle cx="100"  cy="90"  r="1.6"/>
+    <circle cx="900"  cy="70"  r="1.2"/>
+    <circle cx="260"  cy="200" r="1.2"/>
+    <circle cx="1100" cy="180" r="1.8"/>
+    <circle cx="80"   cy="440" r="1.4"/>
+    <circle cx="1080" cy="520" r="1.3"/>
+    <circle cx="560"  cy="80"  r="1.1"/>
+    <circle cx="700"  cy="540" r="1.5"/>
+    <circle cx="460"  cy="540" r="1.3"/>
+    <circle cx="860"  cy="480" r="1.2"/>
+    <circle cx="280"  cy="440" r="1.1"/>
+    <circle cx="1140" cy="330" r="1.1"/>
+  </g>
+
+  <!-- corner brackets -->
+  <g stroke="#ffffff" stroke-opacity="0.2" stroke-width="1.4" fill="none">
+    <path d="M48 68 L48 48 L68 48"/>
+    <path d="M1132 48 L1152 48 L1152 68"/>
+    <path d="M48 562 L48 582 L68 582"/>
+    <path d="M1132 582 L1152 582 L1152 562"/>
+  </g>
+
+  <!-- eyebrow -->
+  <g font-family="'JetBrains Mono','Menlo',monospace" fill="#e8c547" font-size="16" letter-spacing="4">
+    <text x="80" y="120">ANAS VHORA · PORTFOLIO · SYS/CONSTELLATION v1</text>
+  </g>
+
+  <!-- big title -->
+  <g font-family="'Playfair Display','Georgia',serif" font-size="120" font-weight="500">
+    <text x="80" y="270" fill="url(#og-gold)">Anas Vhora</text>
+    <text x="80" y="390" font-style="italic" fill="none"
+          stroke="#fff4dc" stroke-opacity="0.7" stroke-width="1.4">Portfolio</text>
+  </g>
+
+  <!-- tagline -->
+  <g font-family="'Inter','Helvetica Neue',sans-serif" fill="#d8d2c2" font-size="28">
+    <text x="80" y="470">Full-stack web &amp; Odoo developer.</text>
+    <text x="80" y="510">An interactive, cinematic constellation of projects.</text>
+  </g>
+
+  <!-- hexagon constellation marker -->
+  <g transform="translate(980 345)">
+    <polygon points="0,-90 78,-45 78,45 0,90 -78,45 -78,-45"
+             fill="none" stroke="url(#og-gold)" stroke-width="3" stroke-linejoin="round"/>
+    <circle cx="0" cy="0" r="44" fill="none" stroke="url(#og-gold)" stroke-opacity="0.6"
+            stroke-width="2" stroke-dasharray="6 8"/>
+    <g stroke="url(#og-gold)" stroke-width="2.4" stroke-linecap="round">
+      <line x1="0" y1="-120" x2="0" y2="-100"/>
+      <line x1="0" y1="100"  x2="0" y2="120"/>
+      <line x1="-120" y1="0" x2="-100" y2="0"/>
+      <line x1="100"  y1="0" x2="120"  y2="0"/>
+    </g>
+    <circle cx="0" cy="0" r="6" fill="#fff4c8"/>
+  </g>
+
+  <!-- footer strip -->
+  <line x1="80" y1="580" x2="1120" y2="580" stroke="#e8c547" stroke-opacity="0.35"/>
+  <g font-family="'JetBrains Mono','Menlo',monospace" fill="#e8c547" fill-opacity="0.9" font-size="16" letter-spacing="4">
+    <text x="80" y="606">ANASVHORA.DEV · STAR MAP · MY SHIP · CONTACT HQ</text>
+  </g>
+</svg>

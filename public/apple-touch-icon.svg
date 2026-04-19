@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180">
+  <defs>
+    <radialGradient id="abg" cx="50%" cy="40%" r="70%">
+      <stop offset="0%" stop-color="#121a36"/>
+      <stop offset="100%" stop-color="#05070d"/>
+    </radialGradient>
+    <linearGradient id="agold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fff4c8"/>
+      <stop offset="55%" stop-color="#e8c547"/>
+      <stop offset="100%" stop-color="#9b6d1b"/>
+    </linearGradient>
+  </defs>
+  <rect width="180" height="180" rx="40" fill="url(#abg)"/>
+  <g opacity="0.85">
+    <circle cx="28" cy="32" r="2"   fill="#ffffff"/>
+    <circle cx="150" cy="40" r="1.6" fill="#ffffff"/>
+    <circle cx="38" cy="146" r="1.8" fill="#ffffff"/>
+    <circle cx="140" cy="136" r="1.7" fill="#ffffff"/>
+    <circle cx="18" cy="112" r="1.3" fill="#ffffff"/>
+    <circle cx="165" cy="98" r="1.3" fill="#ffffff"/>
+  </g>
+  <polygon points="90,28 148,62 148,118 90,152 32,118 32,62"
+           fill="none" stroke="url(#agold)" stroke-width="5" stroke-linejoin="round"/>
+  <circle cx="90" cy="90" r="18" fill="none" stroke="url(#agold)" stroke-width="3" stroke-dasharray="4 6"/>
+  <g stroke="url(#agold)" stroke-width="4" stroke-linecap="round">
+    <line x1="90" y1="10" x2="90" y2="22"/>
+    <line x1="90" y1="158" x2="90" y2="170"/>
+    <line x1="10" y1="90" x2="22" y2="90"/>
+    <line x1="158" y1="90" x2="170" y2="90"/>
+  </g>
+  <circle cx="90" cy="90" r="5.5" fill="#fff4c8"/>
+</svg>

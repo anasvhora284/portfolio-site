@@ -1,0 +1,385 @@
+.boot-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: #03040a;
+  color: #c8d0e0;
+  overflow: hidden;
+  font-family: "JetBrains Mono", "IBM Plex Mono", "Fira Code", ui-monospace, monospace;
+  animation: boot-fade-in 420ms ease both;
+}
+
+.boot-overlay.is-closing {
+  animation: boot-fade-out 600ms cubic-bezier(0.7, 0.02, 0.3, 1) both;
+}
+
+@keyframes boot-fade-in {
+  from { opacity: 0; filter: brightness(0.2); }
+  to   { opacity: 1; filter: brightness(1); }
+}
+
+@keyframes boot-fade-out {
+  0%   { opacity: 1; transform: scale(1); filter: blur(0); }
+  40%  { opacity: 1; transform: scale(1.02); filter: blur(0); }
+  100% { opacity: 0; transform: scale(1.14); filter: blur(6px); }
+}
+
+.boot-grid {
+  position: absolute;
+  inset: -10%;
+  background-image:
+    linear-gradient(rgba(120, 170, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(120, 170, 255, 0.08) 1px, transparent 1px);
+  background-size: 54px 54px;
+  transform: perspective(800px) rotateX(60deg) translateY(14%);
+  transform-origin: center top;
+  mask-image: linear-gradient(180deg, transparent 0%, #000 30%, #000 75%, transparent 100%);
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 30%, #000 75%, transparent 100%);
+  animation: boot-grid-pan 9s linear infinite;
+  opacity: 0.7;
+}
+
+@keyframes boot-grid-pan {
+  from { background-position: 0 0; }
+  to   { background-position: 0 108px; }
+}
+
+.boot-scanlines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.03) 0 1px,
+    transparent 1px 3px
+  );
+  mix-blend-mode: overlay;
+  opacity: 0.45;
+}
+
+.boot-vignette {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 50%, transparent 0%, rgba(0, 0, 0, 0.55) 85%),
+    radial-gradient(ellipse 100% 60% at 50% 0%, rgba(232, 197, 71, 0.06), transparent 60%);
+  pointer-events: none;
+}
+
+.boot-skip {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  z-index: 2;
+  padding: 8px 14px;
+  color: #e8c547;
+  background: rgba(232, 197, 71, 0.06);
+  border: 1px solid rgba(232, 197, 71, 0.32);
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 180ms ease, color 180ms ease, transform 180ms ease;
+}
+
+.boot-skip:hover {
+  background: rgba(232, 197, 71, 0.14);
+  color: #fff3c8;
+  transform: translateX(2px);
+}
+
+.boot-corner {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border-color: rgba(255, 255, 255, 0.25);
+  pointer-events: none;
+}
+
+.boot-corner--tl { top: 18px; left: 18px; border-left: 1px solid; border-top: 1px solid; }
+.boot-corner--tr { top: 18px; right: 18px; border-right: 1px solid; border-top: 1px solid; }
+.boot-corner--bl { bottom: 18px; left: 18px; border-left: 1px solid; border-bottom: 1px solid; }
+.boot-corner--br { bottom: 18px; right: 18px; border-right: 1px solid; border-bottom: 1px solid; }
+
+.boot-top-strip {
+  position: absolute;
+  top: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 10px;
+  letter-spacing: 0.26em;
+  color: rgba(232, 197, 71, 0.8);
+  text-transform: uppercase;
+}
+
+.boot-top-strip__dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(232, 197, 71, 0.7);
+}
+
+.boot-stage {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  padding: 0 24px;
+}
+
+.boot-title-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+  margin-bottom: 36px;
+}
+
+.boot-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(232, 197, 71, 0.3);
+  background: rgba(232, 197, 71, 0.06);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  color: rgba(232, 197, 71, 0.95);
+  text-transform: uppercase;
+}
+
+.boot-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #e8c547;
+  box-shadow: 0 0 10px rgba(232, 197, 71, 0.8);
+  animation: boot-dot-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes boot-dot-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%      { transform: scale(1.6); opacity: 0.6; }
+}
+
+.boot-title {
+  position: relative;
+  margin: 0;
+  font-family: "Playfair Display", "Georgia", serif;
+  font-weight: 500;
+  font-size: clamp(40px, 7.5vw, 104px);
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+
+.boot-title__ghost {
+  color: rgba(255, 255, 255, 0.06);
+  filter: blur(1px);
+}
+
+.boot-title__live {
+  position: absolute;
+  inset: 0;
+  display: inline-block;
+  background: linear-gradient(180deg, #fff8ea 0%, #e8c547 72%, #b7882e 108%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  text-shadow: 0 0 30px rgba(232, 197, 71, 0.25);
+}
+
+.boot-subtitle {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: rgba(240, 235, 220, 0.5);
+}
+
+.boot-console {
+  width: min(580px, 88vw);
+  padding: 14px 18px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 10px;
+  background: linear-gradient(180deg, rgba(10, 14, 28, 0.9), rgba(8, 10, 22, 0.75));
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.55), inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(10px);
+}
+
+.boot-console__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  margin-bottom: 10px;
+}
+
+.boot-console__hdot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  opacity: 0.7;
+}
+.boot-console__hdot--r { background: #f87171; }
+.boot-console__hdot--y { background: #e8c547; }
+.boot-console__hdot--g { background: #5cd87b; }
+
+.boot-console__label {
+  margin-left: 8px;
+  font-size: 10px;
+  letter-spacing: 0.24em;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+}
+
+.boot-log {
+  margin: 0 0 12px;
+  padding: 0;
+  font-family: inherit;
+  font-size: 12px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  color: rgba(200, 210, 225, 0.85);
+}
+
+.boot-log__row { display: block; }
+.boot-log__row.is-done { color: rgba(160, 230, 190, 0.85); }
+.boot-log__prompt { color: rgba(232, 197, 71, 0.85); margin-right: 6px; }
+
+.boot-log__caret {
+  display: inline-block;
+  width: 7px;
+  height: 13px;
+  margin-left: 2px;
+  vertical-align: -2px;
+  background: #e8c547;
+  animation: boot-caret 0.7s steps(2, end) infinite;
+}
+
+@keyframes boot-caret {
+  from { opacity: 1; }
+  50%  { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.boot-bar {
+  position: relative;
+  height: 3px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+  margin-top: 4px;
+}
+.boot-bar__track {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(232, 197, 71, 0.08) 0 4px,
+    transparent 4px 8px
+  );
+}
+.boot-bar__fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, #e8c547, #fff4c8);
+  box-shadow: 0 0 14px rgba(232, 197, 71, 0.7);
+  transition: width 0.1s linear;
+}
+.boot-bar__tick {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  width: 1px;
+  background: rgba(255, 244, 200, 0.9);
+  box-shadow: 0 0 8px rgba(232, 197, 71, 0.9);
+  transition: left 0.1s linear;
+}
+
+.boot-meta {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.42);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+.boot-warp {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 50%, rgba(255, 244, 200, 0.0) 0%, rgba(255, 244, 200, 0) 60%, transparent 60.1%);
+  opacity: 0;
+}
+
+.boot-overlay.is-closing .boot-warp {
+  animation: boot-warp 620ms cubic-bezier(0.2, 0.6, 0.2, 1) forwards;
+}
+
+@keyframes boot-warp {
+  0% {
+    opacity: 0;
+    background: radial-gradient(circle at 50% 50%, rgba(255, 244, 200, 0) 0%, rgba(255, 244, 200, 0) 5%, transparent 5.1%);
+  }
+  45% {
+    opacity: 1;
+    background: radial-gradient(circle at 50% 50%, rgba(255, 244, 200, 0.85) 0%, rgba(232, 197, 71, 0.4) 20%, transparent 45%);
+  }
+  100% {
+    opacity: 0;
+    background: radial-gradient(circle at 50% 50%, rgba(255, 244, 200, 0) 0%, rgba(232, 197, 71, 0) 80%, transparent 90%);
+  }
+}
+
+/* Tablet / phone landscape */
+@media (max-width: 820px) {
+  .boot-top-strip { display: none; }
+  .boot-stage { padding: 0 18px; }
+  .boot-title-wrap { gap: 10px; margin-bottom: 24px; }
+  .boot-eyebrow { font-size: 9px; letter-spacing: 0.22em; padding: 5px 10px; }
+  .boot-title { font-size: clamp(36px, 10vw, 72px); }
+  .boot-subtitle { font-size: 10px; letter-spacing: 0.22em; }
+  .boot-console { padding: 12px 14px; }
+  .boot-skip { top: 12px; right: 12px; font-size: 9px; padding: 6px 10px; }
+  .boot-corner { width: 20px; height: 20px; }
+  .boot-corner--tl, .boot-corner--tr { top: 10px; }
+  .boot-corner--bl, .boot-corner--br { bottom: 10px; }
+  .boot-corner--tl, .boot-corner--bl { left: 10px; }
+  .boot-corner--tr, .boot-corner--br { right: 10px; }
+}
+
+/* Phone portrait */
+@media (max-width: 480px) {
+  .boot-title { font-size: clamp(32px, 13vw, 56px); }
+  .boot-console { width: min(460px, 92vw); font-size: 11px; }
+  .boot-log { font-size: 10px; }
+  .boot-meta { font-size: 9.5px; letter-spacing: 0.18em; flex-wrap: wrap; gap: 10px; }
+}
+
+/* Phone landscape — very short viewports */
+@media (max-height: 480px) and (orientation: landscape) {
+  .boot-title-wrap { margin-bottom: 14px; gap: 6px; }
+  .boot-title { font-size: clamp(28px, 5vh, 48px); }
+  .boot-console { padding: 10px 12px; }
+  .boot-log { max-height: 60px; overflow: hidden; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .boot-overlay, .boot-grid { animation: none !important; }
+  .boot-title__live { text-shadow: none; }
+}

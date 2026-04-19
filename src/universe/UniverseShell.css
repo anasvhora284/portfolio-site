@@ -1,0 +1,43 @@
+.universe-root {
+  min-height: 100dvh;
+  background: #05070d;
+}
+
+.universe-canvas-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+
+.universe-depth-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 120% 80% at 50% 50%, transparent 0%, transparent 52%, rgba(2, 3, 8, 0.55) 100%);
+  opacity: 0.9;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .universe-depth-overlay {
+    opacity: 0.92;
+  }
+}
+
+.universe-canvas-wrap canvas {
+  position: relative;
+  z-index: 0;
+}
+
+.universe-canvas-fallback {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 30%, #0a1020, #05070d 55%);
+}
+
+.universe-canvas-wrap canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
