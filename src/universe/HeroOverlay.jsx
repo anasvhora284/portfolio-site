@@ -16,6 +16,7 @@ export function HeroOverlay() {
   const navigate = useNavigate();
   const panel = useUniverseStore((s) => s.panel);
   const focusedSlug = useUniverseStore((s) => s.focusedSlug);
+  const heroDocked = useUniverseStore((s) => s.heroDocked);
 
   const focused = useMemo(
     () => (focusedSlug ? projects.find((p) => p.slug === focusedSlug) : null),
@@ -27,7 +28,10 @@ export function HeroOverlay() {
   const [firstName, lastName] = splitName(siteSettings?.siteTitle);
 
   return (
-    <div className="hero-overlay" aria-hidden={panel ? "true" : "false"}>
+    <div
+      className={`hero-overlay${heroDocked ? " hero-overlay--docked" : ""}`}
+      aria-hidden={panel ? "true" : "false"}
+    >
       <div className="hero-overlay__eyebrow">
         <span className="hero-overlay__dot" />
         {siteSettings?.availableForWork ? "Available for work, 2026" : "Portfolio, 2026"}
@@ -50,6 +54,9 @@ export function HeroOverlay() {
         <span className="hero-overlay__hint-key">←</span>
         <span className="hero-overlay__hint-key">→</span>
         <span className="hero-overlay__hint-text">navigate the constellation</span>
+      </div>
+      <div className="hero-overlay__mobile-hint" aria-hidden>
+        Swipe up/down to browse projects
       </div>
 
       {focused ? (

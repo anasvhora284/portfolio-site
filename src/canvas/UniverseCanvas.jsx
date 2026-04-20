@@ -326,6 +326,18 @@ function drawLinks(ctx, nodes, offX, offY, dashOffset) {
   ctx.restore();
 }
 
+function getNarrowVisibleSlugs(nodes, focusedSlug, isNarrow) {
+  if (!isNarrow || !focusedSlug || nodes.length < 2) return null;
+  const idx = nodes.findIndex((n) => n.slug === focusedSlug);
+  if (idx < 0) return null;
+  const visible = new Set();
+  for (let i = idx - 1; i <= idx + 1; i += 1) {
+    if (i < 0 || i >= nodes.length) continue;
+    visible.add(nodes[i].slug);
+  }
+  return visible;
+}
+
 function drawIdleNode(ctx, x, y, node, hovered) {
   ctx.save();
   const alpha = hovered ? 0.38 : 0.22;
@@ -359,12 +371,16 @@ function drawIdleNode(ctx, x, y, node, hovered) {
   const labelY = node.labelBelow ? y + labelYOffset : y - labelYOffset;
   ctx.textAlign = "center";
   ctx.textBaseline = node.labelBelow ? "top" : "bottom";
-  ctx.font =
-    '600 9px "JetBrains Mono","IBM Plex Mono","Fira Code",ui-monospace,monospace';
+  ctx.font = node.narrow
+    ? '600 8px "JetBrains Mono","IBM Plex Mono","Fira Code",ui-monospace,monospace'
+    : '600 9px "JetBrains Mono","IBM Plex Mono","Fira Code",ui-monospace,monospace';
   ctx.fillStyle = hovered
     ? "rgba(255,255,255,0.6)"
     : "rgba(255,255,255,0.25)";
-  ctx.fillText((node.project.name || "").toUpperCase(), x, labelY);
+  const idleName = (node.project.name || "").toUpperCase();
+  const compactIdleName =
+    node.narrow && idleName.length > 18 ? `${idleName.slice(0, 17)}…` : idleName;
+  ctx.fillText(compactIdleName, x, labelY);
   ctx.restore();
 }
 
@@ -416,19 +432,23 @@ function drawActiveNode(ctx, x, y, node, t) {
   ctx.arc(x, y, 2.1, 0, Math.PI * 2);
   ctx.fill();
 
-  /** Label + description + coord always BELOW node. */
+  /** Label + metadata below node (compact on narrow screens). */
   const labelY = y + 28;
   ctx.textAlign = "center";
   ctx.textBaseline = "top";
+  const compact = Boolean(node.narrow);
 
   ctx.font =
-    '600 10px "JetBrains Mono","IBM Plex Mono","Fira Code",ui-monospace,monospace';
+    compact
+      ? '600 9px "JetBrains Mono","IBM Plex Mono","Fira Code",ui-monospace,monospace'
+      : '600 10px "JetBrains Mono","IBM Plex Mono","Fira Code",ui-monospace,monospace';
   ctx.fillStyle = `rgba(${gold},0.98)`;
-  const name = (node.project.name || "").toUpperCase();
+  const rawName = (node.project.name || "").toUpperCase();
+  const name = compact && rawName.length > 22 ? `${rawName.slice(0, 21)}…` : rawName;
   ctx.fillText(name, x, labelY);
 
-  let cursorY = labelY + 14;
-  const desc = node.project.tagline || node.project.roles?.[0] || "";
+  let cursorY = labelY + (compact ? 12 : 14);
+  const desc = compact ? "" : node.project.tagline || node.project.roles?.[0] || "";
   if (desc) {
     ctx.font = '9px "JetBrains Mono",ui-monospace,monospace';
     ctx.fillStyle = "rgba(255,255,255,0.68)";
@@ -448,7 +468,7 @@ function drawActiveNode(ctx, x, y, node, t) {
   ctx.restore();
 }
 
-function drawCard(ctx, cx, cy, node, commonThumb, gridPattern, w, h) {
+function drawCard(ctx, cx, cy, node, commonThumb, gridPattern, w, h, dockedNarrow) {
   /**
    * On narrow viewports the thumbnail floats to the SIDE of the node (opposite
    * the node's column) so the vertical-zig-zag layout stays readable. On wider
@@ -467,7 +487,18 @@ function drawCard(ctx, cx, cy, node, commonThumb, gridPattern, w, h) {
   let lineEndX;
   let lineEndY;
 
-  if (narrow) {
+  if (narrow && dockedNarrow) {
+    const halfW = cardW / 2;
+    const minCX = halfW + 10;
+    const maxCX = w - halfW - 10;
+    anchorX = Math.max(minCX, Math.min(maxCX, cx));
+    cardX = anchorX - halfW;
+    cardY = Math.max(72, cy - cardH - 34);
+    connectX = anchorX;
+    connectY = cardY + cardH;
+    lineEndX = cx;
+    lineEndY = cy - 16;
+  } else if (narrow) {
     /** Opposite-side float: if node is left of center, card goes right, vice versa. */
     const goRight = cx < w / 2;
     if (goRight) {
@@ -577,6 +608,7 @@ function drawCard(ctx, cx, cy, node, commonThumb, gridPattern, w, h) {
   ctx.strokeStyle = `rgba(${PALETTE.active},0.3)`;
   ctx.lineWidth = 1;
   ctx.stroke();
+  return { x: cardX, y: cardY, w: cardW, h: cardH };
 }
 
 function drawDust(ctx, dust, w, h, offX, offY) {
@@ -637,12 +669,19 @@ export default function UniverseCanvas({ projects, onStarSelect }) {
     /** Last applied per-frame offsets, so hit-testing matches what's drawn. */
     lastOffX: 0,
     lastOffY: 0,
+    /** Last applied scene zoom; used to invert pointer hit-tests accurately. */
+    lastZoom: 1,
+    heroDocked: false,
     focusedSlug: null,
+    prevFocusedSlug: null,
+    /** 1 → 0 transition scalar used for zoom-out/zoom-in pulse on node changes. */
+    focusTransition: 0,
     hoverSlug: null,
     stars: [],
     dust: [],
     nodes: [],
-    card: { x: 0, y: 0, initialized: false },
+    card: { x: 0, y: 0, initialized: false, bounds: null },
+    activeHit: null,
     commonThumb: null,
     gridPattern: null,
     projects,
@@ -706,6 +745,7 @@ export default function UniverseCanvas({ projects, onStarSelect }) {
       s.pointerTarget.x = state.pointer?.[0] ?? 0;
       s.pointerTarget.y = state.pointer?.[1] ?? 0;
       s.focusedSlug = state.focusedSlug;
+      s.heroDocked = Boolean(state.heroDocked);
     };
     apply(useUniverseStore.getState());
     return useUniverseStore.subscribe(apply);
@@ -717,16 +757,25 @@ export default function UniverseCanvas({ projects, onStarSelect }) {
 
     const findNode = (cx, cy) => {
       const s = stateRef.current;
+      const zoom = s.lastZoom || 1;
+      const worldX = (cx - s.w / 2) / zoom + s.w / 2;
+      const worldY = (cy - s.h / 2) / zoom + s.h / 2;
+      const visibleSlugs = getNarrowVisibleSlugs(
+        s.nodes,
+        s.focusedSlug,
+        s.w < 720,
+      );
       let best = null;
       let bestD = 32 * 32;
       for (let i = 0; i < s.nodes.length; i += 1) {
         const n = s.nodes[i];
+        if (visibleSlugs && !visibleSlugs.has(n.slug)) continue;
         /** Use the same transform the draw loop applies, so the click target
          *  matches exactly where the node was just rendered. */
         const nx = n.x + s.cam.x + s.lastOffX * n.parallax;
         const ny = n.y + s.cam.y + s.lastOffY * n.parallax;
-        const dx = cx - nx;
-        const dy = cy - ny;
+        const dx = worldX - nx;
+        const dy = worldY - ny;
         const d2 = dx * dx + dy * dy;
         if (d2 < bestD) {
           bestD = d2;
@@ -734,6 +783,44 @@ export default function UniverseCanvas({ projects, onStarSelect }) {
         }
       }
       return best;
+    };
+
+    const findHitTarget = (cx, cy) => {
+      const s = stateRef.current;
+      const zoom = s.lastZoom || 1;
+      const worldX = (cx - s.w / 2) / zoom + s.w / 2;
+      const worldY = (cy - s.h / 2) / zoom + s.h / 2;
+
+      /** Active preview card click target. */
+      if (s.card.bounds && s.focusedSlug) {
+        const bx = s.card.bounds.x + s.cam.x;
+        const by = s.card.bounds.y + s.cam.y;
+        if (
+          worldX >= bx &&
+          worldX <= bx + s.card.bounds.w &&
+          worldY >= by &&
+          worldY <= by + s.card.bounds.h
+        ) {
+          return { slug: s.focusedSlug };
+        }
+      }
+
+      /** Active project title/metadata label click target. */
+      if (s.activeHit?.slug) {
+        const lx = s.activeHit.labelX + s.cam.x;
+        const ly = s.activeHit.labelY + s.cam.y;
+        if (
+          worldX >= lx &&
+          worldX <= lx + s.activeHit.labelW &&
+          worldY >= ly &&
+          worldY <= ly + s.activeHit.labelH
+        ) {
+          return { slug: s.activeHit.slug };
+        }
+      }
+
+      const node = findNode(cx, cy);
+      return node?.slug ? { slug: node.slug } : null;
     };
 
     const setHover = (on) => {
@@ -748,14 +835,14 @@ export default function UniverseCanvas({ projects, onStarSelect }) {
 
     const onMove = (e) => {
       const rect = canvas.getBoundingClientRect();
-      const n = findNode(e.clientX - rect.left, e.clientY - rect.top);
-      stateRef.current.hoverSlug = n?.slug ?? null;
-      setHover(Boolean(n));
+      const hit = findHitTarget(e.clientX - rect.left, e.clientY - rect.top);
+      stateRef.current.hoverSlug = hit?.slug ?? null;
+      setHover(Boolean(hit));
     };
     const onClick = (e) => {
       const rect = canvas.getBoundingClientRect();
-      const n = findNode(e.clientX - rect.left, e.clientY - rect.top);
-      if (n?.slug && onStarSelect) onStarSelect(n.slug);
+      const hit = findHitTarget(e.clientX - rect.left, e.clientY - rect.top);
+      if (hit?.slug && onStarSelect) onStarSelect(hit.slug, { open: true });
     };
     const onLeave = () => {
       stateRef.current.hoverSlug = null;
@@ -800,9 +887,14 @@ export default function UniverseCanvas({ projects, onStarSelect }) {
        * so looking around feels like piloting the viewport.
        */
       const focused = s.nodes.find((n) => n.slug === s.focusedSlug);
+      if (s.focusedSlug !== s.prevFocusedSlug) {
+        if (s.prevFocusedSlug) s.focusTransition = 1;
+        s.prevFocusedSlug = s.focusedSlug;
+      }
       let camTX = 0;
       let camTY = 0;
       const narrow = w < 720;
+      const dockedNarrow = narrow && s.heroDocked;
       if (focused) {
         const targetX = w / 2;
         /**
@@ -810,20 +902,36 @@ export default function UniverseCanvas({ projects, onStarSelect }) {
          * (~62% from top) — well below the hero title and well above the
          * "NOW VIEWING" card. Wide viewports keep the previous 52% dock.
          */
-        const targetY = narrow ? h * 0.62 : h * 0.7;
+        const targetY = narrow ? (dockedNarrow ? h * 0.5 : h * 0.62) : h * 0.7;
         /** Narrow: weaker X pull (nodes are already centered via columns),
          *  stronger Y pull. Wide: original behaviour. */
-        camTX = (targetX - focused.x) * (narrow ? 0.15 : 0.45);
-        camTY = (targetY - focused.y) * (narrow ? 0.55 : 0.5);
+        camTX = (targetX - focused.x) * (narrow ? (dockedNarrow ? 0.1 : 0.15) : 0.45);
+        camTY = (targetY - focused.y) * (narrow ? (dockedNarrow ? 0.66 : 0.55) : 0.5);
       }
       s.cam.x += (camTX - s.cam.x) * 0.06;
       s.cam.y += (camTY - s.cam.y) * 0.06;
 
+      /**
+       * Mobile zoom treatment:
+       * - baseline zoom-in around focused node
+       * - on node change, play a short zoom-out → zoom-in pulse
+       */
+      if (s.focusTransition > 0) {
+        s.focusTransition = Math.max(0, s.focusTransition - dt * 2.6);
+      }
+      const focusPhase = 1 - s.focusTransition;
+      const zoomPulse =
+        narrow && focused
+          ? -Math.sin(focusPhase * Math.PI * 2) * 0.055 * s.focusTransition
+          : 0;
+      const zoomTarget = narrow && focused ? (dockedNarrow ? 1.12 : 1.08) + zoomPulse : 1;
+      s.lastZoom += (zoomTarget - s.lastZoom) * (narrow ? 0.16 : 0.1);
+
       /** Pointer-driven parallax base (bumped a touch so cursor feel is real).
        *  Dampened on narrow viewports so finger drag / device tilt doesn't
        *  push nodes offscreen. */
-      const pScaleX = narrow ? 0.025 : 0.055;
-      const pScaleY = narrow ? 0.02 : 0.045;
+      const pScaleX = narrow ? (dockedNarrow ? 0.02 : 0.025) : 0.055;
+      const pScaleY = narrow ? (dockedNarrow ? 0.014 : 0.02) : 0.045;
       const pOffX = -s.pointer.x * w * pScaleX;
       const pOffY = s.pointer.y * h * pScaleY;
       s.lastOffX = pOffX;
@@ -834,12 +942,21 @@ export default function UniverseCanvas({ projects, onStarSelect }) {
 
       /** Uniform camera translate for the whole scene, then per-object parallax. */
       ctx.save();
+      ctx.translate(w / 2, h / 2);
+      ctx.scale(s.lastZoom, s.lastZoom);
+      ctx.translate(-w / 2, -h / 2);
       ctx.translate(s.cam.x, s.cam.y);
 
       drawNebulae(ctx, s, s.time, pOffX, pOffY);
       drawStars(ctx, s.stars, s.time, pOffX, pOffY);
       drawGrid(ctx, w, h, pOffX, pOffY);
-      drawLinks(ctx, s.nodes, pOffX, pOffY, s.dashOffset);
+      const visibleSlugs = getNarrowVisibleSlugs(s.nodes, s.focusedSlug, narrow);
+      if (visibleSlugs) {
+        const compactNodes = s.nodes.filter((n) => visibleSlugs.has(n.slug));
+        drawLinks(ctx, compactNodes, pOffX, pOffY, s.dashOffset);
+      } else {
+        drawLinks(ctx, s.nodes, pOffX, pOffY, s.dashOffset);
+      }
 
       /** Draw idle nodes first, then the active one + its card on top. */
       let activeNode = null;
@@ -847,6 +964,7 @@ export default function UniverseCanvas({ projects, onStarSelect }) {
       let activeY = 0;
       for (let i = 0; i < s.nodes.length; i += 1) {
         const n = s.nodes[i];
+        if (visibleSlugs && !visibleSlugs.has(n.slug)) continue;
         const nx = n.x + pOffX * n.parallax;
         const ny = n.y + pOffY * n.parallax;
         if (n.slug === s.focusedSlug) {
@@ -869,8 +987,32 @@ export default function UniverseCanvas({ projects, onStarSelect }) {
           s.card.x += (activeX - s.card.x) * 0.18;
           s.card.y += (activeY - s.card.y) * 0.18;
         }
-        drawCard(ctx, s.card.x, s.card.y, activeNode, s.commonThumb, s.gridPattern, w, h);
+        const cardBounds = drawCard(
+          ctx,
+          s.card.x,
+          s.card.y,
+          activeNode,
+          s.commonThumb,
+          s.gridPattern,
+          w,
+          h,
+          dockedNarrow,
+        );
+        s.card.bounds = cardBounds;
+        const narrowLabel = Boolean(activeNode.narrow);
+        const labelW = narrowLabel ? 158 : 240;
+        const labelH = narrowLabel ? 36 : 78;
+        s.activeHit = {
+          slug: activeNode.slug,
+          labelX: activeX - labelW / 2,
+          labelY: activeY + 24,
+          labelW,
+          labelH,
+        };
         drawActiveNode(ctx, activeX, activeY, activeNode, s.time);
+      } else {
+        s.card.bounds = null;
+        s.activeHit = null;
       }
 
       drawDust(ctx, s.dust, w, h, pOffX, pOffY);

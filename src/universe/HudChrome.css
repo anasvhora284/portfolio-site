@@ -152,6 +152,18 @@
   display: none;
 }
 
+.hud-nav__state {
+  display: none;
+}
+
+.hud-nav__link--audio.is-live {
+  color: #d8deea;
+}
+
+.hud-nav__link--audio.is-muted {
+  color: #919ab0;
+}
+
 .hud-close__key {
   opacity: 0.6;
   font-size: 9px;
@@ -177,27 +189,61 @@
 
 /* Phone portrait — collapse labels to glyphs, show labels only on active */
 @media (max-width: 560px) {
-  .hud-chrome { padding: 0.5rem 0.6rem; }
+  .hud-chrome {
+    padding:
+      max(0.46rem, env(safe-area-inset-top))
+      max(0.55rem, env(safe-area-inset-right))
+      0
+      max(0.55rem, env(safe-area-inset-left));
+    gap: 0.38rem;
+  }
+  .hud-brand {
+    min-height: 36px;
+    padding: 0.26rem 0.48rem;
+    border-radius: 9px;
+    background: rgba(5, 7, 13, 0.72);
+  }
   .hud-nav__link {
-    padding: 0.4rem 0.55rem;
-    min-width: 34px;
-    min-height: 34px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 0.38rem 0.5rem;
+    min-width: 35px;
+    min-height: 36px;
     justify-content: center;
-    font-size: 0.72rem;
+    font-size: 0.7rem;
+    background: rgba(5, 7, 13, 0.72);
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+  .hud-nav {
+    flex-wrap: nowrap;
+    gap: 0.26rem;
   }
   .hud-nav__glyph {
     display: inline-block;
     font-family: var(--font-mono, "JetBrains Mono", monospace);
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     line-height: 1;
     color: currentColor;
   }
   .hud-nav__label { display: none; }
+  .hud-nav__state {
+    display: inline;
+    font-family: var(--font-mono, "JetBrains Mono", monospace);
+    font-size: 0.58rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: currentColor;
+    opacity: 0.95;
+  }
+  .hud-nav__link:not(.hud-nav__link--audio) .hud-nav__state {
+    display: none;
+  }
   /* Active route: bring the label back inline so users see where they are. */
   .hud-nav__link.active .hud-nav__label {
     display: inline;
-    margin-left: 6px;
-    font-size: 0.72rem;
+    margin-left: 5px;
+    font-size: 0.67rem;
     letter-spacing: 0.04em;
   }
   .hud-nav__link.active {

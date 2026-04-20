@@ -31,6 +31,15 @@ export const useUniverseStore = create((set) => ({
   /** Normalised pointer position [-1, 1] for camera parallax. */
   pointer: /** @type {[number, number]} */ ([0, 0]),
   focusedSlug: /** @type {string | null} */ (null),
+  /**
+   * Mobile hero compaction flag:
+   * false => big cinematic name block
+   * true  => compact docked title (frees vertical room for nodes/cards)
+   */
+  heroDocked:
+    typeof window !== "undefined"
+      ? window.matchMedia("(max-width: 720px)").matches
+      : false,
 
   setQualityTier: (tier) => set({ qualityTier: tier }),
 
@@ -66,6 +75,8 @@ export const useUniverseStore = create((set) => ({
   setPointer: (x, y) => set({ pointer: [x, y] }),
 
   setFocusedSlug: (slug) => set({ focusedSlug: slug }),
+
+  setHeroDocked: (v) => set({ heroDocked: Boolean(v) }),
 }));
 
 export { STORAGE_AUDIO };

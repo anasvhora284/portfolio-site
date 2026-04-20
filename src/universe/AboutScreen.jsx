@@ -42,11 +42,53 @@ const EXPERIENCE = [
 ];
 
 const SKILLS = [
-  { group: "Frontend", items: ["React", "Vite", "Three / R3F", "GSAP", "CSS / Motion"] },
-  { group: "Backend", items: ["Node.js", "Express", "MongoDB", "REST", "Auth"] },
-  { group: "Mobile & IoT", items: ["React Native", "Arduino", "NodeMCU", "MultiWii"] },
-  { group: "Tools", items: ["Git", "Figma", "Android Studio", "Google Apps Script"] },
+  { group: "Frontend", items: ["CSS", "GSAP", "HTML", "JavaScript", "React", "Vite"] },
+  { group: "Backend & Odoo", items: ["Node.js", "Odoo", "OWL JS", "Python", "XML"] },
+  { group: "Databases", items: ["MongoDB", "PostgreSQL"] },
+  {
+    group: "DevOps & Scripting",
+    items: [
+      "AWS EC2",
+      "Bash",
+      "CI/CD",
+      "DNS",
+      "GitHub Actions",
+      "Linux",
+      "Lua",
+      "Nginx",
+      "PM2",
+      "Shell Script",
+      "TCP/IP Networking",
+    ],
+  },
 ];
+
+const TECH_ICONS = {
+  HTML: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg",
+  CSS: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg",
+  JavaScript:
+    "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg",
+  React:
+    "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg",
+  Vite: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vitejs/vitejs-original.svg",
+  "Node.js":
+    "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg",
+  Python:
+    "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg",
+  Odoo: "https://cdn.simpleicons.org/odoo/714B67",
+  PostgreSQL:
+    "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg",
+  MongoDB:
+    "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg",
+  Linux:
+    "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg",
+  Nginx:
+    "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nginx/nginx-original.svg",
+  "GitHub Actions": "https://cdn.simpleicons.org/githubactions/2088FF",
+  Lua: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/lua/lua-original.svg",
+  Bash:
+    "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bash/bash-original.svg",
+};
 
 function useStaggerReveal(count, delay = 60) {
   const [revealed, setRevealed] = useState(0);
@@ -164,6 +206,10 @@ export function AboutScreen({ onClose }) {
               that a family of non-profits actually uses. What I care about: craft, motion,
               and shipping things that feel inevitable.
             </p>
+            <p className="about-screen__hobby">
+              Outside work, I like tinkering with devices &mdash; flashing different mobile OS
+              builds, testing custom setups, and learning how systems behave under the hood.
+            </p>
 
             <div className="about-screen__cta-row">
               {siteSettings?.resumeUrl ? (
@@ -273,7 +319,19 @@ export function AboutScreen({ onClose }) {
                 <div className="skills-col__title">{s.group}</div>
                 <ul className="skills-col__list">
                   {s.items.map((it) => (
-                    <li key={it}>{it}</li>
+                    <li key={it}>
+                      {TECH_ICONS[it] ? (
+                        <img
+                          className="skills-col__icon"
+                          src={TECH_ICONS[it]}
+                          alt=""
+                          loading="lazy"
+                          decoding="async"
+                          aria-hidden="true"
+                        />
+                      ) : null}
+                      <span>{it}</span>
+                    </li>
                   ))}
                 </ul>
               </div>

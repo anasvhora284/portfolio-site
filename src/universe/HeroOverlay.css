@@ -119,6 +119,10 @@
   letter-spacing: 0.28em;
 }
 
+.hero-overlay__mobile-hint {
+  display: none;
+}
+
 .hero-overlay__focus {
   position: absolute;
   left: clamp(24px, 6vw, 92px);
@@ -213,26 +217,64 @@
    * The keyboard-hint chip is removed entirely on touch — irrelevant there.
    */
   .hero-overlay {
-    padding: 64px 16px 18px;
-    grid-template-rows: auto auto 1fr auto;
-    row-gap: 4px;
+    padding:
+      calc(60px + env(safe-area-inset-top))
+      max(14px, env(safe-area-inset-left))
+      calc(14px + env(safe-area-inset-bottom))
+      max(14px, env(safe-area-inset-right));
+    grid-template-rows: auto auto auto 1fr auto;
+    row-gap: 6px;
+  }
+  .hero-overlay::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: min(44vh, 280px);
+    z-index: -1;
+    background: linear-gradient(180deg, rgba(4, 7, 16, 0.74), rgba(4, 7, 16, 0));
+    pointer-events: none;
   }
   .hero-overlay__eyebrow { font-size: 10px; letter-spacing: 0.22em; }
   .hero-overlay__name {
-    font-size: clamp(44px, 14vw, 88px);
-    padding-top: 4px;
-    text-shadow: 0 6px 30px rgba(0, 0, 0, 0.7);
+    font-size: clamp(42px, 13.8vw, 82px);
+    padding-top: 2px;
+    line-height: 0.9;
+    text-shadow: 0 8px 34px rgba(0, 0, 0, 0.78);
   }
   .hero-overlay__tagline {
-    font-size: 10.5px;
-    letter-spacing: 0.16em;
-    max-width: 88vw;
-    margin-top: 10px;
-    text-shadow: 0 4px 18px rgba(0, 0, 0, 0.8);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    max-width: 90vw;
+    margin-top: 8px;
+    color: rgba(240, 235, 220, 0.76);
+    text-shadow: 0 4px 16px rgba(0, 0, 0, 0.8);
   }
   /** Hide the navigation hint on phone — keyboard + scroll-wheel are irrelevant
    *  on touch, and it was competing with the focus card at the bottom. */
   .hero-overlay__hint { display: none; }
+  .hero-overlay__mobile-hint {
+    display: inline-flex;
+    align-self: start;
+    justify-self: center;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    max-width: 96%;
+    padding: 6px 11px;
+    margin-top: 4px;
+    border-radius: 999px;
+    border: 1px solid rgba(232, 197, 71, 0.24);
+    background: rgba(8, 11, 22, 0.68);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    font-family: "JetBrains Mono", "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255, 221, 140, 0.86);
+  }
 
   .hero-overlay__focus {
     position: static;
@@ -241,24 +283,87 @@
     margin: 0;
     max-width: unset;
     width: 100%;
-    padding: 12px 14px 12px;
+    padding: 12px 14px 13px;
     /** Opaque-ish backdrop so canvas nodes never bleed through the card. */
-    background: linear-gradient(180deg, rgba(10, 14, 28, 0.82), rgba(10, 14, 28, 0.72));
+    background:
+      radial-gradient(130% 90% at 50% -20%, rgba(255, 210, 100, 0.12), transparent 62%),
+      linear-gradient(180deg, rgba(10, 14, 28, 0.86), rgba(10, 14, 28, 0.76));
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    border-left-width: 2px;
-    border-radius: 0 8px 8px 0;
+    border: 1px solid rgba(232, 197, 71, 0.26);
+    border-radius: 12px;
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 255, 255, 0.03),
+      0 18px 42px -24px rgba(0, 0, 0, 0.72);
   }
-  .hero-overlay__focus-name { font-size: 20px; }
+  .hero-overlay__focus-label { margin-bottom: 5px; }
+  .hero-overlay__focus-name { font-size: 19px; }
   .hero-overlay__focus-tagline { font-size: 12px; }
-  .hero-overlay__focus-open { margin-top: 8px; font-size: 9.5px; letter-spacing: 0.22em; }
+  .hero-overlay__focus-open {
+    margin-top: 8px;
+    justify-content: space-between;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: rgba(255, 220, 130, 0.95);
+  }
+
+  /**
+   * After first navigation gesture on mobile, dock the hero name to the
+   * top-right and collapse the intro block so the constellation has more room.
+   */
+  .hero-overlay--docked {
+    grid-template-rows: auto 1fr auto;
+    row-gap: 2px;
+    padding-top: calc(58px + env(safe-area-inset-top));
+  }
+  .hero-overlay--docked::before {
+    height: min(22vh, 132px);
+    background: linear-gradient(180deg, rgba(4, 7, 16, 0.68), rgba(4, 7, 16, 0));
+  }
+  .hero-overlay--docked .hero-overlay__eyebrow,
+  .hero-overlay--docked .hero-overlay__tagline,
+  .hero-overlay--docked .hero-overlay__mobile-hint {
+    display: none;
+  }
+  .hero-overlay--docked .hero-overlay__name {
+    justify-self: end;
+    text-align: right;
+    width: fit-content;
+    margin: 0;
+    padding: 4px 10px 6px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 210, 100, 0.22);
+    background: rgba(7, 10, 20, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 10px 22px -16px rgba(0, 0, 0, 0.9);
+    font-size: clamp(24px, 6vw, 32px);
+    line-height: 0.82;
+    letter-spacing: -0.01em;
+    text-shadow: 0 4px 14px rgba(0, 0, 0, 0.75);
+  }
+  .hero-overlay--docked .hero-overlay__name-row--outline {
+    -webkit-text-stroke: 0.9px rgba(255, 244, 220, 0.52);
+    margin-top: -0.02em;
+  }
 }
 
 /* Very narrow phones: further trim the hero. */
 @media (max-width: 420px) {
-  .hero-overlay { padding: 60px 14px 14px; }
+  .hero-overlay {
+    padding:
+      calc(58px + env(safe-area-inset-top))
+      max(12px, env(safe-area-inset-left))
+      calc(12px + env(safe-area-inset-bottom))
+      max(12px, env(safe-area-inset-right));
+  }
   .hero-overlay__name { font-size: clamp(40px, 15vw, 68px); }
-  .hero-overlay__tagline { font-size: 10px; letter-spacing: 0.14em; }
+  .hero-overlay__tagline { font-size: 9.6px; letter-spacing: 0.11em; }
+  .hero-overlay__mobile-hint { font-size: 8.4px; letter-spacing: 0.16em; }
+  .hero-overlay--docked .hero-overlay__name {
+    font-size: clamp(21px, 7vw, 28px);
+    padding: 3px 9px 5px;
+  }
 }
 
 /* Phone landscape — aggressively reclaim vertical space. */
@@ -270,6 +375,7 @@
   .hero-overlay__name { font-size: clamp(36px, 7vh, 56px); }
   .hero-overlay__tagline { font-size: 10px; letter-spacing: 0.14em; margin-top: 4px; max-width: 80vw; }
   .hero-overlay__hint { display: none; }
+  .hero-overlay__mobile-hint { display: none; }
   .hero-overlay__focus { display: none; }
 }
 

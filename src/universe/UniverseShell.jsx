@@ -83,10 +83,35 @@ export default function UniverseShell() {
   const featIndex = useRef(0);
   const wheelAccumRef = useRef(0);
   const wheelLockRef = useRef(false);
+  const touchYRef = useRef(0);
+  const touchAccumRef = useRef(0);
+  const touchLockRef = useRef(false);
 
   useEffect(() => {
     useUniverseStore.getState().setFocusedSlug(navProjects[0]?.slug ?? null);
   }, [navProjects]);
+
+  const advanceFocus = useCallback(
+    (dir) => {
+      const st = useUniverseStore.getState();
+      if (st.panel || navProjects.length < 2) return false;
+      featIndex.current =
+        (featIndex.current + dir + navProjects.length) % navProjects.length;
+      const slug = navProjects[featIndex.current]?.slug;
+      if (!slug) return false;
+      st.setFocusedSlug(slug);
+      playWarp();
+      return true;
+    },
+    [navProjects, playWarp],
+  );
+
+  const dockHeroOnMobile = useCallback(() => {
+    if (!window.matchMedia("(max-width: 720px)").matches) return;
+    const st = useUniverseStore.getState();
+    if (st.heroDocked) return;
+    st.setHeroDocked(true);
+  }, []);
 
   const syncRoute = useCallback(() => {
     const path = location.pathname;
@@ -125,6 +150,16 @@ export default function UniverseShell() {
   }, []);
 
   useEffect(() => {
+    const mq = window.matchMedia("(max-width: 720px)");
+    const syncHeroDock = () => {
+      useUniverseStore.getState().setHeroDocked(mq.matches);
+    };
+    syncHeroDock();
+    mq.addEventListener("change", syncHeroDock);
+    return () => mq.removeEventListener("change", syncHeroDock);
+  }, []);
+
+  useEffect(() => {
     const onKey = (e) => {
       const st = useUniverseStore.getState();
       if (e.key === "Escape" && st.panel) {
@@ -133,19 +168,12 @@ export default function UniverseShell() {
         return;
       }
       if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
-      if (st.panel || navProjects.length < 2) return;
       const dir = e.key === "ArrowRight" ? 1 : -1;
-      featIndex.current =
-        (featIndex.current + dir + navProjects.length) % navProjects.length;
-      const slug = navProjects[featIndex.current]?.slug;
-      if (slug) {
-        st.setFocusedSlug(slug);
-        playWarp();
-      }
+      advanceFocus(dir);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [navProjects, navigate, playWarp]);
+  }, [advanceFocus, navigate]);
 
   useEffect(() => {
     const onWheel = (e) => {
@@ -161,17 +189,52 @@ export default function UniverseShell() {
       setTimeout(() => {
         wheelLockRef.current = false;
       }, 360);
-      featIndex.current =
-        (featIndex.current + dir + navProjects.length) % navProjects.length;
-      const slug = navProjects[featIndex.current]?.slug;
-      if (slug) {
-        st.setFocusedSlug(slug);
-        playWarp();
-      }
+      if (advanceFocus(dir)) dockHeroOnMobile();
     };
     window.addEventListener("wheel", onWheel, { passive: false });
     return () => window.removeEventListener("wheel", onWheel);
-  }, [navProjects, playWarp]);
+  }, [advanceFocus, dockHeroOnMobile, navProjects.length]);
+
+  useEffect(() => {
+    const onTouchStart = (e) => {
+      if (!e.touches?.length) return;
+      touchYRef.current = e.touches[0].clientY;
+      touchAccumRef.current = 0;
+    };
+    const onTouchMove = (e) => {
+      const st = useUniverseStore.getState();
+      if (st.panel || navProjects.length < 2 || !e.touches?.length) return;
+      const y = e.touches[0].clientY;
+      const delta = touchYRef.current - y;
+      touchYRef.current = y;
+      touchAccumRef.current += delta;
+      if (touchLockRef.current) return;
+      if (Math.abs(touchAccumRef.current) < 28) return;
+      const dir = Math.sign(touchAccumRef.current);
+      touchAccumRef.current = 0;
+      touchLockRef.current = true;
+      setTimeout(() => {
+        touchLockRef.current = false;
+      }, 360);
+      if (advanceFocus(dir)) {
+        dockHeroOnMobile();
+        e.preventDefault();
+      }
+    };
+    const onTouchEnd = () => {
+      touchAccumRef.current = 0;
+    };
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchmove", onTouchMove, { passive: false });
+    window.addEventListener("touchend", onTouchEnd, { passive: true });
+    window.addEventListener("touchcancel", onTouchEnd, { passive: true });
+    return () => {
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchmove", onTouchMove);
+      window.removeEventListener("touchend", onTouchEnd);
+      window.removeEventListener("touchcancel", onTouchEnd);
+    };
+  }, [advanceFocus, dockHeroOnMobile, navProjects.length]);
 
   useEffect(() => {
     let raf = 0;
@@ -204,8 +267,17 @@ export default function UniverseShell() {
    * Opening the full project panel is a separate action (NOW VIEWING card).
    */
   const onStarSelect = useCallback(
-    (slug) => {
+    (slug, options = {}) => {
+      const open = Boolean(options?.open);
       const st = useUniverseStore.getState();
+      if (open) {
+        st.setFocusedSlug(slug);
+        const idx = navProjects.findIndex((p) => p.slug === slug);
+        if (idx >= 0) featIndex.current = idx;
+        playWarp();
+        navigate(`/work/${slug}`);
+        return;
+      }
       if (st.focusedSlug === slug) {
         navigate(`/work/${slug}`);
         return;
