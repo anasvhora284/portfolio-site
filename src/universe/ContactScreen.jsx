@@ -159,7 +159,6 @@ export function ContactScreen({ onClose }) {
               type="button"
               className={`email-card ${copied ? "is-copied" : ""}`}
               onClick={copyEmail}
-              aria-label="Copy email to clipboard"
             >
               <span className="email-card__label">EMAIL · PRIMARY</span>
               <span className="email-card__addr">{emailTo}</span>
