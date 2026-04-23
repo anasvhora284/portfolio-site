@@ -45,7 +45,10 @@ export function HeroOverlay() {
       </h1>
 
       <p className="hero-overlay__tagline">
-        {siteSettings?.tagline ?? "Full-stack engineer, product mindset."}
+        Hey, I am Anas - a full-stack and Odoo developer building product-focused web experiences.
+      </p>
+      <p className="hero-overlay__mobile-intro">
+        I build React and Odoo products with clean UX, motion, and real production outcomes.
       </p>
 
       <div className="hero-overlay__hint">

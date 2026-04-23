@@ -10,7 +10,10 @@
   font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
 }
 
-.hero-overlay__eyebrow {
+.hero-overlay__eyebrow {    
+  position: relative;
+  top: 50px;
+  right: 65px;
   display: inline-flex;
   align-items: center;
   gap: 10px;
@@ -120,6 +123,10 @@
 }
 
 .hero-overlay__mobile-hint {
+  display: none;
+}
+
+.hero-overlay__mobile-intro {
   display: none;
 }
 
@@ -275,6 +282,25 @@
     text-transform: uppercase;
     color: rgba(255, 221, 140, 0.86);
   }
+  .hero-overlay__mobile-intro {
+    display: block;
+    justify-self: center;
+    max-width: 92vw;
+    margin: 6px 0 0;
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(8, 11, 22, 0.62);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    font-family: "JetBrains Mono", "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 9px;
+    line-height: 1.45;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(240, 235, 220, 0.78);
+    text-align: center;
+  }
 
   .hero-overlay__focus {
     position: static;
@@ -321,9 +347,32 @@
     background: linear-gradient(180deg, rgba(4, 7, 16, 0.68), rgba(4, 7, 16, 0));
   }
   .hero-overlay--docked .hero-overlay__eyebrow,
-  .hero-overlay--docked .hero-overlay__tagline,
   .hero-overlay--docked .hero-overlay__mobile-hint {
     display: none;
+  }
+  .hero-overlay--docked .hero-overlay__tagline {
+    display: block;
+    justify-self: end;
+    max-width: min(52vw, 310px);
+    margin: 4px 0 0;
+    text-align: right;
+    font-size: 8.8px;
+    letter-spacing: 0.1em;
+    color: rgba(240, 235, 220, 0.72);
+  }
+  .hero-overlay--docked .hero-overlay__mobile-intro {
+    display: block;
+    justify-self: end;
+    max-width: min(58vw, 340px);
+    margin: 4px 0 0;
+    padding: 6px 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(7, 10, 20, 0.56);
+    font-size: 8.2px;
+    letter-spacing: 0.08em;
+    line-height: 1.4;
+    text-align: right;
   }
   .hero-overlay--docked .hero-overlay__name {
     justify-self: end;
@@ -360,6 +409,7 @@
   .hero-overlay__name { font-size: clamp(40px, 15vw, 68px); }
   .hero-overlay__tagline { font-size: 9.6px; letter-spacing: 0.11em; }
   .hero-overlay__mobile-hint { font-size: 8.4px; letter-spacing: 0.16em; }
+  .hero-overlay__mobile-intro { font-size: 8px; letter-spacing: 0.08em; }
   .hero-overlay--docked .hero-overlay__name {
     font-size: clamp(21px, 7vw, 28px);
     padding: 3px 9px 5px;

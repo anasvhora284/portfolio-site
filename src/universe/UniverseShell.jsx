@@ -5,7 +5,6 @@ import { projects, siteSettings } from "../generated/content.manifest.js";
 import { useUniverseStore } from "../store/universeStore.js";
 import {
   useCinematicAudio,
-  playClick,
   playDoorOpen,
   playDoorClose,
 } from "../audio/useCinematicAudio.js";
@@ -50,28 +49,6 @@ export default function UniverseShell() {
   }, [panel]);
 
   /**
-   * Global click SFX — a tactile tick for every interactive element.
-   * Filters to buttons/links/role=button/data-cursor=pointer so we never
-   * fire on plain text clicks. The canvas handles its own SFX (warp),
-   * so we skip anything inside it.
-   */
-  useEffect(() => {
-    const onPointerDown = (e) => {
-      const target = e.target;
-      if (!(target instanceof Element)) return;
-      if (target.closest("canvas")) return;
-      const hit = target.closest(
-        'button, a, [role="button"], [data-cursor="pointer"], input[type="submit"]',
-      );
-      if (!hit) return;
-      if (hit.getAttribute("aria-disabled") === "true" || hit.disabled) return;
-      playClick();
-    };
-    window.addEventListener("pointerdown", onPointerDown, { passive: true });
-    return () => window.removeEventListener("pointerdown", onPointerDown);
-  }, []);
-
-  /**
    * Every project is reachable via scroll / arrows / click — not just featured ones.
    * (The "4th/6th/8th node unreachable by keyboard" bug was because they weren't featured.)
    */
@@ -92,7 +69,8 @@ export default function UniverseShell() {
   }, [navProjects]);
 
   const advanceFocus = useCallback(
-    (dir) => {
+    (dir, options = {}) => {
+      const playNavSound = Boolean(options.playNavSound);
       const st = useUniverseStore.getState();
       if (st.panel || navProjects.length < 2) return false;
       featIndex.current =
@@ -100,7 +78,7 @@ export default function UniverseShell() {
       const slug = navProjects[featIndex.current]?.slug;
       if (!slug) return false;
       st.setFocusedSlug(slug);
-      playWarp();
+      if (playNavSound) playWarp();
       return true;
     },
     [navProjects, playWarp],
@@ -169,7 +147,7 @@ export default function UniverseShell() {
       }
       if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
       const dir = e.key === "ArrowRight" ? 1 : -1;
-      advanceFocus(dir);
+      advanceFocus(dir, { playNavSound: true });
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -274,7 +252,6 @@ export default function UniverseShell() {
         st.setFocusedSlug(slug);
         const idx = navProjects.findIndex((p) => p.slug === slug);
         if (idx >= 0) featIndex.current = idx;
-        playWarp();
         navigate(`/work/${slug}`);
         return;
       }
@@ -285,9 +262,8 @@ export default function UniverseShell() {
       st.setFocusedSlug(slug);
       const idx = navProjects.findIndex((p) => p.slug === slug);
       if (idx >= 0) featIndex.current = idx;
-      playWarp();
     },
-    [navProjects, navigate, playWarp],
+    [navProjects, navigate],
   );
 
   const closeAll = useCallback(() => {
@@ -321,7 +297,7 @@ export default function UniverseShell() {
     }
     if (panel === "about") {
       return {
-        title: `My Ship · ${siteName}`,
+        title: `About · ${siteName}`,
         description:
           "About Anas Vhora — captain, career timeline, stack, and the mission behind the portfolio.",
         url: `${baseUrl}/about`,

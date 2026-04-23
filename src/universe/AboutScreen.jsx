@@ -22,6 +22,12 @@ const EDUCATION = [
 
 const EXPERIENCE = [
   {
+    period: "2021 — 2024",
+    title: "Independent builder · Academic projects",
+    org: "B.E. Computer Engineering journey",
+    note: "Built web/mobile projects as part of coursework and personal practice before full-time internships.",
+  },
+  {
     period: "19 Jun — 19 Jul 2024",
     title: "Summer Intern",
     org: "BrainyBeam Info Pvt. Ltd.",
@@ -152,7 +158,7 @@ export function AboutScreen({ onClose }) {
   const projectsN = useCount(projects.length);
   const featuredN = useCount(featured);
   const stacksN = useCount(stackCount);
-  const yearsN = useCount(4);
+  const yearsN = useCount(5);
 
   const eduRevealed = useStaggerReveal(EDUCATION.length, 110);
   const expRevealed = useStaggerReveal(EXPERIENCE.length, 110);
@@ -173,7 +179,7 @@ export function AboutScreen({ onClose }) {
       <header className="about-screen__topbar">
         <div className="about-screen__eyebrow">
           <span className="about-screen__dot" />
-          MY SHIP · VESSEL ANV-01 · ACTIVE
+          ABOUT · VESSEL ANV-01 · ACTIVE
         </div>
         <button type="button" className="about-screen__close" onClick={close}>
           Back to star map <span aria-hidden>↵ Esc</span>
@@ -251,9 +257,15 @@ export function AboutScreen({ onClose }) {
           </div>
           <div className="stat-card">
             <div className="stat-card__num">{yearsN}+</div>
-            <div className="stat-card__label">Years building</div>
+            <div className="stat-card__label">Years building products</div>
+            <div className="stat-card__note">
+              2021 — 2024 includes academic and personal projects before professional internships.
+            </div>
           </div>
         </section>
+        <p className="about-screen__stats-note">
+          2021 — 2024 includes academic and personal projects before professional internships.
+        </p>
 
         <section className="about-screen__grid-cols">
           <div className="about-panel">

@@ -15,16 +15,16 @@ export const useUniverseStore = create((set) => ({
   panel: /** @type {null | 'project' | 'about' | 'contact'} */ (null),
   targetSlug: /** @type {string | null} */ (null),
   /**
-   * Audio is ON by default so the cinematic shuttle-interior bed plays
-   * from the first user gesture onward. A persisted `"1"` in localStorage
-   * keeps the user's explicit mute choice across visits. Browsers will
-   * still hold everything silent until a pointerdown / keydown unlocks
-   * Web Audio — see useCinematicAudio.js.
+   * Audio starts muted by default to avoid a jarring first impression.
+   * Persisted values:
+   *   "1" => muted
+   *   "0" => unmuted
+   * Missing key falls back to muted.
    */
   audioMuted:
     typeof window !== "undefined"
-      ? window.localStorage.getItem(STORAGE_AUDIO) === "1"
-      : false,
+      ? window.localStorage.getItem(STORAGE_AUDIO) !== "0"
+      : true,
   warping: false,
   /** @type {[number, number, number]} */
   cameraTarget: [...OVERVIEW_CAMERA],
