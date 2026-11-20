@@ -98,7 +98,7 @@ export const projects = [
   {
     name: "E-Waste Facility Locator",
     slug: "e-waste-facility-locator",
-    tagline: "Rewards for responsible e-waste.",
+    tagline: "Every authorised recycler in India, on one map.",
     description:
       "A platform that rewards people for recycling their e-waste. Users and facilities each get a dashboard to submit, manage and track e-waste with full history, plus an admin side for oversight. Built on the MERN stack.",
     body: blocksFromPlainText(
@@ -109,72 +109,77 @@ export const projects = [
       "facts": [
         {
           "label": "Role",
-          "value": "Full-stack contributor"
+          "value": "Full-stack · finished it solo in 2026"
         },
         {
           "label": "Team",
-          "value": "4 developers"
+          "value": "Hackathon build with ArkanMalek72, Vaidik1317 and ayazvhora43"
         },
         {
           "label": "Timeline",
-          "value": "Built in one day, Jun 2024"
+          "value": "One-day hackathon, Jun 2024 · completed Nov 2026"
         },
         {
-          "label": "Stack",
-          "value": "MongoDB, Express, React, Node.js"
+          "label": "Status",
+          "value": "Live · MIT"
         }
       ],
       "metrics": [
         {
-          "value": "4",
-          "label": "developers"
+          "value": "569",
+          "label": "authorised recyclers mapped"
         },
         {
-          "value": "1",
-          "label": "day to build"
+          "value": "22",
+          "label": "states & UTs covered"
         },
         {
-          "value": "8",
-          "label": "app routes"
+          "value": "3",
+          "label": "roles: user, facility, admin"
         }
       ],
-      "problem": "Most people don't know where to drop off old electronics, and have no reason to bother. The idea: reward people for recycling e-waste and give facilities a way to manage what comes in.",
+      "problem": "Most people don't know where to drop off old electronics, and have no reason to bother. The idea: show every government-authorised recycler near you, and reward people for actually recycling.",
       "built": [
-        "Sign-up and login with hashed passwords and JWT sessions.",
-        "A user dashboard with reward points, kilograms recycled and an activity history.",
-        "A collection-request form and an admin side for facilities.",
-        "A React + MUI front end talking to an Express + MongoDB API."
+        "A locator with every CPCB-authorised e-waste dismantler and recycler in India on a map — search by city or PIN, 'near me', nearest-first results and directions.",
+        "A booking loop: request a pickup or drop-off, the facility accepts it, confirms the weight on collection, and you earn points by device type.",
+        "User, facility and admin roles enforced on the server; facilities only see requests sent to them.",
+        "A dashboard with real totals, kilograms recycled and a monthly chart.",
+        "The original hackathon design — dark navy, glowing green, the hand-and-sprout hero — carried through every new screen."
       ],
+      "architecture": "React + MUI front end on Netlify; Express + MongoDB API in Docker on Oracle Cloud's free tier behind Caddy, with MongoDB Atlas as the database. Facility data is built from the official CPCB list by a reproducible script and served by the API.",
       "challenges": [
         {
-          "title": "Four people, one day",
-          "detail": "We split front end and back end on the same day and merged everything in a single push, which taught me more about merge conflicts and API contracts than any tutorial."
+          "title": "Turning a government PDF into a map",
+          "detail": "The CPCB list is a PDF of 569 facilities with free-text addresses. A parsing script rebuilds it as data, cross-checks every state's count against the PDF's own totals, and geocodes addresses once at a polite 1 request per second. Pins are approximate and the UI says so."
         },
         {
-          "title": "Gamifying a chore",
-          "detail": "Points and progress bars turn recycling into something you can see grow on the dashboard."
+          "title": "Finishing someone's hackathon two years later",
+          "detail": "The original app crashed on load, rejected correct passwords, let anyone sign up as admin and leaked password hashes. Each was fixed and covered by tests before adding features."
+        },
+        {
+          "title": "Points that can't be gamed",
+          "detail": "Points are awarded once, by the facility, on the confirmed weight — guarded by a status check in the database update so a double click can't pay twice."
         }
       ],
-      "outcome": "A working hackathon prototype of the reward and dashboard flow, built by a team of four in one day.",
+      "outcome": "Started as a one-day hackathon prototype in 2024; completed in 2026 as a live, working app with real data, roles and tests.",
       "issues": [
-        "The facility locator itself (map and facility data) was never built.",
-        "API URLs are hard-coded to localhost, so there's no live demo.",
-        "The dashboard route doesn't check who's asking.",
-        "No tests."
+        "Pins are placed at PIN-code, locality or district level, not exact addresses; 37 facilities aren't mapped.",
+        "The CPCB list is a 2023 snapshot and needs periodic refreshing.",
+        "No password reset or email verification yet."
       ],
       "nextSteps": [
-        "Build the locator with a map and real facility data.",
-        "Move configuration to environment variables and deploy.",
-        "Protect user routes with the existing JWT."
+        "Refresh the dataset automatically from CPCB and state boards.",
+        "Verified coordinates for each facility.",
+        "Password reset by email, and an admin screen to onboard facilities."
       ]
     },
-    link: "https://github.com/anasvhora284/E-Waste-Facility-Locator",
+    link: "https://ewaste.anasvhora.tech",
     repoUrl: "https://github.com/anasvhora284/E-Waste-Facility-Locator",
     year: 2024,
     sortOrder: 1,
     featured: true,
     roles: ["Full-stack"],
-    stack: ["MongoDB", "Express", "React", "Node.js"],
+    stack: ["React", "Express", "MongoDB", "Leaflet", "Docker"],
   },
   {
     name: "Wi-Attend: UI/UX",
