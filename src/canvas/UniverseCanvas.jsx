@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { useUniverseStore } from "../store/universeStore.js";
+import { starScreen, useUniverseStore } from "../store/universeStore.js";
 
 /**
  * Layered 2.5D constellation navigator (pure Canvas2D).
@@ -357,7 +357,7 @@ function getNarrowVisibleSlugs(nodes, focusedSlug, isNarrow) {
 
 function drawIdleNode(ctx, x, y, node, hovered) {
   ctx.save();
-  const alpha = hovered ? 0.38 : 0.22;
+  const alpha = hovered ? 0.6 : 0.3;
   ctx.strokeStyle = `rgba(255,255,255,${alpha})`;
   ctx.lineWidth = 1;
   ctx.beginPath();
@@ -389,11 +389,11 @@ function drawIdleNode(ctx, x, y, node, hovered) {
   ctx.textAlign = "center";
   ctx.textBaseline = node.labelBelow ? "top" : "bottom";
   ctx.font = node.narrow
-    ? '600 8px "JetBrains Mono","IBM Plex Mono","Fira Code",ui-monospace,monospace'
-    : '600 9px "JetBrains Mono","IBM Plex Mono","Fira Code",ui-monospace,monospace';
+    ? '600 8.5px "JetBrains Mono","IBM Plex Mono","Fira Code",ui-monospace,monospace'
+    : '600 10px "JetBrains Mono","IBM Plex Mono","Fira Code",ui-monospace,monospace';
   ctx.fillStyle = hovered
-    ? "rgba(255,255,255,0.6)"
-    : "rgba(255,255,255,0.25)";
+    ? "rgba(255,236,190,0.95)"
+    : "rgba(240,235,220,0.52)";
   const idleName = (node.project.name || "").toUpperCase();
   const compactIdleName =
     node.narrow && idleName.length > 18 ? `${idleName.slice(0, 17)}…` : idleName;
@@ -708,9 +708,8 @@ export default function UniverseCanvas({ projects, onStarSelect }) {
   });
 
   /**
-   * Preload the shared constellation thumbnail once. Per-project
-   * screenshots are loaded lazily by ProjectPanel's <img> on panel open —
-   * no reason to blast the browser with megabytes of PNGs up-front.
+   * Preload the shared placeholder once. Per-project card art loads lazily
+   * the first time its star is focused (see projectThumb).
    */
   useEffect(() => {
     const s = stateRef.current;
@@ -1030,6 +1029,9 @@ export default function UniverseCanvas({ projects, onStarSelect }) {
           labelH,
         };
         drawActiveNode(ctx, activeX, activeY, activeNode, s.time);
+        /** Publish the star's viewport position for the dive transition. */
+        starScreen.x = w / 2 + s.lastZoom * (activeX + s.cam.x - w / 2);
+        starScreen.y = h / 2 + s.lastZoom * (activeY + s.cam.y - h / 2);
       } else {
         s.card.bounds = null;
         s.activeHit = null;

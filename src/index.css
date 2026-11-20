@@ -1,5 +1,22 @@
 @import "./styles/tokens.css";
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;600&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..800;1,6..96,400..700&display=swap");
+
+/* Self-hosted Bodoni Moda (variable opsz + wght). Google's served copy
+   drops the hyphen glyph, so "E-Waste" rendered as "E Waste". */
+@font-face {
+  font-family: "Bodoni Moda";
+  src: url("/fonts/BodoniModa.woff2") format("woff2");
+  font-weight: 400 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Bodoni Moda";
+  src: url("/fonts/BodoniModa-Italic.woff2") format("woff2");
+  font-weight: 400 900;
+  font-style: italic;
+  font-display: swap;
+}
 
 *,
 *::before,

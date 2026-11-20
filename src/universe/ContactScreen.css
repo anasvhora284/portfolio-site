@@ -644,3 +644,20 @@
   .contact-screen__inner  { height: calc(100% - 58px); padding-bottom: 40px; }
   .contact-screen__foot   { margin-top: 20px; }
 }
+
+/* Form + channel labels are UI, not HUD readouts: plain sans, sentence case. */
+.transmit__label,
+.channel__label {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  text-transform: none;
+  color: rgba(240, 235, 220, 0.82);
+}
+
+.transmit__hint a {
+  color: #e8c547;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

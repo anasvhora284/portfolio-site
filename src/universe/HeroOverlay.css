@@ -249,6 +249,7 @@
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 0.02em rgba(255, 248, 229, 0.85);
   animation: focus-name-glint 4.8s 0.85s ease-out infinite both;
 }
 

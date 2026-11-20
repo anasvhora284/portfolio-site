@@ -69,10 +69,10 @@ export function BootSequence() {
   useEffect(() => {
     if (bootPhase !== "boot") return undefined;
     const start = performance.now();
-    const typeWindow = 1600;
+    const typeWindow = 900;
     const scrambleStart = typeWindow;
-    const scrambleWindow = 900;
-    const hold = 260;
+    const scrambleWindow = 520;
+    const hold = 160;
     const total = typeWindow + scrambleWindow + hold;
     const linesTotal = statusLines.reduce((acc, l) => acc + l.length, 0);
 
@@ -119,7 +119,7 @@ export function BootSequence() {
         setRevealCount(targetTitle.length);
         setTitleScrambled(targetTitle);
         setClosing(true);
-        window.setTimeout(() => finishBoot(), 620);
+        window.setTimeout(() => finishBoot(), 420);
         return;
       }
       rafRef.current = requestAnimationFrame(tick);
@@ -127,6 +127,21 @@ export function BootSequence() {
     rafRef.current = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(rafRef.current);
   }, [bootPhase, finishBoot, statusLines, targetTitle]);
+
+  /** Any key or click skips — the intro must never stand between a visitor and the work. */
+  useEffect(() => {
+    if (bootPhase !== "boot") return undefined;
+    const skip = () => skipBoot();
+    const t = window.setTimeout(() => {
+      window.addEventListener("keydown", skip, { once: true });
+      window.addEventListener("pointerdown", skip, { once: true });
+    }, 200);
+    return () => {
+      window.clearTimeout(t);
+      window.removeEventListener("keydown", skip);
+      window.removeEventListener("pointerdown", skip);
+    };
+  }, [bootPhase, skipBoot]);
 
   if (bootPhase !== "boot") return null;
 

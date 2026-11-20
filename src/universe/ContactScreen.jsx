@@ -86,25 +86,54 @@ export function ContactScreen({ onClose }) {
 
   const validateEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
 
-  const handleSubmit = (e) => {
+  const [failed, setFailed] = useState(false);
+
+  const mailtoHref = () =>
+    `mailto:${emailTo}?subject=${encodeURIComponent(
+      `Portfolio message from ${name}`,
+    )}&body=${encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${message}`)}`;
+
+  /**
+   * Delivered through FormSubmit (no backend, no account). The first ever
+   * submission sends a one-time activation email to the inbox; until it's
+   * confirmed — or if the request fails — we offer the mail-app fallback.
+   */
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const next = {};
-    if (!name.trim()) next.name = "Required";
-    if (!email.trim() || !validateEmail(email)) next.email = "Valid email required";
-    if (!message.trim()) next.message = "Required";
+    if (!name.trim()) next.name = "Add your name";
+    if (!email.trim() || !validateEmail(email)) next.email = "Add an email I can reply to";
+    if (!message.trim()) next.message = "Write a short message";
     setErrs(next);
     if (Object.keys(next).length) return;
 
     setSending(true);
-    setTimeout(() => {
-      const mailto = `mailto:${emailTo}?subject=${encodeURIComponent(
-        `Signal from ${name}`,
-      )}&body=${encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${message}`)}`;
-      window.location.href = mailto;
-      setSending(false);
+    setFailed(false);
+    try {
+      const res = await fetch(`https://formsubmit.co/ajax/${emailTo}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          name,
+          email,
+          message,
+          _subject: `Portfolio message from ${name}`,
+          _template: "table",
+          _captcha: "false",
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || String(data.success) !== "true") throw new Error(data.message || res.status);
       setSent(true);
-      setTimeout(() => setSent(false), 2400);
-    }, 700);
+      setName("");
+      setEmail("");
+      setMessage("");
+      setTimeout(() => setSent(false), 4000);
+    } catch {
+      setFailed(true);
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -124,26 +153,26 @@ export function ContactScreen({ onClose }) {
       <header className="contact-screen__topbar">
         <div className="contact-screen__eyebrow">
           <span className="contact-screen__dot" />
-          CONTACT HQ · OPEN CHANNEL · {emailTo.split("@")[1]?.toUpperCase()}
+          Contact
         </div>
         <div className="contact-screen__clock">
           {clock.toISOString().slice(11, 19)} UTC
         </div>
-        <button type="button" className="contact-screen__close" onClick={close}>
-          Back to star map <span aria-hidden>↵ Esc</span>
+        <button type="button" className="contact-screen__close" data-magnetic onClick={close}>
+          Back to star map <span aria-hidden>Esc</span>
         </button>
       </header>
 
       <div className="contact-screen__inner">
         <div className="contact-screen__hero">
-          <div className="contact-screen__kicker">CONTACT HQ · TRANSMIT</div>
+          <div className="contact-screen__kicker">Contact</div>
           <h1 id="contact-screen-title" className="contact-screen__title">
             <span>Let’s build</span>
             <span className="contact-screen__title-italic">something ambitious</span>
           </h1>
           <p className="contact-screen__lede">
-            I read every message. Replies land within a day or two — faster if the
-            signal’s strong. Pitch a product, a collaboration, or just say hi.
+            I read every message and reply within a day or two. Send a role, a
+            project, a collaboration, or just say hi.
           </p>
         </div>
 
@@ -151,7 +180,7 @@ export function ContactScreen({ onClose }) {
           <section className="contact-col">
             <header className="contact-col__head">
               <span className="contact-col__tag">01</span>
-              <h2 className="contact-col__title">Direct line</h2>
+              <h2 className="contact-col__title">Email &amp; profiles</h2>
               <span className="contact-col__rule" />
             </header>
 
@@ -160,7 +189,7 @@ export function ContactScreen({ onClose }) {
               className={`email-card ${copied ? "is-copied" : ""}`}
               onClick={copyEmail}
             >
-              <span className="email-card__label">EMAIL · PRIMARY</span>
+              <span className="email-card__label">Email</span>
               <span className="email-card__addr">{emailTo}</span>
               <span className="email-card__action">
                 {copied ? "COPIED ✓" : "Click to copy"}
@@ -169,7 +198,7 @@ export function ContactScreen({ onClose }) {
             </button>
 
             <div className="channels">
-              <div className="channels__title">OPEN CHANNELS</div>
+              <div className="channels__title">Elsewhere</div>
               <div className="channels__list">
                 {socials.map((s) => (
                   <a
@@ -183,7 +212,7 @@ export function ContactScreen({ onClose }) {
                       <SocialIcon label={s.label} />
                     </span>
                     <span className="channel__body">
-                      <span className="channel__label">{s.label.toUpperCase()}</span>
+                      <span className="channel__label">{s.label}</span>
                       <span className="channel__meta">
                         {s.url.replace(/^https?:\/\//, "").replace(/\/$/, "")}
                       </span>
@@ -208,14 +237,14 @@ export function ContactScreen({ onClose }) {
           <section className="contact-col">
             <header className="contact-col__head">
               <span className="contact-col__tag">02</span>
-              <h2 className="contact-col__title">Transmit a mission</h2>
+              <h2 className="contact-col__title">Send a message</h2>
               <span className="contact-col__rule" />
             </header>
 
             <form className="transmit" onSubmit={handleSubmit} noValidate>
               <div className="transmit__row">
                 <label className={`transmit__field ${errs.name ? "is-err" : ""}`}>
-                  <span className="transmit__label">CALL SIGN</span>
+                  <span className="transmit__label">Your name</span>
                   <input
                     value={name}
                     onChange={(e) => {
@@ -228,7 +257,7 @@ export function ContactScreen({ onClose }) {
                   {errs.name ? <span className="transmit__err">{errs.name}</span> : null}
                 </label>
                 <label className={`transmit__field ${errs.email ? "is-err" : ""}`}>
-                  <span className="transmit__label">FREQUENCY · EMAIL</span>
+                  <span className="transmit__label">Your email</span>
                   <input
                     type="email"
                     value={email}
@@ -244,7 +273,7 @@ export function ContactScreen({ onClose }) {
               </div>
 
               <label className={`transmit__field ${errs.message ? "is-err" : ""}`}>
-                <span className="transmit__label">MESSAGE PAYLOAD</span>
+                <span className="transmit__label">Message</span>
                 <textarea
                   rows={5}
                   value={message}
@@ -253,22 +282,32 @@ export function ContactScreen({ onClose }) {
                     if (errs.message)
                       setErrs((p) => ({ ...p, message: undefined }));
                   }}
-                  placeholder="Pitch the mission — goals, timeline, vibe."
+                  placeholder="What are you working on, and how can I help?"
                 />
                 {errs.message ? <span className="transmit__err">{errs.message}</span> : null}
               </label>
 
               <div className="transmit__footer">
-                <div className="transmit__hint">
-                  Opens your mail client with the message pre-loaded.
+                <div className="transmit__hint" role="status" aria-live="polite">
+                  {failed ? (
+                    <>
+                      Couldn’t send just now.{" "}
+                      <a href={mailtoHref()}>Open it in your mail app instead</a>.
+                    </>
+                  ) : sent ? (
+                    "Message sent. I’ll reply to the email you gave."
+                  ) : (
+                    "Goes straight to my inbox."
+                  )}
                 </div>
                 <button
                   type="submit"
+                  data-magnetic
                   className={`transmit__btn ${sending ? "is-sending" : ""} ${sent ? "is-sent" : ""}`}
                   disabled={sending}
                 >
                   <span className="transmit__btn-text">
-                    {sent ? "SIGNAL SENT ✓" : sending ? "TRANSMITTING…" : "Transmit signal"}
+                    {sent ? "Sent ✓" : sending ? "Sending…" : "Send message"}
                   </span>
                   <span className="transmit__btn-arrow" aria-hidden>
                     →
@@ -280,9 +319,9 @@ export function ContactScreen({ onClose }) {
         </div>
 
         <footer className="contact-screen__foot">
-          <span>END OF TRANSMISSION</span>
+          <span>Based in Gujarat, India · {clock.toISOString().slice(11, 16)} UTC</span>
           <span className="contact-screen__foot-bar" aria-hidden />
-          <span>{siteSettings?.statusLine ?? "SYS / CONSTELLATION"}</span>
+          <span>anasvhora.tech</span>
         </footer>
       </div>
     </section>

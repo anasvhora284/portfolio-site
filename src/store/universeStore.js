@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { OVERVIEW_CAMERA } from "../canvas/dockCamera.js";
 
 const STORAGE_AUDIO = "portfolio_audio_muted";
 
@@ -32,9 +31,6 @@ export const useUniverseStore = create((set) => ({
     typeof window !== "undefined"
       ? window.localStorage.getItem(STORAGE_AUDIO) !== "0"
       : true,
-  warping: false,
-  /** @type {[number, number, number]} */
-  cameraTarget: [...OVERVIEW_CAMERA],
   /** Normalised pointer position [-1, 1] for camera parallax. */
   pointer: /** @type {[number, number]} */ ([0, 0]),
   focusedSlug: /** @type {string | null} */ (null),
@@ -72,13 +68,6 @@ export const useUniverseStore = create((set) => ({
 
   closePanel: () => set({ panel: null, targetSlug: null }),
 
-  setWarping: (v) => set({ warping: v }),
-
-  setCameraTarget: (vec) =>
-    set({
-      cameraTarget: Array.isArray(vec) ? [...vec] : [vec.x, vec.y, vec.z],
-    }),
-
   setPointer: (x, y) => set({ pointer: [x, y] }),
 
   setFocusedSlug: (slug) => set({ focusedSlug: slug }),
@@ -87,3 +76,24 @@ export const useUniverseStore = create((set) => ({
 }));
 
 export { STORAGE_AUDIO };
+
+/**
+ * Where the "dive into a star" reveal starts, in viewport px. The canvas
+ * writes the focused star's screen position every frame (plain mutable
+ * object — no React re-renders); a click elsewhere (e.g. the Work index)
+ * can set a one-shot override.
+ */
+export const starScreen = { x: null, y: null };
+let diveOverride = null;
+
+export function setDiveOrigin(x, y) {
+  diveOverride = { x, y };
+}
+
+export function takeDiveOrigin() {
+  const o = diveOverride;
+  diveOverride = null;
+  if (o) return o;
+  if (starScreen.x != null) return { x: starScreen.x, y: starScreen.y };
+  return { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+}

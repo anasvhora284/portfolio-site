@@ -12,10 +12,13 @@ export function ScreenReaderNav() {
           <NavLink to="/">Star map — home</NavLink>
         </li>
         <li>
+          <NavLink to="/work">All work</NavLink>
+        </li>
+        <li>
           <NavLink to="/about">About me</NavLink>
         </li>
         <li>
-          <NavLink to="/contact">Contact HQ</NavLink>
+          <NavLink to="/contact">Contact</NavLink>
         </li>
         {github?.url ? (
           <li>

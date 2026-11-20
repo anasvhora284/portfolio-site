@@ -3,11 +3,12 @@ import UniverseShell from "./universe/UniverseShell.jsx";
 
 const router = createBrowserRouter([
   { path: "/", element: <UniverseShell /> },
+  { path: "/work", element: <UniverseShell /> },
   { path: "/work/:slug", element: <UniverseShell /> },
   { path: "/about", element: <UniverseShell /> },
   { path: "/contact", element: <UniverseShell /> },
   { path: "/home", element: <Navigate to="/" replace /> },
-  { path: "/projects", element: <Navigate to="/" replace /> },
+  { path: "/projects", element: <Navigate to="/work" replace /> },
 ]);
 
 const App = () => {

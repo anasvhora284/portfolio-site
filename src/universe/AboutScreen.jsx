@@ -5,6 +5,9 @@ import AboutUsMyImg from "../assets/Images/AboutUsImage.webp";
 import { useFocusTrap } from "../hooks/useFocusTrap.js";
 import "./AboutScreen.css";
 
+/** Rounded down so the "+" stays honest as the count moves. */
+const GITHUB_STARS = 70;
+
 const EDUCATION = [
   {
     period: "2021",
@@ -149,15 +152,9 @@ export function AboutScreen({ onClose }) {
     [],
   );
 
-  const stackCount = useMemo(() => {
-    const s = new Set();
-    projects.forEach((p) => (p.stack || []).forEach((t) => s.add(t)));
-    return s.size;
-  }, []);
-
   const projectsN = useCount(projects.length);
   const featuredN = useCount(featured);
-  const stacksN = useCount(stackCount);
+  const starsN = useCount(GITHUB_STARS);
   const yearsN = useCount(new Date().getFullYear() - 2021);
 
   const eduRevealed = useStaggerReveal(EDUCATION.length, 110);
@@ -179,10 +176,10 @@ export function AboutScreen({ onClose }) {
       <header className="about-screen__topbar">
         <div className="about-screen__eyebrow">
           <span className="about-screen__dot" />
-          ABOUT · VESSEL ANV-01 · ACTIVE
+          About
         </div>
-        <button type="button" className="about-screen__close" onClick={close}>
-          Back to star map <span aria-hidden>↵ Esc</span>
+        <button type="button" className="about-screen__close" data-magnetic onClick={close}>
+          Back to star map <span aria-hidden>Esc</span>
         </button>
       </header>
 
@@ -199,7 +196,7 @@ export function AboutScreen({ onClose }) {
           </div>
 
           <div className="about-screen__hero-copy">
-            <div className="about-screen__kicker">CAPTAIN · OPERATOR PROFILE</div>
+            <div className="about-screen__kicker">Software developer · Gujarat, India</div>
             <h1 id="about-screen-title" className="about-screen__title">
               <span>Anas</span>
               <span className="about-screen__title-italic">Vhora</span>
@@ -220,22 +217,22 @@ export function AboutScreen({ onClose }) {
             <div className="about-screen__cta-row">
               {siteSettings?.resumeUrl ? (
                 <a
-                  className="about-btn about-btn--primary"
+                  className="about-btn about-btn--primary" data-magnetic
                   href={siteSettings.resumeUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Download Resume <span aria-hidden>↗</span>
+                  Download resume
                 </a>
               ) : null}
               {siteSettings?.cvUrl ? (
                 <a
-                  className="about-btn about-btn--ghost"
+                  className="about-btn about-btn--ghost" data-magnetic
                   href={siteSettings.cvUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  View CV <span aria-hidden>↗</span>
+                  Full CV
                 </a>
               ) : null}
             </div>
@@ -245,15 +242,15 @@ export function AboutScreen({ onClose }) {
         <section className="about-screen__stats" aria-label="Summary">
           <div className="stat-card">
             <div className="stat-card__num">{String(projectsN).padStart(2, "0")}</div>
-            <div className="stat-card__label">Projects shipped</div>
+            <div className="stat-card__label">Projects</div>
           </div>
           <div className="stat-card">
             <div className="stat-card__num">{String(featuredN).padStart(2, "0")}</div>
-            <div className="stat-card__label">Featured works</div>
+            <div className="stat-card__label">Featured</div>
           </div>
           <div className="stat-card">
-            <div className="stat-card__num">{String(stacksN).padStart(2, "0")}</div>
-            <div className="stat-card__label">Tech in stack</div>
+            <div className="stat-card__num">{starsN}+</div>
+            <div className="stat-card__label">GitHub stars on Input Leaf</div>
           </div>
           <div className="stat-card">
             <div className="stat-card__num">{yearsN}+</div>
@@ -353,15 +350,15 @@ export function AboutScreen({ onClose }) {
 
         <section className="about-screen__cta">
           <div className="about-screen__cta-text">
-            <span className="about-screen__cta-eyebrow">Have a mission?</span>
+            <span className="about-screen__cta-eyebrow">Hiring, or have a project?</span>
             <span className="about-screen__cta-title">Let’s make it feel inevitable.</span>
           </div>
           <button
             type="button"
-            className="about-btn about-btn--primary"
+            className="about-btn about-btn--primary" data-magnetic
             onClick={() => navigate("/contact")}
           >
-            Hail HQ <span aria-hidden>→</span>
+            Get in touch
           </button>
         </section>
       </div>

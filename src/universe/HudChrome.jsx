@@ -65,13 +65,17 @@ export function HudChrome() {
           <span className="hud-nav__glyph" aria-hidden>✦</span>
           <span className="hud-nav__label">Star map</span>
         </NavLink>
+        <NavLink className="hud-nav__link" to="/work" aria-label="All work">
+          <span className="hud-nav__glyph" aria-hidden>☰</span>
+          <span className="hud-nav__label">Work</span>
+        </NavLink>
         <NavLink className="hud-nav__link" to="/about" aria-label="About me">
           <span className="hud-nav__glyph" aria-hidden>⬢</span>
-          <span className="hud-nav__label">About me</span>
+          <span className="hud-nav__label">About</span>
         </NavLink>
-        <NavLink className="hud-nav__link" to="/contact" aria-label="Contact HQ">
+        <NavLink className="hud-nav__link" to="/contact" aria-label="Contact">
           <span className="hud-nav__glyph" aria-hidden>◎</span>
-          <span className="hud-nav__label">Contact HQ</span>
+          <span className="hud-nav__label">Contact</span>
         </NavLink>
         <MuteToggle />
       </nav>

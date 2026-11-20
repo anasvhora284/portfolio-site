@@ -1,0 +1,418 @@
+/* ── Case study ────────────────────────────────────────────────────────────
+   Opens as a circle of light expanding from the star (or row) you clicked:
+   --dive-x / --dive-y are set inline from takeDiveOrigin(). */
+
+.case {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  color: #f0ebdc;
+  font-family: var(--font-body);
+  background:
+    radial-gradient(120% 70% at 50% 0%, rgba(232, 197, 71, 0.07), transparent 60%),
+    #05070d;
+  clip-path: circle(150vmax at var(--dive-x, 50%) var(--dive-y, 50%));
+  animation: case-dive 900ms cubic-bezier(0.7, 0, 0.2, 1) both;
+}
+
+@keyframes case-dive {
+  from { clip-path: circle(0px at var(--dive-x, 50%) var(--dive-y, 50%)); }
+  to { clip-path: circle(150vmax at var(--dive-x, 50%) var(--dive-y, 50%)); }
+}
+
+/* Light streaks bursting out of the star as we dive through it. */
+.dive-warp {
+  position: fixed;
+  left: var(--dive-x, 50%);
+  top: var(--dive-y, 50%);
+  z-index: 81;
+  width: 240vmax;
+  height: 240vmax;
+  margin: -120vmax 0 0 -120vmax;
+  pointer-events: none;
+  background: repeating-conic-gradient(
+    from 0deg,
+    rgba(255, 236, 170, 0) 0deg 4.2deg,
+    rgba(255, 236, 170, 0.55) 4.6deg,
+    rgba(255, 236, 170, 0) 5deg 9deg
+  );
+  -webkit-mask: radial-gradient(circle, transparent 2%, #000 8%, transparent 42%);
+  mask: radial-gradient(circle, transparent 2%, #000 8%, transparent 42%);
+  animation: dive-warp 900ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@keyframes dive-warp {
+  0% { transform: scale(0.05) rotate(0deg); opacity: 0; }
+  20% { opacity: 1; }
+  100% { transform: scale(1.4) rotate(8deg); opacity: 0; }
+}
+
+/* ── Top bar ── */
+.case__bar {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 18px clamp(20px, 5vw, 64px);
+  background: rgba(5, 7, 13, 0.72);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.case__back,
+.case__esc {
+  font: 500 14px/1 var(--font-body);
+  color: #f0ebdc;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: border-color 180ms ease, background 180ms ease;
+}
+
+.case__back { justify-self: start; }
+.case__esc { justify-self: end; font-family: var(--font-mono); font-size: 11px; }
+
+.case__back:hover,
+.case__esc:hover,
+.case__back:focus-visible,
+.case__esc:focus-visible {
+  border-color: rgba(232, 197, 71, 0.6);
+  background: rgba(232, 197, 71, 0.08);
+  outline: none;
+}
+
+.case__count {
+  font: 500 12px/1 var(--font-mono);
+  letter-spacing: 0.12em;
+  color: rgba(240, 235, 220, 0.55);
+}
+
+/* ── Layout ── */
+.case__inner {
+  width: min(1120px, 100% - 2 * clamp(20px, 5vw, 64px));
+  margin: 0 auto;
+  padding: clamp(24px, 6vh, 72px) 0 clamp(64px, 12vh, 140px);
+}
+
+.case__meta {
+  margin: 0 0 18px;
+  font-size: 15px;
+  color: #e8c547;
+}
+
+.case__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 28;
+  font-weight: 600;
+  font-size: clamp(52px, 10vw, 148px);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  color: #fff8e5;
+  /* Didone horizontals are hairlines; a hint of stroke keeps hyphens visible. */
+  -webkit-text-stroke: 0.012em #fff8e5;
+}
+
+/* Words rise out of a mask, one after another, once the dive lands. */
+.case__word {
+  display: inline-block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-right: 0.22em;
+  vertical-align: top;
+}
+
+.case__word > span {
+  display: inline-block;
+  transform: translateY(105%);
+  animation: case-word 900ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes case-word {
+  to { transform: translateY(0); }
+}
+
+.case__tagline {
+  max-width: 44ch;
+  margin: 22px 0 0;
+  font-size: clamp(18px, 1.8vw, 24px);
+  line-height: 1.45;
+  color: rgba(240, 235, 220, 0.78);
+  text-wrap: balance;
+}
+
+.case__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.case__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 22px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: #f0ebdc;
+  font-weight: 600;
+  font-size: 15px;
+  text-decoration: none;
+  transition: transform 220ms var(--ease-out-expo), border-color 180ms ease, background 180ms ease;
+}
+
+.case__btn--gold {
+  color: #1a1404;
+  border-color: transparent;
+  background: linear-gradient(180deg, #f6dc7a, #d9ae3f);
+}
+
+.case__btn:hover,
+.case__btn:focus-visible {
+  border-color: rgba(232, 197, 71, 0.7);
+  outline: none;
+}
+
+/* ── Engraved plate ── */
+.case__plate {
+  margin: clamp(40px, 8vh, 88px) 0 0;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 6px;
+  border: 1px solid rgba(232, 197, 71, 0.22);
+  background: #0b1020;
+}
+
+.case__plate img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.12);
+}
+
+/* Slow drift as the plate passes through the viewport (where supported). */
+@supports (animation-timeline: view()) {
+  .case__plate img {
+    animation: plate-drift linear both;
+    animation-timeline: view();
+  }
+  @keyframes plate-drift {
+    from { transform: scale(1.12) translateY(-4%); }
+    to { transform: scale(1.12) translateY(4%); }
+  }
+}
+
+/* ── Numbers ── */
+.case__metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  margin: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.case__metrics > div {
+  padding: 32px 0 28px;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 6px;
+}
+
+.case__metrics dd {
+  margin: 0;
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 28;
+  font-weight: 600;
+  font-size: clamp(44px, 6vw, 76px);
+  line-height: 1;
+  color: #f0d46a;
+}
+
+/* Bodoni's "+" is a hairline at this size — set suffixes in the sans. */
+.case__metrics dd small {
+  font-family: var(--font-body);
+  font-size: 0.5em;
+  font-weight: 500;
+  vertical-align: 0.6em;
+  margin-left: 0.06em;
+}
+
+.case__metrics dt {
+  font-size: 14px;
+  color: rgba(240, 235, 220, 0.6);
+}
+
+/* ── Story ── */
+.case__row {
+  display: grid;
+  grid-template-columns: minmax(160px, 1fr) 2.4fr;
+  gap: 24px clamp(24px, 5vw, 80px);
+  padding: clamp(36px, 6vh, 64px) 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.case__row h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 28;
+  font-weight: 600;
+  font-size: clamp(22px, 2.2vw, 30px);
+  line-height: 1.2;
+  color: #e8c547;
+}
+
+.case__row p,
+.case__row li,
+.case__prose {
+  max-width: 64ch;
+  margin: 0;
+  font-size: clamp(16px, 1.25vw, 19px);
+  line-height: 1.7;
+  color: rgba(240, 235, 220, 0.84);
+}
+
+.case__prose p + p { margin-top: 1em; }
+
+.case__row ul:not(.case__stack) {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 16px;
+}
+
+.case__row ul:not(.case__stack) li {
+  position: relative;
+  padding-left: 28px;
+}
+
+/* Small engraved star as the bullet. */
+.case__row ul:not(.case__stack) li::before {
+  content: "✦";
+  position: absolute;
+  left: 0;
+  top: 0.15em;
+  font-size: 0.8em;
+  color: #e8c547;
+}
+
+.case__stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.case__stack li {
+  padding: 8px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  font-size: 14px;
+  color: rgba(240, 235, 220, 0.86);
+}
+
+/* ── Real screenshot ── */
+.case__shot {
+  margin: clamp(40px, 7vh, 72px) 0;
+}
+
+.case__shot img {
+  display: block;
+  width: 100%;
+  max-height: 80vh;
+  object-fit: contain;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #0b1020;
+}
+
+.case__shot--logo img {
+  max-height: 260px;
+  padding: 40px;
+}
+
+.case__shot figcaption {
+  margin-top: 12px;
+  font-size: 14px;
+  color: rgba(240, 235, 220, 0.55);
+}
+
+/* ── Next star ── */
+.case__next {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+  margin-top: clamp(48px, 10vh, 120px);
+  padding: 0;
+  background: none;
+  border: 0;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.case__next-label {
+  font-size: 15px;
+  color: #e8c547;
+}
+
+.case__next-name {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 28;
+  font-weight: 600;
+  font-size: clamp(40px, 7vw, 104px);
+  line-height: 1;
+  color: rgba(240, 235, 220, 0.5);
+  transition: color 300ms ease, transform 500ms var(--ease-out-expo);
+}
+
+.case__next:hover .case__next-name,
+.case__next:focus-visible .case__next-name {
+  color: #fff8e5;
+  transform: translateX(12px);
+}
+
+.case__next:focus-visible { outline: none; }
+
+/* ── Reveal on scroll ── */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 700ms ease, transform 900ms var(--ease-out-expo);
+}
+
+[data-reveal].is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* ── Mobile ── */
+@media (max-width: 720px) {
+  .case__bar { padding: 12px 16px; }
+  .case__count { display: none; }
+  .case__bar { grid-template-columns: 1fr 1fr; }
+  .case__row { grid-template-columns: 1fr; gap: 14px; }
+  .case__metrics { grid-template-columns: 1fr 1fr; }
+  .case__metrics > div:last-child:nth-child(odd) { grid-column: 1 / -1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .case,
+  .case__word > span,
+  .case__plate img { animation: none; transform: none; }
+  .case { clip-path: none; }
+  .dive-warp { display: none; }
+  [data-reveal] { opacity: 1; transform: none; transition: none; }
+}

@@ -2,7 +2,7 @@ import { lazy, Suspense, useCallback, useEffect, useMemo, useRef } from "react";
 import { Helmet } from "react-helmet-async";
 import { useLocation, useNavigate } from "react-router-dom";
 import { projects, siteSettings } from "../generated/content.manifest.js";
-import { useUniverseStore } from "../store/universeStore.js";
+import { starScreen, useUniverseStore } from "../store/universeStore.js";
 import {
   useCinematicAudio,
   playDoorOpen,
@@ -13,7 +13,8 @@ import { CustomCursor } from "./CustomCursor.jsx";
 import { HudChrome } from "./HudChrome.jsx";
 import { HeroOverlay } from "./HeroOverlay.jsx";
 import { ScreenReaderNav } from "./ScreenReaderNav.jsx";
-import { ProjectPanel } from "../hud/ProjectPanel.jsx";
+import { CaseStudyScreen } from "./CaseStudyScreen.jsx";
+import { WorkIndex } from "./WorkIndex.jsx";
 import { AboutScreen } from "./AboutScreen.jsx";
 import { ContactScreen } from "./ContactScreen.jsx";
 import "./UniverseShell.css";
@@ -99,6 +100,10 @@ export default function UniverseShell() {
     if (m) {
       st.setPanel("project", m[1]);
       st.setFocusedSlug(m[1]);
+      return;
+    }
+    if (path === "/work" || path === "/work/") {
+      st.setPanel("index", null);
       return;
     }
     if (path === "/about") {
@@ -231,12 +236,57 @@ export default function UniverseShell() {
       }
     };
     const onLeave = () => useUniverseStore.getState().setPointer(0, 0);
+    /** Phones: tilt drives the same parallax the mouse does on desktop.
+     *  (Android fires this freely; iOS would need a permission prompt — skipped.) */
+    const onTilt = (e) => {
+      if (e.gamma == null || e.beta == null) return;
+      const clamp = (v) => Math.max(-1, Math.min(1, v));
+      nx = clamp(e.gamma / 25);
+      ny = clamp((45 - e.beta) / 25);
+      if (!raf) {
+        raf = requestAnimationFrame(() => {
+          useUniverseStore.getState().setPointer(nx, ny);
+          raf = 0;
+        });
+      }
+    };
+    const coarse = window.matchMedia("(pointer: coarse)").matches;
     window.addEventListener("mousemove", onMove, { passive: true });
     window.addEventListener("mouseleave", onLeave);
+    if (coarse) window.addEventListener("deviceorientation", onTilt, { passive: true });
     return () => {
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("mouseleave", onLeave);
+      window.removeEventListener("deviceorientation", onTilt);
       if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
+
+  /** Magnetic buttons: anything with [data-magnetic] leans toward the cursor. */
+  useEffect(() => {
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return undefined;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return undefined;
+    let active = null;
+    const release = () => {
+      if (active) active.style.transform = "";
+      active = null;
+    };
+    const onMove = (e) => {
+      const el = e.target instanceof Element ? e.target.closest("[data-magnetic]") : null;
+      if (el !== active) release();
+      if (!el) return;
+      active = el;
+      const r = el.getBoundingClientRect();
+      const dx = (e.clientX - (r.left + r.width / 2)) * 0.28;
+      const dy = (e.clientY - (r.top + r.height / 2)) * 0.36;
+      el.style.transform = `translate(${dx.toFixed(1)}px, ${dy.toFixed(1)}px)`;
+    };
+    window.addEventListener("pointermove", onMove, { passive: true });
+    window.addEventListener("blur", release);
+    return () => {
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("blur", release);
+      release();
     };
   }, []);
 
@@ -295,11 +345,21 @@ export default function UniverseShell() {
         type: "article",
       };
     }
+    if (panel === "index") {
+      return {
+        title: `Work · ${siteName}`,
+        description:
+          "Every project by Anas Vhora — Android tools, Odoo apps, web products and hardware builds.",
+        url: `${baseUrl}/work`,
+        image: ogImage,
+        type: "website",
+      };
+    }
     if (panel === "about") {
       return {
         title: `About · ${siteName}`,
         description:
-          "About Anas Vhora — captain, career timeline, stack, and the mission behind the portfolio.",
+          "About Anas Vhora — background, experience timeline, and the stack he works in.",
         url: `${baseUrl}/about`,
         image: ogImage,
         type: "profile",
@@ -307,9 +367,9 @@ export default function UniverseShell() {
     }
     if (panel === "contact") {
       return {
-        title: `Contact HQ · ${siteName}`,
+        title: `Contact · ${siteName}`,
         description:
-          "Hail HQ — email, social channels, and a direct transmit form to reach Anas Vhora.",
+          "Email, profiles and a direct message form to reach Anas Vhora.",
         url: `${baseUrl}/contact`,
         image: ogImage,
         type: "website",
@@ -345,7 +405,14 @@ export default function UniverseShell() {
       <BootSequence />
       {bootPhase === "ready" ? (
         <>
-          <div className="universe-canvas-wrap">
+          <div
+            className={`universe-canvas-wrap${panel === "project" ? " is-diving" : ""}`}
+            style={
+              panel === "project" && starScreen.x != null
+                ? { "--dive-x": `${starScreen.x}px`, "--dive-y": `${starScreen.y}px` }
+                : undefined
+            }
+          >
             <Suspense fallback={<div className="universe-canvas-fallback" aria-hidden />}>
               <LazyCanvas projects={projects} onStarSelect={onStarSelect} />
             </Suspense>
@@ -353,7 +420,10 @@ export default function UniverseShell() {
           </div>
           <HeroOverlay />
           <HudChrome />
-          {panel === "project" ? <ProjectPanel project={activeProject} onClose={closeAll} /> : null}
+          {panel === "project" && activeProject ? (
+            <CaseStudyScreen key={activeProject.slug} project={activeProject} onClose={closeAll} />
+          ) : null}
+          {panel === "index" ? <WorkIndex onClose={closeAll} /> : null}
           {panel === "about" ? <AboutScreen onClose={closeAll} /> : null}
           {panel === "contact" ? <ContactScreen onClose={closeAll} /> : null}
         </>

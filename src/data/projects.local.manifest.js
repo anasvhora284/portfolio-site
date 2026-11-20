@@ -14,10 +14,9 @@ import { blocksFromPlainText } from "../lib/blocksFromPlainText.js";
  * Projects are displayed in ascending `sortOrder` — index 0 is the oldest
  * entry on the constellation, higher indices walk forward in time.
  *
- * Each `image` is the real project screenshot, used inside the detail
- * sidebar (ProjectPanel). The floating preview card on the home-page
- * constellation always renders the shared /project-thumbnail.svg for a
- * consistent branded look — see UniverseCanvas.jsx.
+ * `image` is the real screenshot (shown in the case study). `thumb` is the
+ * engraved atlas plate (star-map card, Work index, case-study hero), wired
+ * up by slug at the bottom of this file. `caseStudy` is optional long-form.
  *
  * @type {import('./content.types.js').Project[]}
  */
@@ -169,6 +168,20 @@ export const projects = [
       "A full vehicle service management suite for Odoo 18 — vehicles, services, providers, contracts, requests, ratings, and manager analytics.\n\nBuilt on Odoo's stack: Python, XML views, ORM, kanban UIs, mail/portal integrations, and a role-based security model.\n\nGuided wizards for common operations, a customer ⇄ provider discussion platform, and a multi-criteria rating system (quality, timeliness, communication, value).",
     ),
     image: AutoVoyageImage,
+    caseStudy: {
+      problem:
+        "Vehicle service businesses juggle customers, providers, contracts and job status across phone calls and spreadsheets. Nobody has one place to see what's booked, who's doing it, and how well it went.",
+      built: [
+        "An Odoo 18 module covering the full lifecycle: vehicles, service types, providers, contracts, service requests and ratings.",
+        "A customer portal to register vehicles, request services and follow progress, and a simple status workflow for providers.",
+        "A customer ⇄ provider discussion platform and multi-criteria ratings for quality, timeliness, communication and value.",
+        "Manager dashboards and analytics, guided wizards for service assignment, and demo data for every state.",
+      ],
+      hardPart:
+        "Three audiences with different rights in one system. The role-based security model — access rules, record rules and portal access — had to let customers, providers and managers each see exactly their slice, while integrating cleanly with Odoo's mail, portal, product, calendar and accounting apps.",
+      outcome:
+        "A complete, installable Odoo 18 app that follows Odoo's development guidelines, built from the same toolkit I use daily as an Odoo developer.",
+    },
     link: "https://github.com/anasvhora284/auto-voyage",
     repoUrl: "https://github.com/anasvhora284/auto-voyage",
     year: 2025,
@@ -188,6 +201,25 @@ export const projects = [
     ),
     image: InputLeafImage,
     imageKind: "logo",
+    caseStudy: {
+      metrics: [
+        { value: "3,600+", label: "APK downloads" },
+        { value: "77", label: "GitHub stars" },
+        { value: "14", label: "releases" },
+      ],
+      problem:
+        "Input Leap and Deskflow let one keyboard and mouse drive several computers, but phones were left out. Existing Android options needed root, a cable, or a paid app, so people kept reaching for the touchscreen in the middle of desk work.",
+      built: [
+        "A Kotlin client that speaks the Input Leap / Deskflow protocol over TCP, so your cursor glides off the monitor edge and onto the phone.",
+        "Native input injection through Shizuku — no root — with a root path and an Accessibility fallback for devices that can't run it.",
+        "mDNS discovery, TLS with trust-on-first-use pinning, and exponential-backoff reconnects for flaky Wi-Fi.",
+        "A Material 3 Expressive UI with a guided setup flow, plus a companion website for docs and downloads.",
+      ],
+      hardPart:
+        "Making a desktop protocol feel native on Android. Pointer events had to be translated into real system input with no perceptible lag, while surviving battery optimisation, overlay permissions and network drops that kill long-lived sockets.",
+      outcome:
+        "Shipped as free, open-source software. It has grown through word of mouth to 3,600+ downloads across 14 releases, 77 stars and 11 forks, with issues and feature requests from real users on Windows, macOS and Linux.",
+    },
     link: "https://inputleaf.anasvhora.tech/",
     repoUrl: "https://github.com/anasvhora284/input-leaf",
     year: 2026,
@@ -222,6 +254,20 @@ export const projects = [
     body: blocksFromPlainText(
       "One Android device tree that builds both OrangeFox and PitchBlack recoveries for the Dimensity 810 Xiaomi family: evergo, evergreen, everpal and opal.\n\nSolves FBEv2 + metadata decryption on Beanpod TEE: a pre-decrypt script copies the installed ROM's build version and security patch into recovery before keymaster starts, and service ordering is tuned so gatekeeper and TEE come up first.\n\nThe installer preserves the ROM's first-stage fstab when repacking boot, so ported ROMs don't bootloop.",
     ),
+    caseStudy: {
+      problem:
+        "On Xiaomi's Dimensity 810 phones (Redmi Note 11T 5G, POCO M4 Pro 5G), custom recoveries couldn't decrypt user data once a newer custom ROM was installed. Backups and flashing broke exactly when people needed them.",
+      built: [
+        "One device tree that builds both OrangeFox R12.0 and PitchBlack 4.0 for all four variants: evergo, evergreen, everpal and opal.",
+        "A pre-decrypt script that reads the installed ROM's Android version and security patch and hands them to the recovery before keymaster starts.",
+        "Re-ordered init services so the TEE and gatekeeper come up first, and only keymaster waits for the pre-decrypt step.",
+        "An installer that keeps the ROM's own first-stage fstab when repacking boot, so ported ROMs don't bootloop.",
+      ],
+      hardPart:
+        "The Beanpod TEE binds encryption keys to the OS version and patch level. A recovery that looks older than the ROM simply can't unwrap the metadata key. Finding that root cause meant reading keymaster and init logs on a device where every failed boot looks the same.",
+      outcome:
+        "Decryption now works on ROMs where other recovery trees fail, and values are copied, never raised, so keys are never upgraded by accident.",
+    },
     link: "https://github.com/anasvhora284/recovery_device_xiaomi_everpal",
     repoUrl: "https://github.com/anasvhora284/recovery_device_xiaomi_everpal",
     year: 2026,
