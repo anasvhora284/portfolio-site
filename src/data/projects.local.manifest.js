@@ -315,7 +315,7 @@ export const projects = [
         "Remove dev-only routes from the production build."
       ]
     },
-    link: "https://rishta-group-68-samaj.netlify.app/filter",
+    link: "https://vhorarishta.anasvhora.tech",
     year: 2024,
     sortOrder: 3,
     featured: true,
@@ -463,15 +463,13 @@ export const projects = [
       ],
       "outcome": "Receipts are now numbered, searchable and exportable instead of written by hand, and the organisation has asked for changes across several rounds.",
       "issues": [
-        "The old public demo link is down (404).",
-        "Smoke tests only; no tests for database rules yet."
+            "Smoke tests only; no tests for database rules yet."
       ],
       "nextSteps": [
-        "Redeploy a public demo.",
-        "Add tests for numbering and row-level security."
+                "Add tests for numbering and row-level security."
       ]
     },
-    link: "https://www.linkedin.com/posts/anas-vhora-28455a1a1_innovation-techforgood-communityempowerment-activity-7180723081395511296-Vzqg/?utm_source=share&utm_medium=member_desktop",
+    link: "https://invoicechef.anasvhora.tech",
     year: 2024,
     sortOrder: 5,
     featured: true,
@@ -877,17 +875,16 @@ export const projects = [
       ],
       "outcome": "A working prototype on web and Android, built in a short sprint, that proved the tool-calling approach.",
       "issues": [
-        "Gemini runs client-side, so a public build would expose the API key — it needs a small proxy first.",
+        "Image lookup depends on third-party photo APIs, so some dishes fall back to generated images.",
         "No real tests yet.",
         "The repo is still named \"Kitchen-Altier\" (typo)."
       ],
       "nextSteps": [
-        "Move model calls behind a tiny serverless proxy.",
-        "Publish signed builds through GitHub Releases.",
+                "Publish signed builds through GitHub Releases.",
         "Add tests for the agent tools."
       ]
     },
-    link: "https://github.com/anasvhora284/Kitchen-Altier",
+    link: "https://kitchen.anasvhora.tech",
     repoUrl: "https://github.com/anasvhora284/Kitchen-Altier",
     year: 2026,
     sortOrder: 10,
