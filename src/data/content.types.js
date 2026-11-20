@@ -36,9 +36,19 @@
  *   preview renders the image. "screenshot" (default) uses cover-fit so
  *   the shot fills the frame edge-to-edge. "logo" contains the asset on a
  *   themed backdrop — use for square app icons / brand marks.
- * @property {{metrics?: {value: string, label: string}[], problem?: string,
- *   built?: string[], hardPart?: string, outcome?: string}} [caseStudy]
- *   Long-form story for the case-study screen. Optional.
+ * @property {{
+ *   facts?: {label: string, value: string}[],
+ *   metrics?: {value: string, label: string}[],
+ *   problem?: string,
+ *   built?: string[],
+ *   architecture?: string,
+ *   architectureList?: string[],
+ *   challenges?: {title: string, detail: string}[],
+ *   hardPart?: string,
+ *   outcome?: string,
+ *   issues?: string[],
+ *   nextSteps?: string[],
+ * }} [caseStudy] Long-form story for the case-study screen. Every field optional.
  * @property {string} link
  * @property {string} [repoUrl]
  * @property {string} [articleUrl]

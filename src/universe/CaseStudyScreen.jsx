@@ -44,6 +44,26 @@ function CountUp({ value }) {
   );
 }
 
+/** One editorial row: heading on the left, paragraph and/or list on the right. */
+function Row({ title, text, items, variant }) {
+  if (!text && !items?.length) return null;
+  return (
+    <section className={`case__row${variant ? ` case__row--${variant}` : ""}`} data-reveal>
+      <h2>{title}</h2>
+      <div className="case__row-body">
+        {text ? <p>{text}</p> : null}
+        {items?.length ? (
+          <ul>
+            {items.map((b) => (
+              <li key={b}>{b}</li>
+            ))}
+          </ul>
+        ) : null}
+      </div>
+    </section>
+  );
+}
+
 export function CaseStudyScreen({ project, onClose }) {
   const navigate = useNavigate();
   const trapRef = useFocusTrap(true, onClose);
@@ -145,6 +165,17 @@ export function CaseStudyScreen({ project, onClose }) {
             </figure>
           ) : null}
 
+          {cs?.facts?.length ? (
+            <dl className="case__facts" data-reveal>
+              {cs.facts.map((f) => (
+                <div key={f.label}>
+                  <dt>{f.label}</dt>
+                  <dd>{f.value}</dd>
+                </div>
+              ))}
+            </dl>
+          ) : null}
+
           {cs?.metrics?.length ? (
             <dl className="case__metrics" data-reveal>
               {cs.metrics.map((m) => (
@@ -160,34 +191,27 @@ export function CaseStudyScreen({ project, onClose }) {
 
           {cs ? (
             <div className="case__story">
-              {cs.problem ? (
+              <Row title="The problem" text={cs.problem} />
+              <Row title="What I built" items={cs.built} />
+              <Row title="How it works" text={cs.architecture} items={cs.architectureList} />
+              {cs.challenges?.length ? (
                 <section className="case__row" data-reveal>
-                  <h2>The problem</h2>
-                  <p>{cs.problem}</p>
-                </section>
-              ) : null}
-              {cs.built?.length ? (
-                <section className="case__row" data-reveal>
-                  <h2>What I built</h2>
-                  <ul>
-                    {cs.built.map((b) => (
-                      <li key={b}>{b}</li>
+                  <h2>Challenges</h2>
+                  <ol className="case__challenges">
+                    {cs.challenges.map((c) => (
+                      <li key={c.title}>
+                        <h3>{c.title}</h3>
+                        <p>{c.detail}</p>
+                      </li>
                     ))}
-                  </ul>
+                  </ol>
                 </section>
-              ) : null}
-              {cs.hardPart ? (
-                <section className="case__row" data-reveal>
-                  <h2>The hard part</h2>
-                  <p>{cs.hardPart}</p>
-                </section>
-              ) : null}
-              {cs.outcome ? (
-                <section className="case__row" data-reveal>
-                  <h2>Outcome</h2>
-                  <p>{cs.outcome}</p>
-                </section>
-              ) : null}
+              ) : (
+                <Row title="The hard part" text={cs.hardPart} />
+              )}
+              <Row title="Outcome" text={cs.outcome} />
+              <Row title="Known issues & limits" items={cs.issues} variant="issues" />
+              <Row title="What I'd do next" items={cs.nextSteps} variant="next" />
             </div>
           ) : (
             <div className="case__story">

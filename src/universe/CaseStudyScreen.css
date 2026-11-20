@@ -416,3 +416,77 @@
   .dive-warp { display: none; }
   [data-reveal] { opacity: 1; transform: none; transition: none; }
 }
+
+/* ── Facts strip (role, team, timeline, status) ── */
+.case__facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0;
+  margin: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.case__facts > div {
+  padding: 26px 20px 24px 0;
+}
+
+.case__facts dt {
+  font-size: 13px;
+  color: rgba(240, 235, 220, 0.5);
+  margin-bottom: 6px;
+}
+
+.case__facts dd {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.45;
+  color: #f0ebdc;
+}
+
+.case__row-body {
+  display: grid;
+  gap: 18px;
+}
+
+/* ── Challenges: numbered, because they read as a sequence of obstacles ── */
+.case__challenges {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: ch;
+  display: grid;
+  gap: 28px;
+}
+
+.case__challenges li {
+  counter-increment: ch;
+  position: relative;
+  padding-left: 48px;
+}
+
+.case__challenges li::before {
+  content: counter(ch, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  top: 0.2em;
+  font: 500 13px/1 var(--font-mono);
+  color: #e8c547;
+}
+
+.case__challenges h3 {
+  margin: 0 0 8px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: clamp(17px, 1.35vw, 20px);
+  color: #fff8e5;
+}
+
+/* Known issues get a muted ring bullet instead of a star — honest, not celebratory. */
+.case__row--issues ul:not(.case__stack) li::before {
+  content: "○";
+  color: rgba(240, 235, 220, 0.45);
+}
+
+.case__row--next ul:not(.case__stack) li::before {
+  content: "→";
+}

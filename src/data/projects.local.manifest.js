@@ -31,6 +31,63 @@ export const projects = [
       "Enter Xi and Fi — get mean, median, mode, correlation tables instantly.\n\nFocused UX for students working through statistics coursework.",
     ),
     image: MathsWebsiteImage,
+    caseStudy: {
+      "facts": [
+        {
+          "label": "Role",
+          "value": "Solo developer"
+        },
+        {
+          "label": "Timeline",
+          "value": "Feb – Apr 2023"
+        },
+        {
+          "label": "Stack",
+          "value": "React 18, MUI, MUI Data Grid"
+        },
+        {
+          "label": "Status",
+          "value": "Live"
+        }
+      ],
+      "metrics": [
+        {
+          "value": "5",
+          "label": "statistics computed"
+        },
+        {
+          "value": "3",
+          "label": "step wizard"
+        }
+      ],
+      "problem": "Statistics homework means building the same frequency tables by hand again and again — mean, median, mode, deviation, correlation — where one arithmetic slip ruins the whole sheet.",
+      "built": [
+        "A three-step wizard: enter X values and frequencies, choose what to compute, see the full table.",
+        "Mean, median, mode, standard deviation and correlation coefficient computed from grouped data.",
+        "Results laid out in a sortable data grid that paginates once tables get long."
+      ],
+      "challenges": [
+        {
+          "title": "Grouped data, not plain lists",
+          "detail": "Every formula has to weight values by their frequency, which is exactly where hand calculations go wrong — and, it turns out, where code does too (see below)."
+        },
+        {
+          "title": "Showing the working",
+          "detail": "Students need the intermediate columns, not just the answer, so the output is a full table rather than a single number."
+        }
+      ],
+      "outcome": "My first deployed React app — still live on Netlify — and the project where I learned to keep UI state and calculations separate.",
+      "issues": [
+        "Standard deviation has an operator-precedence bug (divides by 2 instead of taking a square root) and isn't frequency-weighted.",
+        "Input rejects spaces, decimals and negative numbers.",
+        "No tests; README is still the Create React App template."
+      ],
+      "nextSteps": [
+        "Fix the deviation formula and cover all five statistics with unit tests.",
+        "Accept decimals, spaces and negatives.",
+        "Move calculations out of render into pure functions."
+      ]
+    },
     link: "https://math-app-anasvhora284.netlify.app/",
     year: 2023,
     sortOrder: 0,
@@ -48,9 +105,72 @@ export const projects = [
       "User and admin dashboards for tracking e-waste submissions and facility workflows.\n\nBuilt with the MERN stack — full-stack product thinking.",
     ),
     image: EWasteWebsiteImage,
+    caseStudy: {
+      "facts": [
+        {
+          "label": "Role",
+          "value": "Full-stack contributor"
+        },
+        {
+          "label": "Team",
+          "value": "4 developers"
+        },
+        {
+          "label": "Timeline",
+          "value": "Built in one day, Jun 2024"
+        },
+        {
+          "label": "Stack",
+          "value": "MongoDB, Express, React, Node.js"
+        }
+      ],
+      "metrics": [
+        {
+          "value": "4",
+          "label": "developers"
+        },
+        {
+          "value": "1",
+          "label": "day to build"
+        },
+        {
+          "value": "8",
+          "label": "app routes"
+        }
+      ],
+      "problem": "Most people don't know where to drop off old electronics, and have no reason to bother. The idea: reward people for recycling e-waste and give facilities a way to manage what comes in.",
+      "built": [
+        "Sign-up and login with hashed passwords and JWT sessions.",
+        "A user dashboard with reward points, kilograms recycled and an activity history.",
+        "A collection-request form and an admin side for facilities.",
+        "A React + MUI front end talking to an Express + MongoDB API."
+      ],
+      "challenges": [
+        {
+          "title": "Four people, one day",
+          "detail": "We split front end and back end on the same day and merged everything in a single push, which taught me more about merge conflicts and API contracts than any tutorial."
+        },
+        {
+          "title": "Gamifying a chore",
+          "detail": "Points and progress bars turn recycling into something you can see grow on the dashboard."
+        }
+      ],
+      "outcome": "A working hackathon prototype of the reward and dashboard flow, built by a team of four in one day.",
+      "issues": [
+        "The facility locator itself (map and facility data) was never built.",
+        "API URLs are hard-coded to localhost, so there's no live demo.",
+        "The dashboard route doesn't check who's asking.",
+        "No tests."
+      ],
+      "nextSteps": [
+        "Build the locator with a map and real facility data.",
+        "Move configuration to environment variables and deploy.",
+        "Protect user routes with the existing JWT."
+      ]
+    },
     link: "https://github.com/anasvhora284/E-Waste-Facility-Locator",
     repoUrl: "https://github.com/anasvhora284/E-Waste-Facility-Locator",
-    year: 2023,
+    year: 2024,
     sortOrder: 1,
     featured: true,
     roles: ["Full-stack"],
@@ -66,12 +186,58 @@ export const projects = [
       "Hackathon UI/UX for WiFi-bound attendance: same-network check, face unlock, session PIN.\n\nDelivered as a structured Figma prototype.",
     ),
     image: WiAttendImage,
+    caseStudy: {
+      "facts": [
+        {
+          "label": "My role",
+          "value": "UI/UX design (Figma)"
+        },
+        {
+          "label": "Team",
+          "value": "Hackathon team · backend by teammates"
+        },
+        {
+          "label": "Timeline",
+          "value": "Nov 2023"
+        },
+        {
+          "label": "Backend",
+          "value": "Django REST + MongoDB"
+        }
+      ],
+      "problem": "Roll calls waste lecture time and proxy attendance is easy. Attendance should only be possible for students who are physically in the room.",
+      "built": [
+        "The full app design in Figma for faculty and student flows.",
+        "A presence check: students can mark attendance only on the same Wi-Fi or hotspot as the faculty.",
+        "Face unlock and a session PIN as extra layers against proxies.",
+        "Handed off to teammates who built the Django REST backend; my code contribution was deployment configuration."
+      ],
+      "challenges": [
+        {
+          "title": "Three checks, one tap",
+          "detail": "Wi-Fi, face and PIN verification had to feel like a single quick action, not a security gauntlet."
+        },
+        {
+          "title": "Two very different users",
+          "detail": "Faculty start and manage sessions; students just need to get in and out in seconds."
+        }
+      ],
+      "outcome": "A complete clickable prototype delivered within the hackathon, which the team built a working API against.",
+      "issues": [
+        "The backend trusts an IP address sent by the client, so the Wi-Fi check could be spoofed.",
+        "The backend repo has no README."
+      ],
+      "nextSteps": [
+        "Verify presence server-side from the request itself (or the access point's BSSID).",
+        "Usability-test the flows with students and faculty."
+      ]
+    },
     link: "https://www.figma.com/design/HJxqXuckKDyq9y9ol6YsDf/Attendance_App?node-id=0-1&t=TbYnk9MhcZqhobVk-0",
     year: 2023,
     sortOrder: 2,
     featured: false,
     roles: ["UI/UX"],
-    stack: ["Figma", "Product design"],
+    stack: ["Figma", "Product design", "Django REST"],
   },
   {
     name: "Matrimony PWA",
@@ -83,12 +249,78 @@ export const projects = [
       "A PWA for the Vhora 68 Rishta community — profiles and filtering from spreadsheet-backed data.\n\nSame stack as Invoice Generator: React, Vite, Google Script, Excel, MUI.",
     ),
     image: RishtaWebsiteImage,
+    caseStudy: {
+      "facts": [
+        {
+          "label": "Role",
+          "value": "Lead developer"
+        },
+        {
+          "label": "Team",
+          "value": "With my brother Ayaz and contributors"
+        },
+        {
+          "label": "Timeline",
+          "value": "Feb 2024 – present (rebuilt 2026)"
+        },
+        {
+          "label": "Status",
+          "value": "Live, used by the community"
+        }
+      ],
+      "metrics": [
+        {
+          "value": "8,000+",
+          "label": "lines of TypeScript"
+        },
+        {
+          "value": "14",
+          "label": "database migrations"
+        },
+        {
+          "value": "2",
+          "label": "languages (Gujarati, English)"
+        }
+      ],
+      "problem": "A relative ran matchmaking for the Vhora 68 community from an Excel sheet. Finding a match meant scrolling hundreds of rows; adding a profile meant sending details over chat and hoping they were typed in correctly.",
+      "built": [
+        "Version 1 (2024): a React PWA reading profiles from Google Sheets through Apps Script, with filters.",
+        "Version 2 (2026): a full rebuild in TypeScript on Supabase (Postgres, Auth, row-level security).",
+        "Browse and filter profiles, plus a swipeable profile stack on phones.",
+        "A five-step submission wizard; new profiles wait for admin approval.",
+        "Admin tools to approve, reject and edit, a superuser role, and Excel export in Gujarati or English.",
+        "Gujarati / English interface with transliteration."
+      ],
+      "challenges": [
+        {
+          "title": "The same person, submitted twice",
+          "detail": "Duplicate detection ranks possible matches — exact, same name + date of birth, same name + phone — so admins see likely duplicates before approving."
+        },
+        {
+          "title": "Trust by default",
+          "detail": "Database triggers force every new submission to pending and row-level security limits admin powers, so the rules hold even if the front end is bypassed."
+        },
+        {
+          "title": "Moving off a spreadsheet",
+          "detail": "Migrating from Sheets to Postgres without losing the community's existing data, with scripts for import and maintenance."
+        }
+      ],
+      "outcome": "The community's matchmaking now runs on a real, moderated web app instead of a spreadsheet, and it has kept evolving for over two years.",
+      "issues": [
+        "No automated tests.",
+        "A design-preview route still ships in production."
+      ],
+      "nextSteps": [
+        "Add tests around duplicate detection and the approval flow.",
+        "Remove dev-only routes from the production build."
+      ]
+    },
     link: "https://rishta-group-68-samaj.netlify.app/filter",
     year: 2024,
     sortOrder: 3,
     featured: true,
     roles: ["Frontend"],
-    stack: ["React", "Vite", "PWA", "MUI"],
+    stack: ["React", "TypeScript", "Supabase", "PWA"],
   },
   {
     name: "Auto-Balancing Drone",
@@ -100,6 +332,63 @@ export const projects = [
       "Hand-built auto-balancing drone: Arduino Uno, NodeMCU, ESCs, MPU-6050, MultiWii, WiFi PPM from a phone.\n\nPID-style stability without an off-the-shelf flight controller.",
     ),
     image: DroneImage,
+    caseStudy: {
+      "facts": [
+        {
+          "label": "Role",
+          "value": "Solo build"
+        },
+        {
+          "label": "Hardware",
+          "value": "Arduino, NodeMCU, ESCs, MPU-6050"
+        },
+        {
+          "label": "Control",
+          "value": "Phone / laptop over Wi-Fi"
+        }
+      ],
+      "metrics": [
+        {
+          "value": "2",
+          "label": "nested PID loops"
+        },
+        {
+          "value": "4",
+          "label": "motors mixed"
+        },
+        {
+          "value": "2",
+          "label": "ms control loop"
+        }
+      ],
+      "problem": "Off-the-shelf flight controllers hide all the interesting parts. I wanted to understand how a quadcopter actually stays level by writing that loop myself.",
+      "built": [
+        "A quad frame with 1800KV motors and ESCs, an MPU-6050 for orientation and a Wi-Fi board for control.",
+        "A cascaded controller: an outer angle loop feeding an inner rate PID, mixed across four motors in X configuration.",
+        "A complementary filter blending gyro and accelerometer, with gyro calibration at startup.",
+        "A Python desktop app with sliders to tune throttle and PID gains live over Wi-Fi."
+      ],
+      "challenges": [
+        {
+          "title": "Tuning in the air",
+          "detail": "Re-flashing for every gain change is slow and risky, so gains are sent over Wi-Fi while the drone runs."
+        },
+        {
+          "title": "Noisy sensors",
+          "detail": "Gyros drift and accelerometers jitter; the complementary filter trades one off against the other."
+        }
+      ],
+      "outcome": "It flew and self-levelled — and taught me control theory the hard way.",
+      "issues": [
+        "Looking back at the code: the integral term has no anti-windup, and a variable-shadowing bug weakens the derivative term.",
+        "Gains are parsed as integers, so fine values like 0.03 are lost.",
+        "The published sketch mixes ESP8266 and ESP32 code and doesn't compile as committed."
+      ],
+      "nextSteps": [
+        "Fix the PID bugs, add anti-windup and float gains.",
+        "Pick one board and log flights for offline tuning."
+      ]
+    },
     link: "https://drive.google.com/file/d/1vhhIyUH0XxMhNC_BbDJC0rcZ0ZbUsPB6/view",
     year: 2022,
     sortOrder: 4,
@@ -117,12 +406,77 @@ export const projects = [
       "A Progressive Web App for organisations to generate donation receipts quickly.\n\nReact, Vite, MUI, Google Apps Script, and Excel integration — co-built with Ayaz Vhora.",
     ),
     image: InvoiceWebsiteImage,
+    caseStudy: {
+      "facts": [
+        {
+          "label": "Role",
+          "value": "Lead developer"
+        },
+        {
+          "label": "Team",
+          "value": "With my brother Ayaz"
+        },
+        {
+          "label": "Timeline",
+          "value": "Feb 2024 · rebuilt Jul 2026"
+        },
+        {
+          "label": "Users",
+          "value": "A community organisation's volunteers"
+        }
+      ],
+      "metrics": [
+        {
+          "value": "71",
+          "label": "commits"
+        },
+        {
+          "value": "8",
+          "label": "app pages"
+        },
+        {
+          "value": "2",
+          "label": "edge functions"
+        }
+      ],
+      "problem": "A community organisation wrote donation receipts by hand. Numbers were skipped or duplicated, and nobody could see totals without going through paper books.",
+      "built": [
+        "Version 1 (2024): a React PWA that numbered and saved receipts to Google Sheets through Apps Script, then produced a PDF.",
+        "Version 2 (2026): a rebuild on Supabase with auth, Postgres and storage.",
+        "Invoice history with filters, Excel export and a metrics dashboard.",
+        "Admin and generator roles, invite-only accounts with forced password change, and signatures on PDFs.",
+        "An import script that moved the old Sheets data into Postgres."
+      ],
+      "challenges": [
+        {
+          "title": "Receipt numbers that never collide",
+          "detail": "Numbers are issued by a single atomic database function per financial year (April–March), so two volunteers saving at once can't get the same number."
+        },
+        {
+          "title": "Receipts that can't be edited later",
+          "detail": "Invoices are created only through one database function, and triggers lock the fields that must never change."
+        },
+        {
+          "title": "Built for volunteers",
+          "detail": "Most users are on phones, so the app is a PWA with a floating bottom dock and a short, guided flow."
+        }
+      ],
+      "outcome": "Receipts are now numbered, searchable and exportable instead of written by hand, and the organisation has asked for changes across several rounds.",
+      "issues": [
+        "The old public demo link is down (404).",
+        "Smoke tests only; no tests for database rules yet."
+      ],
+      "nextSteps": [
+        "Redeploy a public demo.",
+        "Add tests for numbering and row-level security."
+      ]
+    },
     link: "https://www.linkedin.com/posts/anas-vhora-28455a1a1_innovation-techforgood-communityempowerment-activity-7180723081395511296-Vzqg/?utm_source=share&utm_medium=member_desktop",
     year: 2024,
     sortOrder: 5,
     featured: true,
     roles: ["Frontend"],
-    stack: ["React", "Vite", "PWA", "MUI"],
+    stack: ["React", "TypeScript", "Supabase", "PWA"],
   },
   {
     name: "Gesture Smart Home",
@@ -134,6 +488,45 @@ export const projects = [
       "Relay-driven home automation with hand and voice gestures via a pre-trained ML model on Python.\n\nSAP Code Unnati Innovation Marathon 2.0 — top 25 of 300+ teams.",
     ),
     image: SmartHomeImage,
+    caseStudy: {
+      "facts": [
+        {
+          "label": "Event",
+          "value": "SAP Code Unnati Innovation Marathon 2.0"
+        },
+        {
+          "label": "Result",
+          "value": "Top 25 of 300+ teams"
+        },
+        {
+          "label": "Hardware",
+          "value": "Arduino Uno + relay module"
+        }
+      ],
+      "metrics": [
+        {
+          "value": "25",
+          "label": "final rank (top)"
+        },
+        {
+          "value": "300+",
+          "label": "teams competing"
+        }
+      ],
+      "problem": "Switches are hard to reach for elderly people and people with limited mobility. Smart-home kits are expensive and need an app for everything.",
+      "built": [
+        "A relay board driven by an Arduino Uno that switches ordinary appliances.",
+        "A Python app on any laptop or phone that recognises hand gestures and voice commands with a pre-trained model.",
+        "Gesture and voice commands mapped to individual appliances."
+      ],
+      "outcome": "Placed in the top 25 of 300+ teams at SAP's Code Unnati Innovation Marathon 2.0.",
+      "issues": [
+        "The source code isn't published."
+      ],
+      "nextSteps": [
+        "Publish the code with wiring diagrams."
+      ]
+    },
     link: "https://www.linkedin.com/posts/anas-vhora-28455a1a1_innovation-technology-accessibility-activity-7179266835760955392-hRNG/?utm_source=share&utm_medium=member_desktop",
     year: 2023,
     sortOrder: 6,
@@ -151,6 +544,65 @@ export const projects = [
       "Pay Slip Pro streamlines generating and managing employee salary slips.\n\nBuilt with React Native, Node.js, Express, and MongoDB — end-to-end mobile and API work.",
     ),
     image: PaySlipProImage,
+    caseStudy: {
+      "facts": [
+        {
+          "label": "Role",
+          "value": "Full-stack developer"
+        },
+        {
+          "label": "Timeline",
+          "value": "Nov 2024 – Nov 2025"
+        },
+        {
+          "label": "App",
+          "value": "React Native (Android)"
+        },
+        {
+          "label": "API",
+          "value": "Node.js, Express, MongoDB"
+        }
+      ],
+      "metrics": [
+        {
+          "value": "10",
+          "label": "app screens"
+        },
+        {
+          "value": "4",
+          "label": "API modules"
+        }
+      ],
+      "problem": "Small offices still build salary slips in spreadsheets every month and assemble Form 16 by hand at year end.",
+      "built": [
+        "Employee management, monthly salary-slip generation and PDF export.",
+        "Biometric unlock before a slip is viewed.",
+        "An in-app Excel editor and CSV-to-HTML conversion for bulk data.",
+        "Form 16: upload, generate, download and email.",
+        "Split APKs per CPU architecture."
+      ],
+      "challenges": [
+        {
+          "title": "Form 16 from monthly slips",
+          "detail": "The year-end calculator gathers twelve monthly slips for the April–March financial year and totals basic, DA, HRA, TA, PF, ESI, loans and tax."
+        },
+        {
+          "title": "Sensitive data on a phone",
+          "detail": "Salary slips sit behind biometric authentication and secure storage."
+        }
+      ],
+      "outcome": "A working mobile payroll tool with a deployed API.",
+      "issues": [
+        "Login isn't token-based yet, so the API relies on network trust.",
+        "The app points at a local network address rather than the deployed API.",
+        "No tests beyond the template."
+      ],
+      "nextSteps": [
+        "Add JWT authentication to every route.",
+        "Configure the API URL per environment.",
+        "Unit-test the Form 16 calculator."
+      ]
+    },
     link: "https://lnkd.in/d2wEqVTR",
     year: 2024,
     sortOrder: 7,
@@ -169,18 +621,82 @@ export const projects = [
     ),
     image: AutoVoyageImage,
     caseStudy: {
-      problem:
-        "Vehicle service businesses juggle customers, providers, contracts and job status across phone calls and spreadsheets. Nobody has one place to see what's booked, who's doing it, and how well it went.",
-      built: [
-        "An Odoo 18 module covering the full lifecycle: vehicles, service types, providers, contracts, service requests and ratings.",
-        "A customer portal to register vehicles, request services and follow progress, and a simple status workflow for providers.",
-        "A customer ⇄ provider discussion platform and multi-criteria ratings for quality, timeliness, communication and value.",
-        "Manager dashboards and analytics, guided wizards for service assignment, and demo data for every state.",
+      "facts": [
+        {
+          "label": "Role",
+          "value": "Solo developer"
+        },
+        {
+          "label": "Timeline",
+          "value": "Mar – Apr 2025"
+        },
+        {
+          "label": "Platform",
+          "value": "Odoo 18 (Python, XML, QWeb)"
+        },
+        {
+          "label": "Status",
+          "value": "Open source · MPL-2.0"
+        }
       ],
-      hardPart:
-        "Three audiences with different rights in one system. The role-based security model — access rules, record rules and portal access — had to let customers, providers and managers each see exactly their slice, while integrating cleanly with Odoo's mail, portal, product, calendar and accounting apps.",
-      outcome:
-        "A complete, installable Odoo 18 app that follows Odoo's development guidelines, built from the same toolkit I use daily as an Odoo developer.",
+      "metrics": [
+        {
+          "value": "9",
+          "label": "data models"
+        },
+        {
+          "value": "33",
+          "label": "website & portal routes"
+        },
+        {
+          "value": "19",
+          "label": "record rules"
+        },
+        {
+          "value": "10",
+          "label": "Odoo apps integrated"
+        }
+      ],
+      "problem": "Vehicle service businesses juggle customers, providers, contracts and job status across phone calls and spreadsheets. Nobody has one place to see what's booked, who's doing it, and how well it went.",
+      "built": [
+        "Nine models covering vehicles, services, providers, service requests, contracts, ratings and discussions, plus a guided service-assignment wizard.",
+        "A public website with service catalogue, provider directory and online booking.",
+        "A customer portal to manage vehicles, follow requests, accept or reject contracts, rate services and join discussions.",
+        "Printable QWeb PDF reports for service requests and contracts, and demo data for every state."
+      ],
+      "architecture": "A single installable Odoo 18 module built on the standard stack — ORM models, XML views, QWeb templates and HTTP controllers — and integrated with mail, portal, product, calendar, account, payments and website.",
+      "architectureList": [
+        "Service requests move draft → confirmed → scheduled → in progress → completed (or cancelled).",
+        "Contracts move draft → sent → signed → active → expired.",
+        "Five security groups (customer, service provider, user, service manager, administrator) enforced by 19 record rules and 33 access lines."
+      ],
+      "challenges": [
+        {
+          "title": "Three audiences, one database",
+          "detail": "Customers, providers and managers each need to see exactly their slice. That meant designing groups and record rules first, then checking every portal page against them."
+        },
+        {
+          "title": "Two lifecycles that interact",
+          "detail": "Requests and contracts each have their own state machine, and portal actions (accept, reject, rate) have to respect both."
+        },
+        {
+          "title": "Website and back office in sync",
+          "detail": "Bookings made on the public site land as real service requests the back office can schedule, assign and report on."
+        }
+      ],
+      "outcome": "A complete, installable Odoo 18 app that follows Odoo's development guidelines — the same toolkit I use every day as an Odoo developer.",
+      "issues": [
+        "Auto-invoicing on completion is stubbed and not wired to Odoo Accounting yet.",
+        "Contracts have signature fields, but the portal doesn't capture e-signatures yet.",
+        "No automated tests.",
+        "README and manifest still contain template placeholders."
+      ],
+      "nextSteps": [
+        "Generate invoices through account.move when a request completes.",
+        "Add portal e-signatures for contracts.",
+        "Tighten portal actions (ownership checks, POST-only state changes).",
+        "Add TransactionCase and HttpCase tests, plus screenshots in the README."
+      ]
     },
     link: "https://github.com/anasvhora284/auto-voyage",
     repoUrl: "https://github.com/anasvhora284/auto-voyage",
@@ -202,23 +718,90 @@ export const projects = [
     image: InputLeafImage,
     imageKind: "logo",
     caseStudy: {
-      metrics: [
-        { value: "3,600+", label: "APK downloads" },
-        { value: "77", label: "GitHub stars" },
-        { value: "14", label: "releases" },
+      "facts": [
+        {
+          "label": "Role",
+          "value": "Creator & maintainer"
+        },
+        {
+          "label": "Team",
+          "value": "Me + 6 community contributors"
+        },
+        {
+          "label": "Timeline",
+          "value": "Mar 2026 – present"
+        },
+        {
+          "label": "Status",
+          "value": "Open source · Apache-2.0"
+        }
       ],
-      problem:
-        "Input Leap and Deskflow let one keyboard and mouse drive several computers, but phones were left out. Existing Android options needed root, a cable, or a paid app, so people kept reaching for the touchscreen in the middle of desk work.",
-      built: [
-        "A Kotlin client that speaks the Input Leap / Deskflow protocol over TCP, so your cursor glides off the monitor edge and onto the phone.",
-        "Native input injection through Shizuku — no root — with a root path and an Accessibility fallback for devices that can't run it.",
-        "mDNS discovery, TLS with trust-on-first-use pinning, and exponential-backoff reconnects for flaky Wi-Fi.",
-        "A Material 3 Expressive UI with a guided setup flow, plus a companion website for docs and downloads.",
+      "metrics": [
+        {
+          "value": "3,600+",
+          "label": "APK downloads"
+        },
+        {
+          "value": "77",
+          "label": "GitHub stars"
+        },
+        {
+          "value": "14",
+          "label": "releases"
+        },
+        {
+          "value": "96%",
+          "label": "test coverage"
+        }
       ],
-      hardPart:
-        "Making a desktop protocol feel native on Android. Pointer events had to be translated into real system input with no perceptible lag, while surviving battery optimisation, overlay permissions and network drops that kill long-lived sockets.",
-      outcome:
-        "Shipped as free, open-source software. It has grown through word of mouth to 3,600+ downloads across 14 releases, 77 stars and 11 forks, with issues and feature requests from real users on Windows, macOS and Linux.",
+      "problem": "Input Leap and Deskflow let one keyboard and mouse drive several computers, but phones and tablets were left out. Existing Android options needed root, a cable or a paid app, so people kept reaching for the touchscreen in the middle of desk work.",
+      "built": [
+        "A Kotlin client that speaks the Input Leap / Deskflow protocol over TCP, so the cursor glides off the monitor edge and onto the phone.",
+        "Three input engines: virtual HID devices through Shizuku or root, an IME for text, and an Accessibility fallback for devices that can't run either.",
+        "mDNS server discovery, TLS with trust-on-first-use fingerprint pinning, client certificates and exponential-backoff reconnects.",
+        "Clipboard sync, Android TV support, an in-app updater and a Material 3 Expressive UI with a guided setup flow.",
+        "A companion website (React 19, prerendered) for docs, guides and downloads."
+      ],
+      "architecture": "One Android module (~122 Kotlin files, ~20k lines) split by responsibility, with ~13k lines of tests behind it.",
+      "architectureList": [
+        "protocol — parser and writer for the Input Leap wire format.",
+        "network — TLS pinning, client certificates, server scanner and transport prober.",
+        "shizuku/uhid — virtual mouse, keyboard and pen devices built on Linux UHID.",
+        "inject — Accessibility engine, IME, keysym resolution and Android TV handling.",
+        "CI runs 82 JVM test files and emulator tests on every push, with a coverage gate and a nightly smoke test."
+      ],
+      "challenges": [
+        {
+          "title": "Real input without root",
+          "detail": "Pointer events become virtual HID devices created through Shizuku, so Android treats them like a physical mouse and keyboard. Getting UHID devices ready reliably — and making the reader stoppable — took several rounds of fixes."
+        },
+        {
+          "title": "Devices that refuse to cooperate",
+          "detail": "The Shizuku injector wouldn't start on Onyx Boox e-ink tablets. I added an app_process fallback so the engine starts on vendors that block the normal path."
+        },
+        {
+          "title": "Keyboards are never just keyboards",
+          "detail": "Keysyms, layouts and IMEs differ between desktops and Android. One layout change had to be reverted after it broke users, which led to a dedicated keysym resolver and more tests."
+        },
+        {
+          "title": "Android TV",
+          "detail": "TV launchers ignore normal taps, so clicks go through an Accessibility node clicker with special handling for launcher menus."
+        }
+      ],
+      "outcome": "Grew by word of mouth to 3,600+ downloads across 14 releases, 77 stars and 11 forks. Users report bugs from Onyx Boox, Galaxy Tab, Huawei and TV boxes; 34 issues and 42 pull requests are closed so far.",
+      "issues": [
+        "Some symbols (numeric keypad, \"@\") still map wrong on certain layouts — the most active open issue.",
+        "The Accessibility service listens to every event type, which users link to slowdowns on weaker devices.",
+        "targetSdk is 34 while the app compiles against 37.",
+        "The website's release list is hand-maintained and lags behind GitHub."
+      ],
+      "nextSteps": [
+        "Fix the remaining keyboard mapping issues.",
+        "Narrow the Accessibility event mask.",
+        "Raise targetSdk and test on Android 16 devices.",
+        "Generate the website's release list from the GitHub API.",
+        "Finish the F-Droid submission."
+      ]
     },
     link: "https://inputleaf.anasvhora.tech/",
     repoUrl: "https://github.com/anasvhora284/input-leaf",
@@ -237,6 +820,73 @@ export const projects = [
     body: blocksFromPlainText(
       "AI recipe studio driven by a Gemini tool-calling agent that runs entirely in the browser. No backend server needed.\n\nReact 18, TypeScript, Tailwind, Motion and GSAP on the front end; Capacitor wraps it as native Android and iOS apps.\n\nCI/CD through GitHub Actions builds web, APK and iOS artifacts on every push.",
     ),
+    caseStudy: {
+      "facts": [
+        {
+          "label": "Role",
+          "value": "Solo developer"
+        },
+        {
+          "label": "Timeline",
+          "value": "Aug 2026"
+        },
+        {
+          "label": "Platforms",
+          "value": "Web, Android, iOS"
+        },
+        {
+          "label": "Status",
+          "value": "Prototype"
+        }
+      ],
+      "metrics": [
+        {
+          "value": "10",
+          "label": "agent tools"
+        },
+        {
+          "value": "3",
+          "label": "platforms, one codebase"
+        },
+        {
+          "value": "0",
+          "label": "servers to run"
+        }
+      ],
+      "problem": "Recipe apps make you search; you still have to work out what to cook from what's in the fridge, your diet and the time you have. I wanted a kitchen assistant you can just talk to.",
+      "built": [
+        "A chat-driven recipe studio where a Gemini agent manages your ingredients, diet, chef style, cook time and servings through tool calls.",
+        "Recipe generation and refinement, with dish images pulled from Pexels, Unsplash or Edamam — or generated when nothing fits.",
+        "One React + TypeScript codebase shipped to web, Android and iOS with Capacitor.",
+        "GitHub Actions that build all three platforms on every push."
+      ],
+      "architecture": "Everything runs in the browser. The agent calls Gemini's OpenAI-compatible endpoint with ten typed tools and falls back across models if one fails. An earlier Python/FastAPI backend was removed once the client could do the job alone.",
+      "challenges": [
+        {
+          "title": "Keeping the agent in the kitchen",
+          "detail": "A strict domain guardrail in the system prompt keeps the assistant on food and declines everything else."
+        },
+        {
+          "title": "Tools instead of free text",
+          "detail": "The UI state (ingredients, diet, servings) changes only through tool calls, so the conversation and the screen never disagree."
+        },
+        {
+          "title": "Deleting the backend",
+          "detail": "Moving the agent client-side removed a server entirely, at the cost of the API-key problem below."
+        }
+      ],
+      "outcome": "A working prototype on web and Android, built in a short sprint, that proved the tool-calling approach.",
+      "issues": [
+        "Gemini runs client-side, so a public build would expose the API key — it needs a small proxy first.",
+        "No real tests yet.",
+        "The repo is still named \"Kitchen-Altier\" (typo)."
+      ],
+      "nextSteps": [
+        "Move model calls behind a tiny serverless proxy.",
+        "Publish signed builds through GitHub Releases.",
+        "Add tests for the agent tools."
+      ]
+    },
     link: "https://github.com/anasvhora284/Kitchen-Altier",
     repoUrl: "https://github.com/anasvhora284/Kitchen-Altier",
     year: 2026,
@@ -255,18 +905,75 @@ export const projects = [
       "One Android device tree that builds both OrangeFox and PitchBlack recoveries for the Dimensity 810 Xiaomi family: evergo, evergreen, everpal and opal.\n\nSolves FBEv2 + metadata decryption on Beanpod TEE: a pre-decrypt script copies the installed ROM's build version and security patch into recovery before keymaster starts, and service ordering is tuned so gatekeeper and TEE come up first.\n\nThe installer preserves the ROM's first-stage fstab when repacking boot, so ported ROMs don't bootloop.",
     ),
     caseStudy: {
-      problem:
-        "On Xiaomi's Dimensity 810 phones (Redmi Note 11T 5G, POCO M4 Pro 5G), custom recoveries couldn't decrypt user data once a newer custom ROM was installed. Backups and flashing broke exactly when people needed them.",
-      built: [
-        "One device tree that builds both OrangeFox R12.0 and PitchBlack 4.0 for all four variants: evergo, evergreen, everpal and opal.",
-        "A pre-decrypt script that reads the installed ROM's Android version and security patch and hands them to the recovery before keymaster starts.",
-        "Re-ordered init services so the TEE and gatekeeper come up first, and only keymaster waits for the pre-decrypt step.",
-        "An installer that keeps the ROM's own first-stage fstab when repacking boot, so ported ROMs don't bootloop.",
+      "facts": [
+        {
+          "label": "Role",
+          "value": "Device-tree maintainer"
+        },
+        {
+          "label": "Timeline",
+          "value": "Oct – Nov 2026"
+        },
+        {
+          "label": "Devices",
+          "value": "Redmi Note 11T 5G, POCO M4 Pro 5G family"
+        },
+        {
+          "label": "Status",
+          "value": "Open source · Apache-2.0"
+        }
       ],
-      hardPart:
-        "The Beanpod TEE binds encryption keys to the OS version and patch level. A recovery that looks older than the ROM simply can't unwrap the metadata key. Finding that root cause meant reading keymaster and init logs on a device where every failed boot looks the same.",
-      outcome:
-        "Decryption now works on ROMs where other recovery trees fail, and values are copied, never raised, so keys are never upgraded by accident.",
+      "metrics": [
+        {
+          "value": "2",
+          "label": "recoveries from one tree"
+        },
+        {
+          "value": "4",
+          "label": "phone variants"
+        },
+        {
+          "value": "4",
+          "label": "build-time checks"
+        }
+      ],
+      "problem": "On Xiaomi's Dimensity 810 phones, custom recoveries couldn't decrypt user data once a newer custom ROM was installed. Backups and flashing broke exactly when people needed them most.",
+      "built": [
+        "One device tree that builds both OrangeFox R12.0 and PitchBlack 4.0 for evergo, evergreen, everpal and opal — plus an AERA recovery port on Android 16.",
+        "A pre-decrypt script that reads the installed ROM's Android version and security patch and hands them to recovery before keymaster starts.",
+        "Re-ordered init services so the TEE and gatekeeper come up first and only keymaster waits.",
+        "An installer that keeps the ROM's own first-stage fstab when repacking boot, so ported ROMs don't bootloop.",
+        "Build scripts with four checks that fail the build if the tree, image, zip or installer patch is wrong."
+      ],
+      "challenges": [
+        {
+          "title": "Keys bound to a patch level",
+          "detail": "The Beanpod TEE ties encryption keys to the OS version and security patch. A recovery that looks older than the ROM can't unwrap the metadata key, so it copies the ROM's values — never raising them, so keys are never upgraded by accident."
+        },
+        {
+          "title": "A keyring that never appears",
+          "detail": "Without a permissive SELinux boot flag, init can't create the fscrypt keyring. Recovery now goes permissive at early-init; normal Android stays enforcing."
+        },
+        {
+          "title": "Every failed boot looks the same",
+          "detail": "Finding these causes meant reading keymaster and init logs on a device where a hang, a bootloop and a decrypt failure all show the same splash screen."
+        },
+        {
+          "title": "Porting to Android 16",
+          "detail": "The AERA port needed the AIDL boot HAL, a fix for a VINTF-related logo hang, and Wi-Fi bring-up."
+        }
+      ],
+      "outcome": "Decryption now works on ROMs where other recovery trees fail, and the tree builds two recoveries from one source.",
+      "issues": [
+        "Tested on evergo only so far.",
+        "MemeOS installs but doesn't boot after flashing.",
+        "No pre-built releases published yet; CI builds aren't running."
+      ],
+      "nextSteps": [
+        "Publish releases with SHA-256 checksums.",
+        "Test on evergreen and opal.",
+        "Debug the MemeOS boot failure."
+      ]
     },
     link: "https://github.com/anasvhora284/recovery_device_xiaomi_everpal",
     repoUrl: "https://github.com/anasvhora284/recovery_device_xiaomi_everpal",
@@ -285,6 +992,58 @@ export const projects = [
     body: blocksFromPlainText(
       "A reproducible setup for Play Integrity STRONG on rooted Android: TEESimulator for key attestation, Duck ToolBox to mint your own RKP keybox, plus SUSFS root hiding.\n\nTested on a OnePlus Nord 4 running Android 16 with KernelSU-Next, with clear do's and don'ts on conflicting modules and a troubleshooting section.",
     ),
+    caseStudy: {
+      "facts": [
+        {
+          "label": "Role",
+          "value": "Author"
+        },
+        {
+          "label": "Timeline",
+          "value": "Nov 2026"
+        },
+        {
+          "label": "Tested on",
+          "value": "OnePlus Nord 4, Android 16"
+        },
+        {
+          "label": "Status",
+          "value": "v1.0 published"
+        }
+      ],
+      "problem": "Rooted phones fail Play Integrity, which breaks banking and payment apps. Most guides depend on leaked keyboxes that get revoked within days, and contradict each other about which modules to stack.",
+      "built": [
+        "A tested, step-by-step setup that reaches MEETS_STRONG_INTEGRITY with TEESimulator and a keybox minted from your own device.",
+        "A tap-only path using Duck ToolBox for people who don't want to edit files.",
+        "A guide to building a KernelSU-Next + SUSFS kernel for root hiding.",
+        "Two tools: a vendor-module CRC checker for kernel builds and a script that syncs the verified-boot hash."
+      ],
+      "challenges": [
+        {
+          "title": "Settings that silently fail",
+          "detail": "TEESimulator only reaches STRONG in generation mode, and its system patch level must match the spoofed fingerprint's security patch exactly."
+        },
+        {
+          "title": "Modules that fight",
+          "detail": "The standalone PlayIntegrityFix module couldn't reach the DroidGuard worker on this stack, so the guide uses one fingerprint engine and one keystore hook — and says what to remove."
+        },
+        {
+          "title": "Kernel modules that won't load",
+          "detail": "Custom kernels break vendor modules when symbol CRCs drift. The CRC checker compares them before you flash."
+        }
+      ],
+      "outcome": "A reproducible guide that avoids leaked keyboxes entirely.",
+      "issues": [
+        "Verified on one device so far.",
+        "The boot-hash script assumes KernelSU, although Magisk and APatch are listed as supported.",
+        "Device-minted keyboxes expire and need to be re-minted every few weeks."
+      ],
+      "nextSteps": [
+        "Detect the root manager automatically in the scripts.",
+        "Collect a tested-devices matrix from readers.",
+        "Add a licence."
+      ]
+    },
     link: "https://github.com/anasvhora284/android-strong-integrity-guide",
     repoUrl: "https://github.com/anasvhora284/android-strong-integrity-guide",
     year: 2026,
