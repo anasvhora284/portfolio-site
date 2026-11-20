@@ -30,6 +30,8 @@
  * @property {unknown[]} [body] Portable Text blocks
  * @property {string} [image] Optional — constellation falls back to a
  *   grid-patterned monospace-name placeholder when omitted.
+ * @property {string} [thumb] Star-map preview card art. Falls back to
+ *   `image`, then the shared placeholder.
  * @property {"screenshot" | "logo"} [imageKind] Controls how the sidebar
  *   preview renders the image. "screenshot" (default) uses cover-fit so
  *   the shot fills the frame edge-to-edge. "logo" contains the asset on a

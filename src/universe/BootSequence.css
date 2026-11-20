@@ -173,7 +173,7 @@
 .boot-title {
   position: relative;
   margin: 0;
-  font-family: "Playfair Display", "Georgia", serif;
+  font-family: var(--font-display);
   font-weight: 500;
   font-size: clamp(40px, 7.5vw, 104px);
   line-height: 1;

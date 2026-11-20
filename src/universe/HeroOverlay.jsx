@@ -32,11 +32,6 @@ export function HeroOverlay() {
       className={`hero-overlay${heroDocked ? " hero-overlay--docked" : ""}`}
       aria-hidden={panel ? "true" : "false"}
     >
-      <div className="hero-overlay__eyebrow">
-        <span className="hero-overlay__dot" />
-        {siteSettings?.availableForWork ? "Available for work, 2026" : "Portfolio, 2026"}
-      </div>
-
       <h1 className="hero-overlay__name">
         <span className="hero-overlay__name-row">{firstName}</span>
         <span className="hero-overlay__name-row hero-overlay__name-row--outline">
@@ -45,10 +40,10 @@ export function HeroOverlay() {
       </h1>
 
       <p className="hero-overlay__tagline">
-        Hey, I am Anas - a full-stack and Odoo developer building product-focused web experiences.
+        Full-stack &amp; Odoo developer. I build web apps, Android tools and the odd drone.
       </p>
       <p className="hero-overlay__mobile-intro">
-        I build React and Odoo products with clean UX, motion, and real production outcomes.
+        Full-stack &amp; Odoo developer. Web apps, Android tools and the odd drone.
       </p>
 
       <div className="hero-overlay__hint">

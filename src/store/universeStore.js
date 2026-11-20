@@ -4,10 +4,17 @@ import { OVERVIEW_CAMERA } from "../canvas/dockCamera.js";
 const STORAGE_AUDIO = "portfolio_audio_muted";
 
 /**
- * Play the cinematic boot every page load — that first-second experience is
- * part of the product. We intentionally do NOT persist "seen" across reloads.
+ * Play the cinematic boot on every home-page load — that first-second
+ * experience is part of the product. Deep links (/work/…, /about, /contact)
+ * and reduced-motion visitors go straight to the content they asked for.
  */
-const initialBoot = /** @type {'boot' | 'ready'} */ ("boot");
+const initialBoot = /** @type {'boot' | 'ready'} */ (
+  typeof window !== "undefined" &&
+  (window.location.pathname !== "/" ||
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches)
+    ? "ready"
+    : "boot"
+);
 
 export const useUniverseStore = create((set) => ({
   bootPhase: /** @type {'boot' | 'ready'} */ (initialBoot),

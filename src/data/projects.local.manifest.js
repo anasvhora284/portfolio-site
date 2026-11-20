@@ -1,13 +1,13 @@
-import DroneImage from "../assets/Images/Projects/AutoBalancingDrone.jpg";
-import MathsWebsiteImage from "../assets/Images/Projects/MathsWebsite.png";
-import EWasteWebsiteImage from "../assets/Images/Projects/EWasteWebsite.png";
-import WiAttendImage from "../assets/Images/Projects/WiAttendImage.png";
-import SmartHomeImage from "../assets/Images/Projects/SmartHomeImage.png";
-import InvoiceWebsiteImage from "../assets/Images/Projects/InvoiceWebsiteImage.png";
+import DroneImage from "../assets/Images/Projects/AutoBalancingDrone.webp";
+import MathsWebsiteImage from "../assets/Images/Projects/MathsWebsite.webp";
+import EWasteWebsiteImage from "../assets/Images/Projects/EWasteWebsite.webp";
+import WiAttendImage from "../assets/Images/Projects/WiAttendImage.webp";
+import SmartHomeImage from "../assets/Images/Projects/SmartHomeImage.webp";
+import InvoiceWebsiteImage from "../assets/Images/Projects/InvoiceWebsiteImage.webp";
 import RishtaWebsiteImage from "../assets/Images/Projects/RishtaWebsite.gif";
-import PaySlipProImage from "../assets/Images/Projects/PaySlipProImage.png";
-import AutoVoyageImage from "../assets/Images/Projects/AutoVoyage.png";
-import InputLeafImage from "../assets/Images/Projects/InputLeaf.png";
+import PaySlipProImage from "../assets/Images/Projects/PaySlipProImage.webp";
+import AutoVoyageImage from "../assets/Images/Projects/AutoVoyage.webp";
+import InputLeafImage from "../assets/Images/Projects/InputLeaf.webp";
 import { blocksFromPlainText } from "../lib/blocksFromPlainText.js";
 
 /**
@@ -27,7 +27,7 @@ export const projects = [
     slug: "maths-website",
     tagline: "Statistics tables without the tedium.",
     description:
-      "A website to make your calculations easier such as Meand, Median, Mod. What you need to do is just Enter the values of Xi & Fi and get the whole tables of Mean, Median, Mod, Co-relation coefficient & More.",
+      "A website that takes the tedium out of statistics. Enter the values of Xi and Fi and get complete tables for mean, median, mode, correlation coefficient and more.",
     body: blocksFromPlainText(
       "Enter Xi and Fi — get mean, median, mode, correlation tables instantly.\n\nFocused UX for students working through statistics coursework.",
     ),
@@ -40,11 +40,11 @@ export const projects = [
     stack: ["React", "JavaScript"],
   },
   {
-    name: "E - Waste Facility Locator Website",
+    name: "E-Waste Facility Locator",
     slug: "e-waste-facility-locator",
     tagline: "Rewards for responsible e-waste.",
     description:
-      "Welcome to the site which gives you reward for giving us your E-Waste. It has a good Ui and also has User/Admin sides also they can Manage / Track the E-Waste they submitted. For both User and Facility side each has a Dashboard to get quick info / History. Has been made out of MERN Stack, My Passion & Love.",
+      "A platform that rewards people for recycling their e-waste. Users and facilities each get a dashboard to submit, manage and track e-waste with full history, plus an admin side for oversight. Built on the MERN stack.",
     body: blocksFromPlainText(
       "User and admin dashboards for tracking e-waste submissions and facility workflows.\n\nBuilt with the MERN stack — full-stack product thinking.",
     ),
@@ -62,7 +62,7 @@ export const projects = [
     slug: "wi-attend",
     tagline: "WiFi-bounded attendance — hackathon Figma.",
     description:
-      "A Figma Design made during a hackathon. This App is a Wifi Based Attendance app can be used by clg faculty and student. Student can mark attandence only if S/He is connected to same wifi as faculty or faculties hotspot also has a face unlock and a session pin as extra authentication layers.",
+      "A hackathon Figma design for a WiFi-based college attendance app. Students can mark attendance only when connected to the same WiFi or hotspot as the faculty, with face unlock and a session PIN as extra authentication layers.",
     body: blocksFromPlainText(
       "Hackathon UI/UX for WiFi-bound attendance: same-network check, face unlock, session PIN.\n\nDelivered as a structured Figma prototype.",
     ),
@@ -79,7 +79,7 @@ export const projects = [
     slug: "matrimony-pwa",
     tagline: "Community matchmaking on the web.",
     description:
-      "Wanna find a partner for you? Welcome to the Vhora 68 Rishta Site. One of my relative who already had a data of boys and girls in excel. They proposed me to make attractive webiste for them. So We (Me & My Big Brother) decided to make a website for them. it is also of the same tech stack as invoice generator PWA React + Vite, Google Script, Excel & MUI. This also has a simpler yet good looking Site. - By Anas Vhora & Ayaz Vhora",
+      "A matchmaking PWA for the Vhora 68 community. A relative kept candidate profiles in Excel; my brother Ayaz and I turned that into a clean, filterable website. Same stack as the Invoice Generator: React, Vite, Google Apps Script, Excel and MUI.",
     body: blocksFromPlainText(
       "A PWA for the Vhora 68 Rishta community — profiles and filtering from spreadsheet-backed data.\n\nSame stack as Invoice Generator: React, Vite, Google Script, Excel, MUI.",
     ),
@@ -92,11 +92,11 @@ export const projects = [
     stack: ["React", "Vite", "PWA", "MUI"],
   },
   {
-    name: "Auto balancing Drone",
+    name: "Auto-Balancing Drone",
     slug: "auto-balancing-drone",
     tagline: "Custom flight control with MPU6050.",
     description:
-      "A Drone which isn't using readymade flight controller? Also using your phone as a controller? There it is An Auto Balancing Drone made using Arduino Uno, Node MCU, ESCs, 1800kv Motors, and an MPU 6050. Also Multi-Wii as a Flight Controller of the drone and a Wifi PPM controller.",
+      "A drone without an off-the-shelf flight controller, flown from a phone. Built with an Arduino Uno, NodeMCU, ESCs, 1800KV motors and an MPU-6050, running MultiWii as the flight controller with a WiFi PPM link.",
     body: blocksFromPlainText(
       "Hand-built auto-balancing drone: Arduino Uno, NodeMCU, ESCs, MPU-6050, MultiWii, WiFi PPM from a phone.\n\nPID-style stability without an off-the-shelf flight controller.",
     ),
@@ -113,7 +113,7 @@ export const projects = [
     slug: "invoice-generator-pwa",
     tagline: "Donation receipts as a fast PWA.",
     description:
-      "This is an Invoice generator Progressive Web App which is used by Organisation to generate quick receipts for the donation they recieve. PWA based on React + Vite, Google Script, and Excel and MUI. It has Attractive, Clean and simple UI & A very great UX. at the before reaching the end of journey you need to enter the password to generate Invoice PDF & also the Pdf generator's name. - By Anas Vhora & Ayaz Vhora",
+      "A Progressive Web App that organisations use to generate quick receipts for the donations they receive. Clean, simple UI with a password-protected final step that generates the invoice PDF along with the issuer's name. Built with React, Vite, MUI, Google Apps Script and Excel, co-built with Ayaz Vhora.",
     body: blocksFromPlainText(
       "A Progressive Web App for organisations to generate donation receipts quickly.\n\nReact, Vite, MUI, Google Apps Script, and Excel integration — co-built with Ayaz Vhora.",
     ),
@@ -126,13 +126,13 @@ export const projects = [
     stack: ["React", "Vite", "PWA", "MUI"],
   },
   {
-    name: "Gesture Based Smart Home Automation",
+    name: "Gesture Smart Home",
     slug: "gesture-smart-home",
     tagline: "Top 25 / 300+ at SAP Code Unnati.",
     description:
-      "Switch anything on/off by our hand gestures or your voice. A project which reached to top 25 out of 300+ teams. Made it during competition Organized by SAP - Code Unnati Innovation Merathon 2.0. It is based on a Relay module / Ardiuno Uno and any Laptop / Phone with a python installed in it. It has Hand / Voice gestures recognition Pre trained ML Model.",
+      "Switch appliances on and off with hand gestures or your voice. Reached the top 25 of 300+ teams at SAP Code Unnati Innovation Marathon 2.0. Runs on a relay module and Arduino Uno driven by any laptop or phone with Python, using a pre-trained hand and voice gesture recognition model.",
     body: blocksFromPlainText(
-      "Relay-driven home automation with hand and voice gestures via a pre-trained ML model on Python.\n\nSAP Code Unnati Innovation Merathon 2.0 — top 25 of 300+ teams.",
+      "Relay-driven home automation with hand and voice gestures via a pre-trained ML model on Python.\n\nSAP Code Unnati Innovation Marathon 2.0 — top 25 of 300+ teams.",
     ),
     image: SmartHomeImage,
     link: "https://www.linkedin.com/posts/anas-vhora-28455a1a1_innovation-technology-accessibility-activity-7179266835760955392-hRNG/?utm_source=share&utm_medium=member_desktop",
@@ -147,7 +147,7 @@ export const projects = [
     slug: "pay-slip-pro",
     tagline: "Salary slips, streamlined for teams.",
     description:
-      "Pay Slip Pro is a comprehensive application designed to streamline the process of generating and managing salary slips for employees. This project showcases my expertise in both frontend and backend development using modern technologies like React Native, React Navigation, React Native Paper, Axios, Node.js, Express, MongoDB, Git, GitHub, Android Studio, and more.",
+      "Pay Slip Pro is a comprehensive application designed to streamline the process of generating and managing salary slips for employees. Built end-to-end with React Native, React Native Paper, Node.js, Express and MongoDB.",
     body: blocksFromPlainText(
       "Pay Slip Pro streamlines generating and managing employee salary slips.\n\nBuilt with React Native, Node.js, Express, and MongoDB — end-to-end mobile and API work.",
     ),
@@ -180,15 +180,15 @@ export const projects = [
   {
     name: "Input Leaf",
     slug: "input-leaf",
-    tagline: "PC mouse & keyboard → Android, over LAN.",
+    tagline: "PC mouse & keyboard → Android. 70+ ★ on GitHub.",
     description:
-      "Input Leaf is an open-source Android client for Input Leap — a KVM software switch that lets you control your Android device with your PC or laptop's mouse and keyboard. Move your cursor to the edge of your screen and it seamlessly crosses to your Android over the local network — no cables, no root, Shizuku-based event injection. Ships a Material UI with live connection statuses, LAN server discovery, quick favourites, and a guided Shizuku setup wizard.",
+      "Input Leaf is an open-source Android client for Input Leap and Deskflow. Move your cursor off the edge of your monitor and it glides onto your Android phone or tablet over the local network, with no cables and no root. Shizuku-based native input injection, mDNS server discovery, TLS with certificate pinning, and a Material 3 Expressive UI.",
     body: blocksFromPlainText(
-      "Open-source Android client (Kotlin) for the Input Leap KVM protocol — share your PC's mouse and keyboard with any Android device over your local network.\n\nMaterial 3 UI with colour-coded connection statuses, automatic server discovery, favourites for one-tap reconnects, and a guided onboarding flow for Shizuku-based event injection — no root required.\n\nHandles overlay permissions, battery-optimisation dialogs, and reconnect state transitions automatically.",
+      "Open-source Android client (Kotlin) for the Input Leap / Deskflow KVM protocol: share your PC's mouse and keyboard with any Android device over your LAN.\n\nNative low-latency input through Shizuku (or root), with an Accessibility fallback. mDNS auto-discovery, TLS with trust-on-first-use pinning, and exponential-backoff reconnects.\n\nMaterial 3 Expressive UI with dynamic colour, a guided setup flow, and a companion website. My most-starred open-source project.",
     ),
     image: InputLeafImage,
     imageKind: "logo",
-    link: "https://github.com/anasvhora284/input-leaf",
+    link: "https://inputleaf.anasvhora.tech/",
     repoUrl: "https://github.com/anasvhora284/input-leaf",
     year: 2026,
     sortOrder: 9,
@@ -196,4 +196,64 @@ export const projects = [
     roles: ["Mobile", "Systems"],
     stack: ["Kotlin", "Android", "Shizuku", "Material 3"],
   },
+  {
+    name: "Kitchen Atelier",
+    slug: "kitchen-atelier",
+    tagline: "An AI chef in your pocket.",
+    description:
+      "Kitchen Atelier is an AI recipe studio: a React + TypeScript app with a client-side Gemini tool-calling agent that plans and generates recipes. Ships to web, Android and iOS through Capacitor, with GitHub Actions building every platform on push.",
+    body: blocksFromPlainText(
+      "AI recipe studio driven by a Gemini tool-calling agent that runs entirely in the browser. No backend server needed.\n\nReact 18, TypeScript, Tailwind, Motion and GSAP on the front end; Capacitor wraps it as native Android and iOS apps.\n\nCI/CD through GitHub Actions builds web, APK and iOS artifacts on every push.",
+    ),
+    link: "https://github.com/anasvhora284/Kitchen-Altier",
+    repoUrl: "https://github.com/anasvhora284/Kitchen-Altier",
+    year: 2026,
+    sortOrder: 10,
+    featured: false,
+    roles: ["Full-stack", "AI"],
+    stack: ["React", "TypeScript", "Gemini", "Capacitor"],
+  },
+  {
+    name: "Everpal Recovery Tree",
+    slug: "everpal-recovery-tree",
+    tagline: "OrangeFox + PitchBlack that decrypt on any ROM.",
+    description:
+      "A unified OrangeFox R12.0 + PitchBlack 4.0 recovery device tree for Xiaomi MT6833 phones (Redmi Note 11T 5G, POCO M4 Pro 5G). It decrypts /data on ROMs where other trees fail by matching the installed ROM's version and security patch before Beanpod keymaster starts.",
+    body: blocksFromPlainText(
+      "One Android device tree that builds both OrangeFox and PitchBlack recoveries for the Dimensity 810 Xiaomi family: evergo, evergreen, everpal and opal.\n\nSolves FBEv2 + metadata decryption on Beanpod TEE: a pre-decrypt script copies the installed ROM's build version and security patch into recovery before keymaster starts, and service ordering is tuned so gatekeeper and TEE come up first.\n\nThe installer preserves the ROM's first-stage fstab when repacking boot, so ported ROMs don't bootloop.",
+    ),
+    link: "https://github.com/anasvhora284/recovery_device_xiaomi_everpal",
+    repoUrl: "https://github.com/anasvhora284/recovery_device_xiaomi_everpal",
+    year: 2026,
+    sortOrder: 11,
+    featured: true,
+    roles: ["Systems", "Android"],
+    stack: ["Android", "Shell", "Makefile", "Linux"],
+  },
+  {
+    name: "Strong Integrity Guide",
+    slug: "strong-integrity-guide",
+    tagline: "STRONG integrity on a rooted phone, documented.",
+    description:
+      "A tested, step-by-step guide to passing MEETS_STRONG_INTEGRITY on a rooted Android phone with an unlocked bootloader, using TEESimulator and your own device-minted RKP keybox instead of leaked keyboxes. Covers KernelSU-Next, SUSFS, Zygisk and troubleshooting.",
+    body: blocksFromPlainText(
+      "A reproducible setup for Play Integrity STRONG on rooted Android: TEESimulator for key attestation, Duck ToolBox to mint your own RKP keybox, plus SUSFS root hiding.\n\nTested on a OnePlus Nord 4 running Android 16 with KernelSU-Next, with clear do's and don'ts on conflicting modules and a troubleshooting section.",
+    ),
+    link: "https://github.com/anasvhora284/android-strong-integrity-guide",
+    repoUrl: "https://github.com/anasvhora284/android-strong-integrity-guide",
+    year: 2026,
+    sortOrder: 12,
+    featured: false,
+    roles: ["Android", "Research"],
+    stack: ["Android", "KernelSU", "SUSFS", "Zygisk"],
+  },
 ];
+
+/** Star-map card art (engraved atlas plates), matched to projects by slug. */
+const thumbs = import.meta.glob("../assets/Images/Thumbs/*.webp", {
+  eager: true,
+  import: "default",
+});
+for (const p of projects) {
+  p.thumb ??= thumbs[`../assets/Images/Thumbs/${p.slug}.webp`];
+}

@@ -279,8 +279,8 @@ export default function UniverseShell() {
   /** Route-aware metadata — titles, descriptions, OG + Twitter tags, canonical. */
   const meta = useMemo(() => {
     const siteName = siteSettings?.siteTitle ?? "Anas Vhora — Portfolio";
-    const baseUrl = (siteSettings?.siteUrl ?? "https://anasvhora.dev").replace(/\/$/, "");
-    const ogRel = siteSettings?.ogImage ?? "/og-image.svg";
+    const baseUrl = (siteSettings?.siteUrl ?? "https://anasvhora.tech").replace(/\/$/, "");
+    const ogRel = siteSettings?.ogImage ?? "/og-image.png";
     const ogImage = ogRel.startsWith("http") ? ogRel : `${baseUrl}${ogRel}`;
     const defaultDesc = siteSettings?.defaultMetaDescription ?? "";
 

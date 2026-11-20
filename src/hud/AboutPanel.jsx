@@ -1,6 +1,6 @@
 import { useFocusTrap } from "../hooks/useFocusTrap.js";
 import { siteSettings } from "../generated/content.manifest.js";
-import AboutUsMyImg from "../assets/Images/AboutUsImage.png";
+import AboutUsMyImg from "../assets/Images/AboutUsImage.webp";
 import "./HudPanels.css";
 
 export function AboutPanel({ onClose }) {

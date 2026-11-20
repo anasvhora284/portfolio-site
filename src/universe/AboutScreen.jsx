@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { projects, siteSettings } from "../generated/content.manifest.js";
-import AboutUsMyImg from "../assets/Images/AboutUsImage.png";
+import AboutUsMyImg from "../assets/Images/AboutUsImage.webp";
 import { useFocusTrap } from "../hooks/useFocusTrap.js";
 import "./AboutScreen.css";
 
@@ -158,7 +158,7 @@ export function AboutScreen({ onClose }) {
   const projectsN = useCount(projects.length);
   const featuredN = useCount(featured);
   const stacksN = useCount(stackCount);
-  const yearsN = useCount(5);
+  const yearsN = useCount(new Date().getFullYear() - 2021);
 
   const eduRevealed = useStaggerReveal(EDUCATION.length, 110);
   const expRevealed = useStaggerReveal(EXPERIENCE.length, 110);
@@ -206,11 +206,11 @@ export function AboutScreen({ onClose }) {
             </h1>
             <p className="about-screen__tagline">{siteSettings?.tagline}</p>
             <p className="about-screen__bio">
-              Computer Engineering student at Gujarat Technological University building
-              expressive, production-grade web products. I move between React apps, mobile,
-              and hardware &mdash; gesture-driven smart homes, self-balancing drones, PWAs
-              that a family of non-profits actually uses. What I care about: craft, motion,
-              and shipping things that feel inevitable.
+              Computer Engineering graduate (GTU, 2025) and Jr. Software Developer at Atharva
+              Systems, building Odoo modules and integrations by day. Outside the ERP, I ship
+              React apps, an open-source Android KVM client used by real people, and hardware
+              side-quests &mdash; gesture-driven smart homes and self-balancing drones. What I
+              care about: craft, motion, and shipping things that feel inevitable.
             </p>
             <p className="about-screen__hobby">
               Outside work, I like tinkering with devices &mdash; flashing different mobile OS

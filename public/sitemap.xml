@@ -1,68 +1,83 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://anasvhora.dev/</loc>
+    <loc>https://anasvhora.tech/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://anasvhora.dev/about</loc>
+    <loc>https://anasvhora.tech/about</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://anasvhora.dev/contact</loc>
+    <loc>https://anasvhora.tech/contact</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://anasvhora.dev/work/pay-slip-pro</loc>
+    <loc>https://anasvhora.tech/work/pay-slip-pro</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://anasvhora.dev/work/invoice-generator-pwa</loc>
+    <loc>https://anasvhora.tech/work/invoice-generator-pwa</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://anasvhora.dev/work/matrimony-pwa</loc>
+    <loc>https://anasvhora.tech/work/matrimony-pwa</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://anasvhora.dev/work/maths-website</loc>
+    <loc>https://anasvhora.tech/work/maths-website</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://anasvhora.dev/work/e-waste-facility-locator</loc>
+    <loc>https://anasvhora.tech/work/e-waste-facility-locator</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://anasvhora.dev/work/auto-balancing-drone</loc>
+    <loc>https://anasvhora.tech/work/auto-balancing-drone</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://anasvhora.dev/work/gesture-smart-home</loc>
+    <loc>https://anasvhora.tech/work/gesture-smart-home</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://anasvhora.dev/work/wi-attend</loc>
+    <loc>https://anasvhora.tech/work/wi-attend</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://anasvhora.dev/work/auto-voyage</loc>
+    <loc>https://anasvhora.tech/work/auto-voyage</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://anasvhora.dev/work/input-leaf</loc>
+    <loc>https://anasvhora.tech/work/input-leaf</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://anasvhora.tech/work/kitchen-atelier</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://anasvhora.tech/work/everpal-recovery-tree</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://anasvhora.tech/work/strong-integrity-guide</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
 </urlset>

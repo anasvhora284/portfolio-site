@@ -24,4 +24,4 @@ Allow: /
 User-agent: LinkedInBot
 Allow: /
 
-Sitemap: https://anasvhora.dev/sitemap.xml
+Sitemap: https://anasvhora.tech/sitemap.xml

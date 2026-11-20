@@ -40,7 +40,7 @@
 
   <!-- eyebrow -->
   <g font-family="'JetBrains Mono','Menlo',monospace" fill="#e8c547" font-size="16" letter-spacing="4">
-    <text x="80" y="120">ANAS VHORA · PORTFOLIO · SYS/CONSTELLATION v1</text>
+    <text x="80" y="120">ANAS VHORA Â· PORTFOLIO Â· SYS/CONSTELLATION v1</text>
   </g>
 
   <!-- big title -->
@@ -74,6 +74,6 @@
   <!-- footer strip -->
   <line x1="80" y1="580" x2="1120" y2="580" stroke="#e8c547" stroke-opacity="0.35"/>
   <g font-family="'JetBrains Mono','Menlo',monospace" fill="#e8c547" fill-opacity="0.9" font-size="16" letter-spacing="4">
-    <text x="80" y="606">ANASVHORA.DEV · STAR MAP · MY SHIP · CONTACT HQ</text>
+    <text x="80" y="606">ANASVHORA.TECH Â· STAR MAP Â· MY SHIP Â· CONTACT HQ</text>
   </g>
 </svg>

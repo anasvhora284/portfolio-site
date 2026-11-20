@@ -3,7 +3,7 @@
   inset: 0;
   z-index: 80;
   color: #f4f1e8;
-  font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-body);
   background: #04060d;
   overflow: hidden;
   animation: contact-in 520ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
@@ -176,8 +176,8 @@
 }
 
 .contact-screen__title {
-  font-family: "Playfair Display", Georgia, serif;
-  font-weight: 500;
+  font-family: var(--font-display);
+  font-weight: 600;
   font-size: clamp(52px, 8vw, 116px);
   line-height: 0.92;
   letter-spacing: -0.02em;
@@ -257,9 +257,9 @@
 
 .contact-col__title {
   margin: 0;
-  font-family: "Playfair Display", Georgia, serif;
+  font-family: var(--font-display);
   font-size: 22px;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: -0.01em;
 }
 

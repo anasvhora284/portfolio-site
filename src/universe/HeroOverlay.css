@@ -7,36 +7,7 @@
   grid-template-rows: auto auto 1fr auto;
   padding: clamp(84px, 9vh, 120px) clamp(24px, 6vw, 92px) clamp(32px, 5vh, 60px);
   color: #f4f1e8;
-  font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
-}
-
-.hero-overlay__eyebrow {    
-  position: relative;
-  top: 50px;
-  right: 65px;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 11px;
-  letter-spacing: 0.32em;
-  text-transform: uppercase;
-  color: rgba(232, 197, 71, 0.85);
-  font-weight: 500;
-  justify-self: start;
-}
-
-.hero-overlay__dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #e8c547;
-  box-shadow: 0 0 10px rgba(232, 197, 71, 0.7);
-  animation: hero-dot 2.4s ease-in-out infinite;
-}
-
-@keyframes hero-dot {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.45); opacity: 0.55; }
+  font-family: var(--font-body);
 }
 
 .hero-overlay__name {
@@ -45,17 +16,20 @@
   justify-self: center;
   text-align: center;
   padding-top: clamp(8px, 2vh, 24px);
-  font-family: "Playfair Display", "Georgia", serif;
+  font-family: var(--font-display);
   font-size: clamp(64px, 11vw, 170px);
   line-height: 0.88;
   letter-spacing: -0.02em;
-  font-weight: 500;
+  font-weight: 600;
+  /* Bodoni's display cut (auto opsz ≈ 96 at this size) has near-invisible
+     hairlines under the gold gradient — pin a sturdier optical size. */
+  font-variation-settings: "opsz" 28;
   text-shadow: 0 10px 80px rgba(0, 0, 0, 0.55);
 }
 
 .hero-overlay__name-row {
   display: block;
-  background: linear-gradient(180deg, #fff8ea 0%, #e8c547 78%, #b7882e 110%);
+  background: linear-gradient(180deg, #fff8ea 0%, #f0d46a 70%, #d9ae3f 105%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -67,12 +41,13 @@
   -webkit-text-fill-color: transparent;
   -webkit-text-stroke: 1.25px rgba(255, 244, 220, 0.58);
   font-style: italic;
-  margin-top: -0.05em;
+  margin-top: 0.02em;
 }
 
 .hero-overlay__tagline {
   justify-self: center;
-  max-width: 620px;
+  max-width: 760px;
+  text-wrap: balance;
   margin: 18px auto 0;
   text-align: center;
   font-size: clamp(12px, 1vw, 15px);
@@ -175,7 +150,7 @@
 }
 
 .hero-overlay__focus-name {
-  font-family: "Playfair Display", Georgia, serif;
+  font-family: var(--font-display);
   font-size: 26px;
   line-height: 1.15;
   color: #fff8e5;
@@ -205,6 +180,125 @@
   color: rgba(255, 220, 130, 1);
 }
 
+/* ── Gold-leaf shine ─────────────────────────────────────────────────────
+   One continuous light pass, looping on a shared 4.8s cycle with staggered
+   starts: a spark runs down the gold rule → a sheen crosses the card → the
+   name glints → "Open project" shimmers. Each keyframe moves in the first
+   ~35% of the cycle and rests for the remainder, so it reads as a pulse,
+   not constant noise. Restarts from the top when a new star is focused. */
+.hero-overlay__focus {
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.hero-overlay__focus::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 3px;
+  height: 45%;
+  background: linear-gradient(180deg, transparent, #fff4c8 45%, #e8c547 60%, transparent);
+  box-shadow: 0 0 12px 1px rgba(255, 228, 140, 0.75);
+  transform: translateY(-110%);
+  animation: focus-spark 4.8s 0.15s cubic-bezier(0.55, 0, 0.25, 1) infinite both;
+  pointer-events: none;
+}
+
+.hero-overlay__focus::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    105deg,
+    transparent 25%,
+    rgba(255, 228, 150, 0.12) 40%,
+    rgba(255, 244, 205, 0.38) 50%,
+    rgba(255, 228, 150, 0.12) 60%,
+    transparent 75%
+  );
+  transform: translateX(-120%);
+  animation: focus-sheen 4.8s 0.55s cubic-bezier(0.4, 0, 0.2, 1) infinite both;
+  pointer-events: none;
+}
+
+.hero-overlay__focus:hover::after,
+.hero-overlay__focus:focus-visible::after {
+  animation-duration: 2.4s;
+}
+
+.hero-overlay__focus:hover::before,
+.hero-overlay__focus:focus-visible::before {
+  animation-duration: 2.4s;
+}
+
+.hero-overlay__focus-name {
+  background: linear-gradient(
+    100deg,
+    #fff8e5 0%,
+    #fff8e5 40%,
+    #ffe08a 48%,
+    #fffdf4 50%,
+    #ffe08a 52%,
+    #fff8e5 60%,
+    #fff8e5 100%
+  );
+  background-size: 250% 100%;
+  background-position: 100% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: focus-name-glint 4.8s 0.85s ease-out infinite both;
+}
+
+.hero-overlay__focus-open {
+  background: linear-gradient(
+    90deg,
+    rgba(232, 197, 71, 0.85) 0%,
+    rgba(232, 197, 71, 0.85) 38%,
+    #fff6d0 50%,
+    rgba(232, 197, 71, 0.85) 62%,
+    rgba(232, 197, 71, 0.85) 100%
+  );
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: focus-open-shimmer 4.8s 1.25s ease-in-out infinite both;
+}
+
+.hero-overlay__focus-open > span {
+  display: inline-block;
+  transition: transform 220ms var(--ease-out-expo, ease);
+}
+
+.hero-overlay__focus:hover .hero-overlay__focus-open > span,
+.hero-overlay__focus:focus-visible .hero-overlay__focus-open > span {
+  transform: translateX(4px);
+}
+
+@keyframes focus-spark {
+  0% { transform: translateY(-110%); opacity: 1; }
+  30% { transform: translateY(290%); opacity: 1; }
+  31%, 100% { transform: translateY(290%); opacity: 0; }
+}
+
+@keyframes focus-sheen {
+  0% { transform: translateX(-120%); }
+  35%, 100% { transform: translateX(120%); }
+}
+
+@keyframes focus-name-glint {
+  0% { background-position: 100% 0; }
+  35%, 100% { background-position: 0% 0; }
+}
+
+@keyframes focus-open-shimmer {
+  0% { background-position: 100% 0; }
+  35%, 100% { background-position: 0% 0; }
+}
+
 @media (max-width: 1024px) {
   .hero-overlay {
     padding: clamp(72px, 8vh, 96px) clamp(20px, 4vw, 40px) clamp(24px, 4vh, 40px);
@@ -218,7 +312,7 @@
   /**
    * Phone layout — we re-shape the overlay into three distinct zones so the
    * canvas constellation never collides with the hero title block:
-   *   1. Top: eyebrow + name + tagline (auto-sized, sits directly under HUD)
+   *   1. Top: name + tagline (auto-sized, sits directly under HUD)
    *   2. Middle: 1fr empty space reserved for the canvas nodes
    *   3. Bottom: "NOW VIEWING" card (static, full-width, backdrop-blurred)
    * The keyboard-hint chip is removed entirely on touch — irrelevant there.
@@ -243,7 +337,6 @@
     background: linear-gradient(180deg, rgba(4, 7, 16, 0.74), rgba(4, 7, 16, 0));
     pointer-events: none;
   }
-  .hero-overlay__eyebrow { font-size: 10px; letter-spacing: 0.22em; }
   .hero-overlay__name {
     font-size: clamp(42px, 13.8vw, 82px);
     padding-top: 2px;
@@ -346,7 +439,6 @@
     height: min(22vh, 132px);
     background: linear-gradient(180deg, rgba(4, 7, 16, 0.68), rgba(4, 7, 16, 0));
   }
-  .hero-overlay--docked .hero-overlay__eyebrow,
   .hero-overlay--docked .hero-overlay__mobile-hint {
     display: none;
   }
@@ -430,8 +522,13 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-overlay__dot,
-  .hero-overlay__focus { animation: none; }
+  .hero-overlay__focus,
+  .hero-overlay__focus::before,
+  .hero-overlay__focus::after,
+  .hero-overlay__focus-name,
+  .hero-overlay__focus-open { animation: none; }
+  .hero-overlay__focus::before,
+  .hero-overlay__focus::after { display: none; }
 }
 
 /* planet floating labels (used inside <Html> nodes in the 3D scene) */
@@ -440,7 +537,7 @@
   pointer-events: none;
   padding: 4px 10px;
   border-radius: 10px;
-  font-family: "Inter", sans-serif;
+  font-family: var(--font-body);
   font-size: 11px;
   letter-spacing: 0.14em;
   text-transform: uppercase;

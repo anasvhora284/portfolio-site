@@ -36,11 +36,28 @@ const CARD_H_NARROW = 84;
 const CARD_GAP_NARROW = 20;
 
 /**
- * Shared branded thumbnail rendered behind EVERY project's constellation
- * preview card on the home page. The actual per-project screenshot only
- * shows up inside the ProjectPanel sidebar — keeps the HUD consistent.
+ * Shared branded thumbnail: placeholder for the constellation preview card
+ * while a project's screenshot loads, or when it has none.
  */
 const COMMON_THUMBNAIL_URL = "/project-thumbnail.svg";
+
+/** Per-project card art (thumb, else screenshot), loaded lazily on first focus. */
+const projectThumbs = new Map();
+function projectThumb(project) {
+  const src = project?.thumb ?? project?.image;
+  if (!src) return null;
+  let entry = projectThumbs.get(src);
+  if (!entry) {
+    entry = { img: new Image(), loaded: false };
+    entry.img.decoding = "async";
+    entry.img.onload = () => {
+      entry.loaded = true;
+    };
+    entry.img.src = src;
+    projectThumbs.set(src, entry);
+  }
+  return entry.loaded ? entry : null;
+}
 
 function seeded(seed) {
   let s = seed >>> 0;
@@ -545,19 +562,22 @@ function drawCard(ctx, cx, cy, node, commonThumb, gridPattern, w, h, dockedNarro
   ctx.clip();
 
   /**
-   * Background: always the shared branded thumbnail so every project on
-   * the constellation gets a consistent HUD feel. Falls back to the grid
-   * pattern on the first frame before the SVG has decoded.
+   * Background: the project's own screenshot once it has loaded, else the
+   * shared branded thumbnail, else the grid pattern on the very first frame.
    */
-  if (commonThumb && commonThumb.loaded) {
-    const img = commonThumb.img;
+  const own = projectThumb(node.project);
+  const thumb = own ?? commonThumb;
+  if (thumb && thumb.loaded) {
+    const img = thumb.img;
     const ir = img.width / img.height;
     const cr = cardW / cardH;
+    /** Logos are contained, screenshots cover the card. */
+    const contain = Boolean(own) && !node.project.thumb && node.project.imageKind === "logo";
     let dw;
     let dh;
     let dx;
     let dy;
-    if (ir > cr) {
+    if (ir > cr !== contain) {
       dh = cardH;
       dw = dh * ir;
       dx = cardX + (cardW - dw) / 2;

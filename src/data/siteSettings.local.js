@@ -4,8 +4,8 @@ export const siteSettings = {
   tagline: "Full-stack web & Odoo developer · Computer Engineering",
   statusLine: "SYS / CONSTELLATION v1",
   availableForWork: true,
-  siteUrl: "https://anasvhora.dev",
-  ogImage: "/og-image.svg",
+  siteUrl: "https://anasvhora.tech",
+  ogImage: "/og-image.png",
   keywords: [
     "Anas Vhora",
     "Anas Vhora portfolio",

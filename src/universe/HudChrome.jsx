@@ -10,7 +10,7 @@ export function HudChrome() {
   const closePanel = useUniverseStore((s) => s.closePanel);
 
   return (
-    <header className="hud-chrome">
+    <header className={`hud-chrome${panel ? " hud-chrome--panel" : ""}`}>
       <div className="hud-brand-stack">
         <button
           type="button"

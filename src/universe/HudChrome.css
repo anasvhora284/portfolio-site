@@ -331,3 +331,9 @@
   .hud-brand  { padding: 0.25rem 0.4rem; }
   .hud-brand__mark { font-size: 0.7rem; padding: 0.15rem 0.35rem; }
 }
+
+/* Phone: the project sheet starts under the brand row — the stacked social
+   icons would sit on top of its heading. */
+@media (max-width: 520px) {
+  .hud-chrome--panel .hud-brand-socials { display: none; }
+}

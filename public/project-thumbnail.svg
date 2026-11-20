@@ -61,14 +61,14 @@
   <text x="180" y="30" text-anchor="middle"
         font-family="JetBrains Mono, IBM Plex Mono, ui-monospace, monospace"
         font-size="9" letter-spacing="4"
-        fill="#ffd27a" opacity="0.78">PORTFOLIO · OBJECT</text>
+        fill="#ffd27a" opacity="0.78">PORTFOLIO Â· OBJECT</text>
 
   <!-- Tiny side coordinates, HUD-style. -->
   <text x="22"  y="116" font-family="JetBrains Mono, monospace" font-size="7"
         fill="#ffffff" opacity="0.28" letter-spacing="1.5">ANV-01</text>
   <text x="338" y="116" text-anchor="end"
         font-family="JetBrains Mono, monospace" font-size="7"
-        fill="#ffffff" opacity="0.28" letter-spacing="1.5">NAV · v1.0</text>
+        fill="#ffffff" opacity="0.28" letter-spacing="1.5">NAV Â· v1.0</text>
 
   <!-- Central hexagon marker with dashed outer ring. -->
   <g transform="translate(180 112)">
@@ -98,5 +98,5 @@
   <!-- Bottom coordinate readout. -->
   <text x="180" y="202" text-anchor="middle"
         font-family="JetBrains Mono, monospace" font-size="7"
-        letter-spacing="3" fill="#ffffff" opacity="0.38">[ CONSTELLATION · SELECT TO ENGAGE ]</text>
+        letter-spacing="3" fill="#ffffff" opacity="0.38">[ CONSTELLATION Â· SELECT TO ENGAGE ]</text>
 </svg>
