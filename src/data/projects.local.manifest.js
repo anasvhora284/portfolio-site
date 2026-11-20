@@ -858,7 +858,7 @@ export const projects = [
         "One React + TypeScript codebase shipped to web, Android and iOS with Capacitor.",
         "GitHub Actions that build all three platforms on every push."
       ],
-      "architecture": "Everything runs in the browser. The agent calls Gemini's OpenAI-compatible endpoint with ten typed tools and falls back across models if one fails. An earlier Python/FastAPI backend was removed once the client could do the job alone.",
+      "architecture": "The agent runs in the browser and calls Gemini through a tiny Node proxy I host on Oracle Cloud, so API keys never reach the client. The proxy only allows approved models, caps tokens and request size, rate-limits per visitor and answers only the app's own origins. The app falls back across models when one is overloaded.",
       "challenges": [
         {
           "title": "Keeping the agent in the kitchen",
@@ -869,11 +869,11 @@ export const projects = [
           "detail": "The UI state (ingredients, diet, servings) changes only through tool calls, so the conversation and the screen never disagree."
         },
         {
-          "title": "Deleting the backend",
-          "detail": "Moving the agent client-side removed a server entirely, at the cost of the API-key problem below."
+          "title": "Keys without a backend",
+          "detail": "Moving the agent client-side removed the old FastAPI server but exposed API keys. A ~200-line dependency-free proxy fixed that without bringing back a full backend."
         }
       ],
-      "outcome": "A working prototype on web and Android, built in a short sprint, that proved the tool-calling approach.",
+      "outcome": "Live on the web, with Android builds from the same codebase, served through a hardened proxy on Oracle Cloud's free tier.",
       "issues": [
         "Image lookup depends on third-party photo APIs, so some dishes fall back to generated images.",
         "No real tests yet.",
