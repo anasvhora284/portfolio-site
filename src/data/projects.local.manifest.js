@@ -847,8 +847,8 @@ export const projects = [
           "label": "platforms, one codebase"
         },
         {
-          "value": "0",
-          "label": "servers to run"
+          "value": "200",
+          "label": "lines of proxy, zero deps"
         }
       ],
       "problem": "Recipe apps make you search; you still have to work out what to cook from what's in the fridge, your diet and the time you have. I wanted a kitchen assistant you can just talk to.",
