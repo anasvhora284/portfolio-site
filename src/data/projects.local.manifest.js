@@ -1116,22 +1116,22 @@ export const projects = [
       ],
       challenges: [
         {
-          title: "1. Fixing what I found in the old code",
+          title: "Fixing what I found in the old code",
           detail:
             "Reviving it turned up real holes: an unauthenticated change-password route, admin routes with no protection, delete via GET, and order totals trusted from the client. Totals are now recomputed on the server, and an online payment could be claimed twice until I closed that. A hard-coded dead backend URL and a Dockerfile missing migrations and email templates were fixed too.",
         },
         {
-          title: "2. A build that was too heavy",
+          title: "A build that was too heavy",
           detail:
             "The frontend build was 12 MB and the home page 3.5 MB. After compressing and resizing images and trimming assets it is about 1.9 MB, with the home page near 750 KB. Framer Motion adds roughly 43 KB gzipped, which I judged worth it.",
         },
         {
-          title: "3. Images that never updated",
+          title: "Images that never updated",
           detail:
             "Replaced product media kept serving old URLs for 30 days because of long cache headers. Uploads now get content-hashed filenames, so a new image is a new URL.",
         },
         {
-          title: "4. Running it on 1 GB",
+          title: "Running it on 1 GB",
           detail:
             "The VM is a free-tier machine with 1 GB of RAM, so the stack is kept small: one API container, Postgres, Caddy, and nightly backups instead of anything heavier.",
         },
