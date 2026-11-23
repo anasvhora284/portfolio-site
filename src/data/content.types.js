@@ -48,9 +48,12 @@
  *   outcome?: string,
  *   issues?: string[],
  *   nextSteps?: string[],
+ *   credits?: string[],
  * }} [caseStudy] Long-form story for the case-study screen. Every field optional.
  * @property {string} link
  * @property {string} [repoUrl]
+ * @property {string} [video] Optional muted looping demo clip (mp4) shown under the plate.
+ * @property {string} [poster] Poster image for `video`.
  * @property {string} [articleUrl]
  * @property {{x?: number, y?: number, z?: number}} [starPosition]
  * @property {number} [year]

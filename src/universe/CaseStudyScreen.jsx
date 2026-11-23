@@ -165,6 +165,13 @@ export function CaseStudyScreen({ project, onClose }) {
             </figure>
           ) : null}
 
+          {project.video ? (
+            <figure className="case__demo" data-reveal>
+              <video src={project.video} poster={project.poster} muted loop autoPlay playsInline preload="metadata" />
+              <figcaption>Demo</figcaption>
+            </figure>
+          ) : null}
+
           {cs?.facts?.length ? (
             <dl className="case__facts" data-reveal>
               {cs.facts.map((f) => (
@@ -212,6 +219,7 @@ export function CaseStudyScreen({ project, onClose }) {
               <Row title="Outcome" text={cs.outcome} />
               <Row title="Known issues & limits" items={cs.issues} variant="issues" />
               <Row title="What I'd do next" items={cs.nextSteps} variant="next" />
+              <Row title="Credits" items={cs.credits} />
             </div>
           ) : (
             <div className="case__story">

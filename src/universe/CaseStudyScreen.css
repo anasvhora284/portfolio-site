@@ -211,6 +211,26 @@
   }
 }
 
+.case__demo {
+  margin: 20px 0 0;
+}
+
+.case__demo video {
+  display: block;
+  width: 100%;
+  border-radius: 6px;
+  border: 1px solid rgba(232, 197, 71, 0.22);
+  background: #0b1020;
+}
+
+.case__demo figcaption {
+  margin-top: 8px;
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+
 /* ── Numbers ── */
 .case__metrics {
   display: grid;

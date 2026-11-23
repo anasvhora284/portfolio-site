@@ -493,44 +493,63 @@ export const projects = [
     image: SmartHomeImage,
     caseStudy: {
       "facts": [
-        {
-          "label": "Event",
-          "value": "SAP Code Unnati Innovation Marathon 2.0"
-        },
-        {
-          "label": "Result",
-          "value": "Top 25 of 300+ teams"
-        },
-        {
-          "label": "Hardware",
-          "value": "Arduino Uno + relay module"
-        }
+        { "label": "Event", "value": "SAP Code Unnati Innovation Marathon 2.0 (2024)" },
+        { "label": "Result", "value": "Top 25 of 300+ teams" },
+        { "label": "Software", "value": "Python, MediaPipe, Keras, pyserial" },
+        { "label": "Hardware", "value": "Arduino Uno, 3 relays, buzzer, PIR sensor" }
       ],
       "metrics": [
+        { "value": "25", "label": "final rank (top)" },
+        { "value": "300+", "label": "teams competing" },
+        { "value": "10", "label": "hand gestures" }
+      ],
+      "problem": "Switches are hard to reach for elderly people and people with limited mobility, and smart-home kits are expensive and need an app for everything. We wanted to switch ordinary appliances with nothing but a webcam and a hand.",
+      "built": [
+        "A Python app that reads the webcam, finds 21 hand landmarks with MediaPipe and classifies them with a Keras model into 10 gestures.",
+        "A newline-terminated serial protocol (e.g. PEACE, STOP) sent with pyserial to an Arduino Uno.",
+        "An Arduino sketch that drives three relays (bulb, fan, charger) and a buzzer, and streams a PIR motion sensor.",
+        "A PyInstaller-packaged Windows build of the competition version, which also had voice commands.",
+        "Gesture table: peace / call me = bulb on / off, thumbs up / down = fan on / off, smile / live long = charger on / off, fist / rock = buzzer on / off, okay = everything on, stop = everything off."
+      ],
+      "architecture": "Webcam, then MediaPipe Hands, then the gesture classifier, then a serial command, then the Arduino, then a relay.",
+      "challenges": [
         {
-          "value": "25",
-          "label": "final rank (top)"
+          "title": "From finger counting to a trained model",
+          "detail": "The Hackster tutorial we started from counts raised fingers, which only gives a handful of states and misfires easily. We switched to a pre-trained 10-class landmark model, which gave a distinct gesture per on and off action but meant the model's landmark scaling had to be kept exactly as it expects."
         },
         {
-          "value": "300+",
-          "label": "teams competing"
+          "title": "A serial protocol that stays in sync",
+          "detail": "The Arduino reads whole lines, so every command is a newline-terminated word that is trimmed and matched. The PIR reading is printed on the same port every loop, so replies and sensor values interleave on the wire."
+        },
+        {
+          "title": "Relay wiring and polarity",
+          "detail": "The relay and buzzer modules are active-LOW, so LOW means on. The channel order on the board is reversed against the pin order, and the early sketch let relays click on at boot until the outputs were written off before pinMode."
         }
       ],
-      "problem": "Switches are hard to reach for elderly people and people with limited mobility. Smart-home kits are expensive and need an app for everything.",
-      "built": [
-        "A relay board driven by an Arduino Uno that switches ordinary appliances.",
-        "A Python app on any laptop or phone that recognises hand gestures and voice commands with a pre-trained model.",
-        "Gesture and voice commands mapped to individual appliances."
-      ],
-      "outcome": "Placed in the top 25 of 300+ teams at SAP's Code Unnati Innovation Marathon 2.0.",
+      "outcome": "Placed in the top 25 of 300+ teams at SAP's Code Unnati Innovation Marathon 2.0. The code, sketch and wiring are now public.",
       "issues": [
-        "The source code isn't published."
+        "The model files are not in the repo (licence unknown); you download them from the original tutorial.",
+        "Commands are sent on every frame a gesture is seen, with no debounce or confirmation.",
+        "Only one hand is tracked, and recognition depends on lighting and camera angle.",
+        "The PIR sensor is wired and read but does not switch anything yet.",
+        "The serial port is a flag (default COM10), with no automatic detection."
       ],
       "nextSteps": [
-        "Publish the code with wiring diagrams."
+        "Debounce gestures and only send a command when the gesture changes.",
+        "Use the PIR to turn things off when the room is empty.",
+        "Train our own gesture set so the model licence is clear.",
+        "Detect the Arduino port automatically."
+      ],
+      "credits": [
+        "Idea: Aarush Sood's Hackster tutorial, Control Led with Open-cv python(Hand gestures) and arduino.",
+        "Gesture model: appears to come from TechVidvan's Real-time Hand Gesture Recognition using TensorFlow & OpenCV.",
+        "Team: Anas Vhora, Cannith Parmar, Nevil Mangukiya."
       ]
     },
-    link: "https://www.linkedin.com/posts/anas-vhora-28455a1a1_innovation-technology-accessibility-activity-7179266835760955392-hRNG/?utm_source=share&utm_medium=member_desktop",
+    repoUrl: "https://github.com/anasvhora284/gesture-home-automation",
+    video: "/media/gesture-demo.mp4",
+    poster: "/media/gesture-demo.webp",
+    link: "https://github.com/anasvhora284/gesture-home-automation",
     year: 2023,
     sortOrder: 6,
     featured: true,
