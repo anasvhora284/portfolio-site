@@ -338,64 +338,69 @@ export const projects = [
     ),
     image: DroneImage,
     caseStudy: {
-      "facts": [
+      facts: [
+        { label: "Role", value: "Solo build" },
+        { label: "Timeline", value: "Aug 2023 to Jun 2024" },
+        { label: "Hardware", value: "Arduino UNO/Nano (ATmega328P), ESP8266, ESCs, MPU-6050" },
+        { label: "Control", value: "Phone over WiFi (ESP8266 → PPM)" },
+      ],
+      metrics: [
+        { value: "4", label: "motors, quad-X" },
+        { value: "8", label: "PPM channels over WiFi" },
+        { value: "22 s", label: "tethered hover clip" },
+      ],
+      problem:
+        "Off-the-shelf flight controllers hide the interesting parts. I wanted to build a quadcopter from loose boards, make it stay level, and fly it from a phone with no radio transmitter.",
+      built: [
+        "A quad-X frame with 1800KV motors (my own spec, not verified in the code), ESCs and an MPU-6050 (GY-521) for orientation.",
+        "MultiWii 2.4 on an Arduino UNO/Nano class board, with only config.h edited: QUADX, GY_521, PPM-sum input on pin D2.",
+        "An ESP8266 running a modified ESP-PPM sketch: it opens its own WiFi access point (Drone1), serves a control page to the phone, and turns 3-byte WebSocket frames into an 8-channel PPM signal on GPIO5.",
+        "A failsafe in the ESP sketch that forces throttle low if control frames stop arriving.",
+        "My first attempt, a custom PID flight controller with a PC control app, lives in the older Drone-app-control and Drone-Motor-Speed-controller repos.",
+      ],
+      architecture:
+        "Phone, then WiFi, then ESP8266, then PPM, then MultiWii flight controller, then ESCs, then motors.",
+      challenges: [
         {
-          "label": "Role",
-          "value": "Solo build"
+          title: "Writing the PID loop myself",
+          detail:
+            "In Aug 2023 I tried a custom PID controller on an ESP8266 with a Servo/ESC library and a tkinter/UDP control app on the PC, plus an MPU-6050 angle test. It stayed at a few hundred lines and I have no evidence it ever flew, so I moved to MultiWii.",
         },
         {
-          "label": "Hardware",
-          "value": "Arduino, NodeMCU, ESCs, MPU-6050"
+          title: "Tuning MultiWii through config.h",
+          detail:
+            "All of my firmware changes live in config.h: MINTHROTTLE 1200 and MAXTHROTTLE 1800 to match the ESC range, I2C at 400 kHz with the internal pull-ups, LOOP_TIME 3000 and the stock PID controller 1. Getting the loop time and I2C speed right matters because the MPU-6050 is read every cycle.",
         },
         {
-          "label": "Control",
-          "value": "Phone / laptop over Wi-Fi"
-        }
-      ],
-      "metrics": [
-        {
-          "value": "2",
-          "label": "nested PID loops"
+          title: "WiFi latency and PPM",
+          detail:
+            "A phone link adds latency and can drop, which is risky on a flying machine. The ESP8266 sends compact 3-byte WebSocket frames (channel, value high, value low) on port 81, and the failsafe cuts throttle if they stop. The ESP firmware itself is upstream work; I did the wiring and the flight controller side.",
         },
-        {
-          "value": "4",
-          "label": "motors mixed"
-        },
-        {
-          "value": "2",
-          "label": "ms control loop"
-        }
       ],
-      "problem": "Off-the-shelf flight controllers hide all the interesting parts. I wanted to understand how a quadcopter actually stays level by writing that loop myself.",
-      "built": [
-        "A quad frame with 1800KV motors and ESCs, an MPU-6050 for orientation and a Wi-Fi board for control.",
-        "A cascaded controller: an outer angle loop feeding an inner rate PID, mixed across four motors in X configuration.",
-        "A complementary filter blending gyro and accelerometer, with gyro calibration at startup.",
-        "A Python desktop app with sliders to tune throttle and PID gains live over Wi-Fi."
+      outcome:
+        "It hovered. The flight video is an indoor, tethered test over a table (ropes held by people), dated 26 Jun 2024. It lifts off and holds a hover a little above the table. It was not a free outdoor flight.",
+      issues: [
+        "The older custom-PID sketch has PID bugs (no anti-windup, a variable-shadowing bug weakening the derivative term, integer-parsed gains) and mixes ESP8266 and ESP32 code, so it doesn't compile as committed. That was the first attempt, not the drone that flew.",
+        "The flight was tethered and indoors only; I haven't done a free flight.",
+        "The ESC model, frame and battery are not recorded in the repo.",
+        "I wrote the config and wiring, not the ESP firmware or MultiWii; the page and MSP files are upstream, unchanged.",
       ],
-      "challenges": [
-        {
-          "title": "Tuning in the air",
-          "detail": "Re-flashing for every gain change is slow and risky, so gains are sent over Wi-Fi while the drone runs."
-        },
-        {
-          "title": "Noisy sensors",
-          "detail": "Gyros drift and accelerometers jitter; the complementary filter trades one off against the other."
-        }
+      nextSteps: [
+        "Log flights and tune the PID gains properly for a free hover.",
+        "Fix the custom PID bugs and finish my own flight controller.",
+        "Record the full parts list in the repo.",
       ],
-      "outcome": "It flew and self-levelled — and taught me control theory the hard way.",
-      "issues": [
-        "Looking back at the code: the integral term has no anti-windup, and a variable-shadowing bug weakens the derivative term.",
-        "Gains are parsed as integers, so fine values like 0.03 are lost.",
-        "The published sketch mixes ESP8266 and ESP32 code and doesn't compile as committed."
+      credits: [
+        "MultiWii 2.4 by Alexandre Dubus and contributors (GPL-3.0).",
+        "ESP-PPM by Dipanshu Shukla (MIT), which my ESP8266 sketch modifies.",
+        "MSP library by F. Di Vittorio (LGPL-2.1).",
       ],
-      "nextSteps": [
-        "Fix the PID bugs, add anti-windup and float gains.",
-        "Pick one board and log flights for offline tuning."
-      ]
     },
-    link: "https://drive.google.com/file/d/1vhhIyUH0XxMhNC_BbDJC0rcZ0ZbUsPB6/view",
-    year: 2022,
+    repoUrl: "https://github.com/anasvhora284/wifi-ppm-drone",
+    video: "/media/drone-flight.mp4",
+    poster: "/media/drone-flight.webp",
+    link: "https://github.com/anasvhora284/wifi-ppm-drone",
+    year: 2024,
     sortOrder: 4,
     featured: false,
     roles: ["IoT", "Embedded"],
