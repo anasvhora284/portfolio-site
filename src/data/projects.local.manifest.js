@@ -8,6 +8,7 @@ import RishtaWebsiteImage from "../assets/Images/Projects/RishtaWebsite.gif";
 import PaySlipProImage from "../assets/Images/Projects/PaySlipProImage.webp";
 import AutoVoyageImage from "../assets/Images/Projects/AutoVoyage.webp";
 import InputLeafImage from "../assets/Images/Projects/InputLeaf.webp";
+import GamingCafeImage from "../assets/Images/Projects/GamingCafe.webp";
 import { blocksFromPlainText } from "../lib/blocksFromPlainText.js";
 
 /**
@@ -1166,6 +1167,88 @@ export const projects = [
     featured: true,
     roles: ["Full-stack"],
     stack: ["React", "Express", "PostgreSQL", "Framer Motion", "Docker"],
+  },
+  {
+    name: "Gaming Cafe for Odoo",
+    slug: "gaming-cafe",
+    tagline: "Session billing and a live floor board for a café.",
+    description:
+      "An Odoo 19 module for a PlayStation gaming café: stations, rate cards, timed sessions, snack sales, cash and UPI payments and expenses, with a live supervisor dashboard. I built it and proposed it to a gaming café that recently opened near my home town.",
+    body: blocksFromPlainText(
+      "Gaming Cafe is an Odoo 19 addon that bills a gaming café by the session. Stations, hourly rate cards, bookings and walk-ins, snacks, cash and UPI payments and running expenses all live in one place.\n\nA supervisor dashboard shows each station with a countdown timer, today's takings and upcoming bookings. Pivot and graph reports cover revenue, payments and expenses.\n\nI built it as a proposal for a real café near my home town. It runs end to end on a fresh Odoo 19 install with demo data and automated tests, but it is a prototype, not a live deployment.",
+    ),
+    image: GamingCafeImage,
+    caseStudy: {
+      facts: [
+        { label: "Role", value: "Odoo / Full-stack, solo" },
+        { label: "Timeline", value: "Aug 2026, tidied up Nov 2026" },
+        { label: "Platform", value: "Odoo 19 (Python, XML, OWL)" },
+        { label: "Status", value: "Proposed to a local gaming café" },
+      ],
+      metrics: [
+        { value: "6", label: "data models" },
+        { value: "4", label: "wizards" },
+        { value: "23", label: "views" },
+        { value: "7", label: "automated tests" },
+      ],
+      problem:
+        "A new gaming café near my home town tracks its sessions on paper: who is on which console, when time runs out, what they owe and how they paid. Cash and UPI get mixed, snacks are forgotten and nobody can easily say what a day or a month earned. I proposed building it properly in Odoo, the tool I use every day at work.",
+      built: [
+        "Six models: stations, rate cards, sessions, snack lines, payments and expenses, with security groups for a supervisor and an owner.",
+        "A session lifecycle from draft to booked, playing, overtime, pending payment and done, with server-side double-booking protection and a cron job that flags overtime.",
+        "Four wizards: quick booking (walk-in or booking, with an optional advance), add snack, add payment, and end session with balance collection.",
+        "Billing that adds extra players, snacks and pro-rated overtime to the rate-card price, then tracks the balance against cash, UPI and refund payments.",
+        "An OWL dashboard with a card per station, a live countdown, today's cash and UPI totals and the next bookings, plus pivot and graph reports for revenue, payments and expenses.",
+        "Fictional demo data and a seven-test suite for billing, payments, overlap and booking.",
+      ],
+      architecture:
+        "A single installable Odoo 19 addon on the standard stack: ORM models, XML views, a small OWL client action for the dashboard, and mail, stock and product for chatter and snack inventory.",
+      architectureList: [
+        "Core record: gaming.session, with a state machine and stored computed amounts (gaming, extra players, snacks, overtime, total, paid, balance, cash and UPI split).",
+        "Stations compute their live status from their sessions, so the dashboard and kanban always agree.",
+        "Each snack line creates a stock move, so inventory follows what is sold at the counter.",
+        "Supervisors run the floor; owners also see configuration, expenses and reports.",
+      ],
+      challenges: [
+        {
+          title: "Keeping the money right",
+          detail:
+            "A session's total is built from several parts and the balance from payments, pre-payments and refunds. I made every amount a stored computed field and wrote tests for the totals, the cash and UPI split and the rule that a session cannot complete with an unpaid balance.",
+        },
+        {
+          title: "Preventing double bookings",
+          detail:
+            "Two staff can book the same console for the same slot. A constraint rejects overlapping sessions on a station on the server, so it holds regardless of which screen created the booking.",
+        },
+        {
+          title: "Making it run on a clean database",
+          detail:
+            "The module only truly worked once I installed it from scratch on Odoo 19. That surfaced a crash when adding any snack (a stock field that no longer exists), demo data loaded on every install, and form layouts that were off. I fixed each and added tests.",
+        },
+      ],
+      outcome:
+        "A working Odoo 19 module that installs cleanly, demos well and passes its tests. It was proposed to the café, and I use it to show how I design a small business workflow in Odoo end to end.",
+      issues: [
+        "Not deployed anywhere; this is a proposal and a prototype.",
+        "Time added with the +30 and +60 minute buttons moves the end time but is not billed.",
+        "Cancellation has no refund flow; refunds are recorded by hand.",
+        "No audio alert yet when a session expires, and no record rules or customer history report.",
+        "Station types are limited to Normal PS5 and Racing.",
+      ],
+      nextSteps: [
+        "Bill extended time and add a proper refund flow on cancellation.",
+        "Add the audio alert and quick actions on the dashboard cards.",
+        "Add record rules, a customer history report and a daily PDF report.",
+        "Trim the manifest dependencies and deploy a pilot for the café.",
+      ],
+    },
+    // TODO: set `repoUrl` (and optionally `link`) once the owner publishes the repo.
+    link: "",
+    year: 2026,
+    sortOrder: 14,
+    featured: true,
+    roles: ["Odoo", "Full-stack"],
+    stack: ["Odoo 19", "Python", "XML", "PostgreSQL"],
   },
 ];
 
