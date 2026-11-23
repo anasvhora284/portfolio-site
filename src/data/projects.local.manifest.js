@@ -1073,6 +1073,95 @@ export const projects = [
     roles: ["Android", "Research"],
     stack: ["Android", "KernelSU", "SUSFS", "Zygisk"],
   },
+  {
+    name: "Pristine Aura",
+    slug: "pristine-aura",
+    tagline: "A clothing store, rebuilt and finally live.",
+    description:
+      "A full-stack clothing store for my cousin's business: React storefront, Express and PostgreSQL backend, a from-scratch admin panel, Razorpay and email integrations, running on a free cloud VM. It began as a frontend nobody launched in 2024.",
+    body: blocksFromPlainText(
+      "Pristine Aura is a fashion e-commerce store with 24 products across Men, Women and Kids, a cart drawer, step checkout, accounts, wishlist, blog and two collection films.\n\nBehind it sits an Express and PostgreSQL API with role-based JWT auth, transactional email and an admin panel I rebuilt from scratch.\n\nThe frontend started as an unlaunched client project in 2024. In November 2026 I rebuilt and finished it for my cousin's clothing business.",
+    ),
+    caseStudy: {
+      facts: [
+        { label: "Role", value: "Full-stack" },
+        { label: "Timeline", value: "Frontend 2024 · rebuilt Nov 2026" },
+        { label: "Hosting", value: "Oracle Cloud free tier + Netlify" },
+        { label: "Status", value: "Live" },
+      ],
+      metrics: [
+        { value: "24", label: "products" },
+        { value: "27", label: "backend tests" },
+        { value: "12 MB → 1.9 MB", label: "frontend build" },
+        { value: "₹0", label: "monthly hosting" },
+      ],
+      problem:
+        "In about 2024 a friend and I built the frontend of a fashion store for a client of a friend's contact. The client never launched it. I wrote that frontend myself and later recreated it as Pristine Aura (React and Express, with MongoDB, Postgres and MySQL experiments), but it stayed a half-finished demo until my cousin needed a real store for his clothing business in November 2026.",
+      built: [
+        "A React, Vite and Tailwind storefront with category filters, sort, search, product pages with per-size stock, a cart drawer, step checkout, account and orders, a wishlist (guest localStorage, synced on login), a blog and two collection films.",
+        "Framer Motion details that respect reduced motion: a route-transition curtain, add-to-cart fly-to-bag, a drag carousel, a wishlist heart burst, a sliding size picker and checkout confetti.",
+        "An Express API with JWT auth and roles, Razorpay integration (Cash on Delivery works today) and Gmail SMTP email for OTPs, order confirmations, status updates and admin new-order alerts.",
+        "An admin panel rebuilt from scratch: a dashboard with revenue, orders, AOV, customers and low-stock KPIs with period-over-period change and a sales chart; a product list with filters and bulk actions; a product form with auto slug, MRP and sale price with auto discount, cost price and margin, per-size stock, colour swatch, drag-and-drop multi-image upload with reorder and cover, SEO fields and a live storefront-card preview; and orders with a status timeline.",
+        "A new PA-monogram vector logo, and AI-generated product photos, hero banners and films, since the old brand's photos were removed.",
+      ],
+      architecture:
+        "A static frontend on Netlify talks to a Dockerised API on an Oracle Cloud free-tier VM behind Caddy for HTTPS. PostgreSQL 16 holds the data, and a nightly job backs up the database and uploads.",
+      architectureList: [
+        "Frontend — React, Vite, Tailwind and Framer Motion, hosted on Netlify.",
+        "API — Express with JWT auth and roles, in Docker.",
+        "Database — PostgreSQL 16 with migrations.",
+        "Edge — Caddy terminating HTTPS on the VM.",
+        "Email — Gmail SMTP with HTML templates.",
+        "Tests — 27 backend tests using node:test and supertest against a real Postgres.",
+      ],
+      challenges: [
+        {
+          title: "1. Fixing what I found in the old code",
+          detail:
+            "Reviving it turned up real holes: an unauthenticated change-password route, admin routes with no protection, delete via GET, and order totals trusted from the client. Totals are now recomputed on the server, and an online payment could be claimed twice until I closed that. A hard-coded dead backend URL and a Dockerfile missing migrations and email templates were fixed too.",
+        },
+        {
+          title: "2. A build that was too heavy",
+          detail:
+            "The frontend build was 12 MB and the home page 3.5 MB. After compressing and resizing images and trimming assets it is about 1.9 MB, with the home page near 750 KB. Framer Motion adds roughly 43 KB gzipped, which I judged worth it.",
+        },
+        {
+          title: "3. Images that never updated",
+          detail:
+            "Replaced product media kept serving old URLs for 30 days because of long cache headers. Uploads now get content-hashed filenames, so a new image is a new URL.",
+        },
+        {
+          title: "4. Running it on 1 GB",
+          detail:
+            "The VM is a free-tier machine with 1 GB of RAM, so the stack is kept small: one API container, Postgres, Caddy, and nightly backups instead of anything heavier.",
+        },
+      ],
+      outcome:
+        "The store is live at pristineaura.anasvhora.tech with 24 products, working accounts, orders, Cash on Delivery checkout and email, and an admin panel the owner can run it from. It costs nothing to host.",
+      issues: [
+        "Product reviews aren't implemented; the product page calls a reviews endpoint that doesn't exist yet.",
+        "Online payment waits on Razorpay keys and is in test mode.",
+        "The store's contact details are still placeholders.",
+        "It runs on a 1 GB free VM, so there is little headroom for traffic spikes.",
+      ],
+      nextSteps: [
+        "Build the reviews endpoint.",
+        "Switch Razorpay to live keys once they arrive.",
+        "Replace the placeholder contact details.",
+        "Swap the AI demo imagery for real product photography.",
+      ],
+      credits: [
+        "Product photos, hero banners and films are AI-generated for demo purposes with Google Antigravity, Gemini and Flow, and credited in the store.",
+        "The PA monogram logo was made the same way.",
+      ],
+    },
+    link: "https://pristineaura.anasvhora.tech",
+    year: 2026,
+    sortOrder: 13,
+    featured: true,
+    roles: ["Full-stack"],
+    stack: ["React", "Express", "PostgreSQL", "Framer Motion", "Docker"],
+  },
 ];
 
 /** Star-map card art (engraved atlas plates), matched to projects by slug. */
