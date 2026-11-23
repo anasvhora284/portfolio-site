@@ -543,7 +543,7 @@ export const projects = [
       "credits": [
         "Idea: Aarush Sood's Hackster tutorial, Control Led with Open-cv python(Hand gestures) and arduino.",
         "Gesture model: appears to come from TechVidvan's Real-time Hand Gesture Recognition using TensorFlow & OpenCV.",
-        "Team: Anas Vhora, Cannith Parmar, Nevil Mangukiya."
+        "Built as a team of three for the hackathon."
       ]
     },
     repoUrl: "https://github.com/anasvhora284/gesture-home-automation",
