@@ -122,17 +122,6 @@ export default function UniverseShell() {
   }, [syncRoute]);
 
   useEffect(() => {
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const mobile = window.matchMedia("(max-width: 768px)").matches;
-    const cpu = navigator.hardwareConcurrency || 8;
-    const saveData = navigator.connection?.saveData;
-    let tier = "cinema";
-    if (reduce || saveData) tier = "lite";
-    else if (mobile || cpu <= 4) tier = "balanced";
-    useUniverseStore.getState().setQualityTier(tier);
-  }, []);
-
-  useEffect(() => {
     const mq = window.matchMedia("(max-width: 720px)");
     const syncHeroDock = () => {
       useUniverseStore.getState().setHeroDocked(mq.matches);

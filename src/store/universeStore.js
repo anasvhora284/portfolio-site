@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { resolveQualityTier } from "./qualityTier.js";
 
 const STORAGE_AUDIO = "portfolio_audio_muted";
 
@@ -15,9 +16,22 @@ const initialBoot = /** @type {'boot' | 'ready'} */ (
     : "boot"
 );
 
+// Resolved synchronously so the first client render already knows the tier.
+// SSR/prerender (no window) stays 'lite' so it never pulls in 3D.
+const initialTier = /** @type {'cinema' | 'balanced' | 'lite'} */ (
+  typeof window === "undefined"
+    ? "lite"
+    : resolveQualityTier({
+        reducedMotion: window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+        saveData: Boolean(navigator.connection?.saveData),
+        narrow: window.matchMedia("(max-width: 768px)").matches,
+        cores: navigator.hardwareConcurrency || 8,
+      })
+);
+
 export const useUniverseStore = create((set) => ({
   bootPhase: /** @type {'boot' | 'ready'} */ (initialBoot),
-  qualityTier: /** @type {'cinema' | 'balanced' | 'lite'} */ ("cinema"),
+  qualityTier: /** @type {'cinema' | 'balanced' | 'lite'} */ (initialTier),
   panel: /** @type {null | 'project' | 'about' | 'contact'} */ (null),
   targetSlug: /** @type {string | null} */ (null),
   /**
