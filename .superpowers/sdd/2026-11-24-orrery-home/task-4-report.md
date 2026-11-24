@@ -1,0 +1,4 @@
+# Task 4 report
+Implemented the look: Lighting.jsx (Lightformer env, no fetch), Glow.jsx (additive sprite), Sun.jsx, Rings.jsx (brass torus, 180 instanced ticks, tinted band, per-ring drift), Bodies.jsx (clearcoat physical spheres tinted per ring, octahedra for Hardware, glow), Starfield.jsx (drei Stars, twinkle speed 0 under reduced motion). Scene.jsx composes them; pointer parallax ~3.5deg via store pointer, clampDelta everywhere, runtime reduced-motion listener stops drift/parallax/twinkle. OrreryCanvas: ACES, exposure 1.15, dpr [1,2]. Orrery group scaled 0.82 and lowered so the hero name is clear of the sun.
+Checks: orrery-check 10/10 (also after final edit); screenshots /tmp/o4a, /tmp/o4b, /tmp/o4c (1440x900 only; script has no 1280x720). eslint clean; build ok, 18 routes. OrreryCanvas chunk gzip 245,932 B (was 221,655; limit 300 KB).
+Concern: hero tagline text still crosses the outer ring top edge; hero overlay untouched per constraints.

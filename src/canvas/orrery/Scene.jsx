@@ -2,17 +2,39 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import { Vector3 } from "three";
 import { starScreen, useUniverseStore } from "../../store/universeStore.js";
-import { RINGS, layoutBodies } from "./model.js";
+import { RINGS, clampDelta, layoutBodies } from "./model.js";
+import { Lighting } from "./Lighting.jsx";
+import { Starfield } from "./Starfield.jsx";
+import { Sun } from "./Sun.jsx";
+import { Ring } from "./Rings.jsx";
+import { Body } from "./Bodies.jsx";
+
+const DRIFT = [0.05, -0.035, 0.027, -0.02]; // rad/s per ring, inner -> outer
+const PARALLAX = 0.06; // ~3.5 degrees
+
+function useMotionAllowed() {
+  const [ok, setOk] = useState(
+    () => !matchMedia("(prefers-reduced-motion: reduce)").matches,
+  );
+  useEffect(() => {
+    const mq = matchMedia("(prefers-reduced-motion: reduce)");
+    const on = () => setOk(!mq.matches);
+    mq.addEventListener("change", on);
+    return () => mq.removeEventListener("change", on);
+  }, []);
+  return ok;
+}
 
 const tmp = new Vector3();
 
 export function Scene({ projects, order, onStarSelect, onFirstFrame }) {
   const { gl, camera, size } = useThree();
   const bodies = useMemo(() => layoutBodies(projects), [projects]);
-  const radius = useMemo(() => Object.fromEntries(RINGS.map((r) => [r.key, r.radius])), []);
   const meshes = useRef({});
   const [hovered, setHovered] = useState(null);
   const first = useRef(true);
+  const tilt = useRef();
+  const motion = useMotionAllowed();
 
   useEffect(() => {
     Object.defineProperty(window, "__ORRERY_DEBUG__", {
@@ -30,7 +52,13 @@ export function Scene({ projects, order, onStarSelect, onFirstFrame }) {
     };
   }, [gl, order]);
 
-  useFrame(() => {
+  useFrame((_, dt) => {
+    const [px, py] = useUniverseStore.getState().pointer;
+    const k = 1 - Math.exp(-clampDelta(dt) * 3);
+    const t = tilt.current;
+    t.rotation.x += ((motion ? py * PARALLAX : 0) - t.rotation.x) * k;
+    t.rotation.y += ((motion ? px * PARALLAX : 0) - t.rotation.y) * k;
+    t.updateMatrixWorld(true);
     const mesh = meshes.current[useUniverseStore.getState().focusedSlug];
     if (mesh) {
       mesh.getWorldPosition(tmp).project(camera);
@@ -51,41 +79,45 @@ export function Scene({ projects, order, onStarSelect, onFirstFrame }) {
 
   return (
     <>
-      <ambientLight intensity={0.6} />
-      <pointLight intensity={80} color="#e8c547" />
-      <mesh>
-        <sphereGeometry args={[1, 32, 32]} />
-        <meshBasicMaterial color="#e8c547" />
-      </mesh>
-      {RINGS.map((r) => (
-        <mesh key={r.key} rotation={[Math.PI / 2, 0, 0]}>
-          <torusGeometry args={[r.radius, 0.02, 8, 128]} />
-          <meshBasicMaterial color="#e8c547" />
-        </mesh>
-      ))}
-      {bodies.map((b) => (
-        <mesh
-          key={b.slug}
-          ref={(m) => {
-            meshes.current[b.slug] = m;
-          }}
-          position={[Math.cos(b.angle) * radius[b.ring], 0, Math.sin(b.angle) * radius[b.ring]]}
-          scale={hovered === b.slug ? 1.3 : 1}
-          onClick={click(b.slug)}
-          onPointerOver={(e) => {
-            e.stopPropagation();
-            setHovered(b.slug);
-            document.body.style.cursor = "pointer";
-          }}
-          onPointerOut={() => {
-            setHovered(null);
-            document.body.style.cursor = "";
-          }}
-        >
-          <sphereGeometry args={[0.28, 24, 24]} />
-          <meshStandardMaterial color="#f0f1f5" />
-        </mesh>
-      ))}
+      <Lighting />
+      <Starfield motion={motion} />
+      <group position={[0, -0.9, -1.2]} scale={0.82}>
+        <group ref={tilt}>
+          <Sun />
+          {RINGS.map((r, i) => (
+            <Ring key={r.key} ring={r} speed={DRIFT[i]} motion={motion}>
+              {bodies
+                .filter((b) => b.ring === r.key)
+                .map((b) => (
+                  <Body
+                    key={b.slug}
+                    color={r.color}
+                    hardware={r.key === "Hardware"}
+                    hovered={hovered === b.slug}
+                    meshRef={(m) => {
+                      meshes.current[b.slug] = m;
+                    }}
+                    position={[
+                      Math.cos(b.angle) * r.radius,
+                      0,
+                      Math.sin(b.angle) * r.radius,
+                    ]}
+                    onClick={click(b.slug)}
+                    onPointerOver={(e) => {
+                      e.stopPropagation();
+                      setHovered(b.slug);
+                      document.body.style.cursor = "pointer";
+                    }}
+                    onPointerOut={() => {
+                      setHovered(null);
+                      document.body.style.cursor = "";
+                    }}
+                  />
+                ))}
+            </Ring>
+          ))}
+        </group>
+      </group>
     </>
   );
 }
