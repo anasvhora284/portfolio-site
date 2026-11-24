@@ -1,6 +1,6 @@
 # Orrery home page — design
 
-Date: 2026-11-24 · Status: draft for approval · Branch: `feature/orrery-home` (from `master`)
+Date: 2026-11-24 · Status: for approval (builder check done) · Branch: `feature/orrery-home` (from `master`)
 Prior art: throwaway prototypes on branch `spike/home-3d` — `spike/orrery/` (chosen direction) and `spike/workbench/` (rejected direction, but its drone and breadboard models are reused).
 
 ## Intent
@@ -15,7 +15,7 @@ Why the Orrery over the Workbench (Anas agreed): it fits the existing identity, 
 
 1. On capable devices, the home page background is a real-time 3D orrery (react-three-fiber) instead of the 2D star map.
 2. Everything that works today keeps working unchanged: boot sequence, HUD, hero name/tagline/hint, the "Now viewing" card (including its looping shine animation), cinematic audio, keyboard model (arrows / Enter / Esc / Tab), wheel and touch browsing, deep links, case-study dive transition, screen-reader nav, prerendered OG tags.
-3. Four rings, one per discipline. Assignment is by the first matching role in this priority: **Odoo** (`Odoo`) > **Hardware** (`IoT`, `Embedded`) > **Mobile** (`Mobile`, `Android`) > **Web** (everything else: `Frontend`, `Full-stack`, `UI/UX`, `Systems`, `AI`, `Research`, …).
+3. Four rings, one per discipline. Assignment is by the first matching role in this priority: **Odoo** (`Odoo`) > **Hardware** (`IoT`, `Embedded`, `ML`) > **Mobile** (`Mobile`, `Android`) > **Web** (everything else: `Frontend`, `Full-stack`, `UI/UX`, `Systems`, `AI`, `Research`, …).
 4. Borrowed from the Workbench: hardware projects are tiny 3D models instead of spheres — the quadcopter (Auto-Balancing Drone) and the breadboard + Arduino (Gesture Smart Home), adapted from `spike/workbench/main.jsx`. Any future hardware project without a model falls back to the octahedron from the orrery spike.
 5. Borrowed from the Workbench: the selected body shows its real screenshot (`project.image`, falling back to `thumb`) on a small glowing glass pane floating beside it, fading in on selection.
 6. Phones get a version of the Orrery too (see Tiers).
@@ -30,13 +30,15 @@ Why the Orrery over the Workbench (Anas agreed): it fits the existing identity, 
 
 - Any label, pane or body drawn over the hero name/tagline or the "Now viewing" card.
 - Camera motion that is fast, swoopy or close enough to feel nauseating; the spike's "after 3 arrow presses the camera is in the body's face" is the example of what not to ship.
-- A slower first paint than today, or the 3D bundle loading on non-home routes.
+- A slower first paint than today on any route.
 - A generic "three.js demo" look: flat unlit spheres, default grey, primitive-looking shapes.
 - Breaking keyboard, deep links, the dive transition, or the prerender build.
 
 ## Integration contract (decided)
 
-- New component `src/canvas/OrreryCanvas.jsx` (plus a small folder of parts if needed), default export with the **same props as `UniverseCanvas`**: `({ projects, onStarSelect })`. `UniverseShell.jsx` picks which one to lazy-load; nothing else in the shell changes except that choice.
+- New component `src/canvas/OrreryCanvas.jsx` (plus a small folder of parts if needed), default export with the **same props as `UniverseCanvas`**: `({ projects, onStarSelect })`. `UniverseShell.jsx` picks which one to lazy-load. Allowed shell/store changes: that choice, the tier resolution below, the error-boundary fallback, and the deep-link deferral below. Nothing else.
+- *Decided by Claude:* `qualityTier` is resolved synchronously as the store's initial value (move the existing media-query logic from the shell's effect into `universeStore.js`), so a reduced-motion or save-data visitor never starts downloading the Orrery chunk.
+- *Decided by Claude:* deep links (`/work/x`, `/about`, …) still mount the background canvas as today, but the Orrery's lazy import is deferred to `requestIdleCallback` (fallback `setTimeout` 1500 ms) so it never competes with the panel's first paint. Until it arrives the background is the plain dark backdrop (no 2D canvas swap). On `/` it loads during the boot sequence as before.
 - State it reads from `useUniverseStore`: `focusedSlug`, `pointer` (normalised parallax input), `qualityTier`, `panel`.
 - It does **not** register its own keyboard, wheel or touch handlers. The shell already turns arrows / wheel / swipes into `focusedSlug` changes; the Orrery only reacts to `focusedSlug`.
 - Click / tap on a body: if it isn't the focused one, call `onStarSelect(slug)` (focuses it); if it is, call `onStarSelect(slug, { open: true })` (opens the case study). Hover shows a pointer cursor and a highlight.
@@ -48,10 +50,10 @@ Why the Orrery over the Workbench (Anas agreed): it fits the existing identity, 
 
 - **Selection**: when `focusedSlug` changes, the focused body's ring rotates the shortest way so the body comes to the front-right of the orrery; other rings keep a slow idle drift. Camera eases (critically damped, ~0.8–1.2 s) to a framing where the focused body sits right of centre, the sun stays in frame, and at least part of every ring stays visible. There is a minimum camera distance; it never fills the screen with one body.
 - **Labels**: only the focused and the hovered body show a name label. Others are unlabeled (the "Now viewing" card already names the focused project).
-- **Screenshot pane**: appears beside the focused body on the side away from the hero overlay; never overlaps the hero name or card. Desktop tiers only (cinema/balanced); hidden on narrow screens.
+- **Screenshot pane**: appears beside the focused body on the side away from the hero overlay; never overlaps the hero name or card. Hidden on narrow screens (≤ 720 px). *Decided by Claude:* screenshots are cover-cropped to a 16:10 pane; projects with `imageKind: "logo"` use their `thumb` instead of the logo; textures are downscaled to ≤ 1024 px wide and created lazily (only for the focused body and its neighbours).
 - **Idle**: slow ring drift and a gentle star twinkle. Pointer parallax tilts the whole orrery a few degrees.
-- **Panel open** (case study/about/contact/work index): after the dive transition (~600 ms) the render loop pauses; it resumes when the panel closes.
-- **Reduced motion**: no idle drift or twinkle, camera cuts instead of flying, no parallax. (Today reduced-motion visitors are in the `lite` tier; see below.)
+- **Panel open** (*decided by Claude*): for the case study, the render loop pauses after the dive (~600 ms). For `/work`, `/about` and `/contact`, the builder checks each panel's backdrop: if it fully covers the canvas, pause immediately; if the canvas shows through, keep rendering but drop DPR to 1 and cap at ~30 fps. Resume full rendering when the panel closes; `starScreen` must be fresh again before the next dive.
+- **Reduced motion** (*decided by Claude*): reduced-motion visitors stay in the `lite` tier and keep the 2D map, so the Orrery needs no reduced-motion mode beyond a guard (no idle drift if the media query flips at runtime).
 
 ## Tiers and fallbacks (decided)
 
@@ -59,7 +61,7 @@ Why the Orrery over the Workbench (Anas agreed): it fits the existing identity, 
 
 | Tier | Who | Gets |
 |---|---|---|
-| `cinema` | desktop, >4 cores | Full Orrery: DPR up to 2, environment reflections on brass, real bloom (`@react-three/postprocessing`, cinema only), screenshot pane |
+| `cinema` | desktop, >4 cores | Full Orrery: DPR up to 2, environment reflections on brass, real bloom (`@react-three/postprocessing`, in its own lazy chunk loaded only on cinema), screenshot pane |
 | `balanced` | phones / ≤4 cores | Orrery-lite: DPR ≤1.5, no postprocessing (additive glow sprites instead), fewer stars, simpler materials; screenshot pane only on wide screens |
 | `lite` | reduced motion / save-data | Existing 2D `UniverseCanvas`, unchanged |
 
@@ -69,7 +71,7 @@ Plus: if WebGL is unavailable or the Orrery throws, an error boundary renders th
 
 ## Performance budget
 
-- Orrery chunk (three + r3f + drei parts used + postprocessing) ≤ 250 KB gzipped, loaded only on `/`.
+- *Decided by Claude:* the Orrery chunks (three + r3f + the drei parts used, counted in total including any vendor split Vite makes) ≤ 300 KB gzipped; the bloom chunk is extra and cinema-only. Check the size as soon as the skeleton renders. If bloom can't be made to look right cheaply, drop it and use the additive glow sprites on every tier.
 - No regression in first paint: the boot sequence covers the chunk load on first visit; deep links never load it until the user goes home.
 - Holds ~60 fps on a mid-range laptop at 1440×900 in `cinema`; the `balanced` tier must stay smooth on a mid-range Android phone.
 
@@ -82,4 +84,4 @@ Plus: if WebGL is unavailable or the Orrery throws, an error boundary renders th
 
 ## Left to the builder
 
-Exact materials and colours within the site palette (#07080c / #0c0e14 navy-black, gold #e8c547, text #f0f1f5), ring tilt and tick detail, star count, body sizes, ring colours, label styling, the precise camera framing numbers, whether a discipline legend is added, and how the drone/breadboard models are slimmed down for orbit scale.
+Ring populations are uneven (today roughly Web 7, Mobile 4, Odoo 2, Hardware 2); that is accepted, and bodies are spaced evenly around their own ring. Exact materials and colours within the site palette (#07080c / #0c0e14 navy-black, gold #e8c547, text #f0f1f5), ring tilt and tick detail, star count, body sizes, ring colours, label styling, the precise camera framing numbers, whether a discipline legend is added, and how the drone/breadboard models are slimmed down for orbit scale.
