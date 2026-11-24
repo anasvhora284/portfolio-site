@@ -1242,8 +1242,8 @@ export const projects = [
         "Trim the manifest dependencies and deploy a pilot for the café.",
       ],
     },
-    // TODO: set `repoUrl` (and optionally `link`) once the owner publishes the repo.
-    link: "",
+    link: "https://github.com/anasvhora284/odoo-gaming-cafe",
+    repoUrl: "https://github.com/anasvhora284/odoo-gaming-cafe",
     year: 2026,
     sortOrder: 14,
     featured: true,
