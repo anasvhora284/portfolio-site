@@ -254,6 +254,51 @@ try {
     await page.close();
   }
 
+  // --- screenshot pane ---
+  if (expect === "orrery") {
+    const { page, errors } = await open("/?orrery-test");
+    await page.waitForSelector(".boot-skip, .hero-overlay__focus", { timeout: 10000 });
+    if (await page.locator(".boot-skip").count()) await page.keyboard.press("Enter");
+    await page.waitForSelector(".hero-overlay__focus", { timeout: 10000 });
+    await ready(page);
+    const focusedSlug = () => page.evaluate(() => window.__ORRERY_DEBUG__.bodies().find((b) => b.focused)?.slug);
+    const goTo = async (slug) => {
+      for (let i = 0; i < 40 && (await focusedSlug()) !== slug; i++) {
+        await page.keyboard.press("ArrowRight");
+        await page.waitForTimeout(400);
+      }
+      await page.waitForTimeout(1500);
+    };
+    const paneInfo = () =>
+      page.evaluate(() => {
+        const p = document.querySelector(".orrery-pane");
+        const f = window.__ORRERY_DEBUG__.bodies().find((b) => b.focused);
+        if (!p) return { n: 0 };
+        const r = p.querySelector(".orrery-pane__frame").getBoundingClientRect();
+        const dx = f.x - Math.max(r.left, Math.min(f.x, r.right));
+        const dy = f.y - Math.max(r.top, Math.min(f.y, r.bottom));
+        return { n: 1, src: p.querySelector("img")?.getAttribute("src"), w: r.width, hitsBody: dx * dx + dy * dy < f.r * f.r, inView: r.right <= innerWidth && r.left >= 0 && r.top >= 0 && r.bottom <= innerHeight };
+      });
+    await goTo("strong-integrity-guide");
+    check("pane: none for strong-integrity-guide", (await paneInfo()).n === 0);
+    await goTo("input-leaf");
+    const il = await paneInfo();
+    check("pane: input-leaf shows its thumb", il.n === 1 && /input-leaf.*\.webp/.test(il.src ?? ""), il.src);
+    await page.screenshot({ path: `${outDir}/pane-input-leaf.png` });
+    check("pane: clear of body, in view", il.n === 1 && !il.hitsBody && il.inView, JSON.stringify(il));
+    for (const slug of ["maths-website", "auto-balancing-drone"]) {
+      await goTo(slug);
+      const pi = await paneInfo();
+      check(`pane: ${slug} clear of body, in view`, pi.n === 1 && !pi.hitsBody && pi.inView, JSON.stringify(pi));
+      await page.screenshot({ path: `${outDir}/pane-${slug}.png` });
+    }
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.waitForTimeout(800);
+    check("pane: absent at 390x844", (await page.locator(".orrery-pane").count()) === 0);
+    check("pane: no console errors", errors.length === 0, errors.join(" | "));
+    await page.close();
+  }
+
   // --- deep link ---
   if (expect === "orrery") {
     const { page, errors } = await open("/work/maths-website");

@@ -5,6 +5,7 @@ import { Html } from "@react-three/drei";
 import "./orrery.css";
 import { Glow } from "./Glow.jsx";
 import { HARDWARE_MODELS } from "./models/index.js";
+import { Pane } from "./Pane.jsx";
 
 const HL = new Color("#e8c547");
 const box = new Box3();
@@ -20,6 +21,7 @@ export function Body({
   hovered,
   focused,
   label,
+  project,
   meshRef,
   position,
   ...handlers
@@ -128,6 +130,7 @@ export function Body({
         scale={hovered ? 1.4 : 0.9}
         opacity={focused || hovered ? 0.7 : 0.3}
       />
+      {focused && project ? <Pane key={slug} project={project} shape={shape} /> : null}
       {label ? (
         <Html
           center

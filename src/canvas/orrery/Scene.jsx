@@ -47,6 +47,10 @@ export function Scene({ projects, order, onStarSelect, onFirstFrame }) {
   const [hovered, setHovered] = useState(null);
   const first = useRef(true);
   const tilt = useRef();
+  const bySlug = useMemo(
+    () => Object.fromEntries(projects.map((p) => [p.slug, p])),
+    [projects],
+  );
   const names = useMemo(
     () => Object.fromEntries(projects.map((p) => [p.slug, p.name])),
     [projects],
@@ -211,6 +215,7 @@ export function Scene({ projects, order, onStarSelect, onFirstFrame }) {
                   <Body
                     fadeRef={fade}
                     slug={b.slug}
+                    project={bySlug[b.slug]}
                     key={b.slug}
                     color={r.color}
                     hardware={r.key === "Hardware"}
