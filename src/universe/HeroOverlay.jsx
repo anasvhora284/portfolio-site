@@ -17,6 +17,7 @@ export function HeroOverlay() {
   const panel = useUniverseStore((s) => s.panel);
   const focusedSlug = useUniverseStore((s) => s.focusedSlug);
   const heroDocked = useUniverseStore((s) => s.heroDocked);
+  const orrery = useUniverseStore((s) => s.qualityTier) !== "lite";
 
   const focused = useMemo(
     () => (focusedSlug ? projects.find((p) => p.slug === focusedSlug) : null),
@@ -29,7 +30,7 @@ export function HeroOverlay() {
 
   return (
     <div
-      className={`hero-overlay${heroDocked ? " hero-overlay--docked" : ""}`}
+      className={`hero-overlay${heroDocked ? " hero-overlay--docked" : ""}${orrery ? " hero-overlay--orrery" : ""}`}
       aria-hidden={panel ? "true" : "false"}
     >
       <h1 className="hero-overlay__name">

@@ -570,3 +570,30 @@
   letter-spacing: 0.2em;
   color: rgba(232, 197, 71, 0.85);
 }
+
+/* Orrery tiers on tablets/desktops: compact name + tagline top-left under the HUD pills, so the
+   orrery can fill the screen. Phones (<=720px) and the lite tier keep the big hero above. */
+@media (min-width: 721px) {
+  .hero-overlay--orrery .hero-overlay__name {
+    justify-self: start;
+    text-align: left;
+    margin-top: 62px;
+    padding-top: 0;
+    font-size: clamp(52px, 5vw, 72px);
+    line-height: 1;
+    font-variation-settings: "opsz" 72;
+  }
+  .hero-overlay--orrery .hero-overlay__name-row {
+    display: inline-block;
+  }
+  .hero-overlay--orrery .hero-overlay__name-row--outline {
+    margin: 0 0 0 0.25em;
+  }
+  .hero-overlay--orrery .hero-overlay__tagline {
+    justify-self: start;
+    text-align: left;
+    max-width: 440px;
+    margin: 12px 0 0;
+    font-size: 12px;
+  }
+}
