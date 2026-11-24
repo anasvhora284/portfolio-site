@@ -66,7 +66,7 @@ function Row({ title, text, items, variant }) {
 
 export function CaseStudyScreen({ project, onClose }) {
   const navigate = useNavigate();
-  const trapRef = useFocusTrap(true, onClose);
+  const trapRef = useFocusTrap(true);
   const [origin] = useState(takeDiveOrigin);
 
   const index = ordered.findIndex((p) => p.slug === project.slug);

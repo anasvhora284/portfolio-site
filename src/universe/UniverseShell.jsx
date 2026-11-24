@@ -2,7 +2,7 @@ import { lazy, Suspense, useCallback, useEffect, useMemo, useRef } from "react";
 import { Helmet } from "react-helmet-async";
 import { useLocation, useNavigate } from "react-router-dom";
 import { projects, siteSettings } from "../generated/content.manifest.js";
-import { starScreen, useUniverseStore } from "../store/universeStore.js";
+import { setDiveOrigin, starScreen, useUniverseStore } from "../store/universeStore.js";
 import {
   useCinematicAudio,
   playDoorOpen,
@@ -144,19 +144,42 @@ export default function UniverseShell() {
 
   useEffect(() => {
     const onKey = (e) => {
+      if (e.altKey || e.ctrlKey || e.metaKey) return;
       const st = useUniverseStore.getState();
-      if (e.key === "Escape" && st.panel) {
-        st.closePanel();
-        navigate("/");
+      const t = e.target;
+      const typing = t?.matches?.('input, textarea, select, [contenteditable="true"]');
+      if (e.key === "Escape") {
+        if (typing) {
+          t.blur();
+          return;
+        }
+        if (st.panel) {
+          st.closePanel();
+          navigate("/");
+        }
         return;
       }
-      if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
-      const dir = e.key === "ArrowRight" ? 1 : -1;
-      advanceFocus(dir, { playNavSound: true });
+      if (typing) return;
+      const fwd = e.key === "ArrowRight" || (!st.panel && e.key === "ArrowDown");
+      const back = e.key === "ArrowLeft" || (!st.panel && e.key === "ArrowUp");
+      if (!fwd && !back) return;
+      const dir = fwd ? 1 : -1;
+      if (!st.panel) {
+        if (advanceFocus(dir, { playNavSound: true })) e.preventDefault();
+        return;
+      }
+      if (st.panel !== "project") return;
+      const cur = navProjects.findIndex((p) => p.slug === st.targetSlug);
+      if (cur < 0 || navProjects.length < 2) return;
+      const idx = (cur + dir + navProjects.length) % navProjects.length;
+      e.preventDefault();
+      setDiveOrigin(window.innerWidth / 2, window.innerHeight / 2);
+      featIndex.current = idx;
+      navigate(`/work/${navProjects[idx].slug}`);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [advanceFocus, navigate]);
+  }, [advanceFocus, navigate, navProjects]);
 
   useEffect(() => {
     const onWheel = (e) => {
@@ -400,7 +423,6 @@ export default function UniverseShell() {
         <meta name="twitter:description" content={meta.description} />
         <meta name="twitter:image" content={meta.image} />
       </Helmet>
-      <ScreenReaderNav />
       <CustomCursor />
       <BootSequence />
       {bootPhase === "ready" ? (
@@ -428,6 +450,7 @@ export default function UniverseShell() {
           {panel === "contact" ? <ContactScreen onClose={closeAll} /> : null}
         </>
       ) : null}
+      <ScreenReaderNav />
     </div>
   );
 }

@@ -47,20 +47,11 @@ function SocialIcon({ label }) {
 
 export function ContactScreen({ onClose }) {
   const navigate = useNavigate();
-  const trapRef = useFocusTrap(true, onClose);
+  const trapRef = useFocusTrap(true);
   const close = () => {
     onClose?.();
     navigate("/");
   };
-
-  useEffect(() => {
-    const onKey = (e) => {
-      if (e.key === "Escape") close();
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const emailTo = siteSettings?.contactEmail || "vhoraanas08@gmail.com";
   const socials = siteSettings?.socialLinks || [];

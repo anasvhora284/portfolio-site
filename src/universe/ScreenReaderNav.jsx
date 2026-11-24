@@ -6,7 +6,8 @@ export function ScreenReaderNav() {
   const github = siteSettings?.socialLinks?.find((s) => s.label?.toLowerCase() === "github");
 
   return (
-    <nav className="sr-only" aria-label="Site and projects" tabIndex={-1}>
+    <nav className="sr-only skip-nav" aria-label="Site and projects" tabIndex={-1}>
+      <p className="skip-nav__title">Jump to</p>
       <ul>
         <li>
           <NavLink to="/">Star map — home</NavLink>

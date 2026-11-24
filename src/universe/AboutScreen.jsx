@@ -132,20 +132,11 @@ function useCount(target, duration = 900) {
 
 export function AboutScreen({ onClose }) {
   const navigate = useNavigate();
-  const trapRef = useFocusTrap(true, onClose);
+  const trapRef = useFocusTrap(true);
   const close = () => {
     onClose?.();
     navigate("/");
   };
-
-  useEffect(() => {
-    const onKey = (e) => {
-      if (e.key === "Escape") close();
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const featured = useMemo(
     () => projects.filter((p) => p.featured).length,

@@ -11,7 +11,7 @@ const byNewest = [...projects].sort(
 
 export function WorkIndex({ onClose }) {
   const navigate = useNavigate();
-  const trapRef = useFocusTrap(true, onClose);
+  const trapRef = useFocusTrap(true);
   const [filter, setFilter] = useState("selected");
   const [hover, setHover] = useState(null);
   const previewRef = useRef(null);

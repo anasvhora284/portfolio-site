@@ -52,6 +52,9 @@ export function HeroOverlay() {
         <span className="hero-overlay__hint-key">←</span>
         <span className="hero-overlay__hint-key">→</span>
         <span className="hero-overlay__hint-text">navigate the constellation</span>
+        <span className="hero-overlay__hint-sep">/</span>
+        <span className="hero-overlay__hint-key">Enter</span>
+        <span className="hero-overlay__hint-text">open</span>
       </div>
       <div className="hero-overlay__mobile-hint" aria-hidden>
         Swipe up/down to browse projects
@@ -61,6 +64,7 @@ export function HeroOverlay() {
         <button
           type="button"
           className="hero-overlay__focus"
+          autoFocus
           key={focused.slug}
           onClick={() => navigate(`/work/${focused.slug}`)}
         >

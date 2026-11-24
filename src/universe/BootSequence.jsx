@@ -131,7 +131,11 @@ export function BootSequence() {
   /** Any key or click skips — the intro must never stand between a visitor and the work. */
   useEffect(() => {
     if (bootPhase !== "boot") return undefined;
-    const skip = () => skipBoot();
+    // preventDefault: the skipping key must not also activate the hero card that autofocuses next.
+    const skip = (e) => {
+      if (e.type === "keydown") e.preventDefault();
+      skipBoot();
+    };
     const t = window.setTimeout(() => {
       window.addEventListener("keydown", skip, { once: true });
       window.addEventListener("pointerdown", skip, { once: true });

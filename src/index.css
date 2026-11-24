@@ -75,6 +75,39 @@ body {
   border: 0;
 }
 
+.sr-only.skip-nav:focus-within {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 100000;
+  width: auto;
+  height: auto;
+  max-height: calc(100vh - 32px);
+  margin: 0;
+  padding: 16px 20px;
+  overflow-y: auto;
+  clip: auto;
+  white-space: normal;
+  background: rgb(8, 10, 16);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  font: 12px/1.8 ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+.skip-nav ul { list-style: none; margin: 0; padding: 0; }
+.skip-nav a { color: #e8ecf5; }
+.skip-nav__title {
+  margin: 0 0 8px;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(232, 236, 245, 0.5);
+}
+
+:where(a, button, input, textarea, select, [tabindex]):focus-visible {
+  outline: 2px solid var(--accent, #e8c547);
+  outline-offset: 3px;
+}
+
 h1,
 h2,
 h3,
