@@ -30,8 +30,12 @@ test("layoutBodies spacing and determinism", () => {
   const out = layoutBodies(ps);
   assert.deepEqual(out.map((b) => b.slug).sort(), ["a", "b", "c", "d", "e"]);
   for (const ring of ["Web", "Odoo"]) {
-    const as = out.filter((b) => b.ring === ring).map((b) => b.angle).sort((x, y) => x - y);
-    for (let i = 1; i < as.length; i++) assert.ok(Math.abs(as[i] - as[i - 1] - TAU / as.length) < 1e-9);
+    const as = out
+      .filter((b) => b.ring === ring)
+      .map((b) => b.angle)
+      .sort((x, y) => x - y);
+    for (let i = 1; i < as.length; i++)
+      assert.ok(Math.abs(as[i] - as[i - 1] - TAU / as.length) < 1e-9);
     as.forEach((a) => assert.ok(a >= 0 && a < TAU));
   }
   assert.deepEqual(layoutBodies(ps), out);
@@ -39,9 +43,14 @@ test("layoutBodies spacing and determinism", () => {
 
 test("frontRotation", () => {
   assert.ok(Math.abs(frontRotation(0, Math.PI / 2, 0) + Math.PI / 2) < 1e-9);
-  assert.ok(Math.abs(frontRotation(6 * Math.PI, 0.1, 0) - 6 * Math.PI) <= Math.PI + 1e-9);
+  assert.ok(
+    Math.abs(frontRotation(6 * Math.PI, 0.1, 0) - 6 * Math.PI) <=
+      Math.PI + 1e-9,
+  );
   for (let i = 0; i < 200; i++) {
-    const cur = (Math.random() - 0.5) * 100, b = Math.random() * TAU, f = Math.random() * TAU;
+    const cur = (Math.random() - 0.5) * 100,
+      b = Math.random() * TAU,
+      f = Math.random() * TAU;
     const r = frontRotation(cur, b, f);
     assert.ok(Math.abs(r - cur) <= Math.PI + 1e-9);
     const m = mod(b + r - f);

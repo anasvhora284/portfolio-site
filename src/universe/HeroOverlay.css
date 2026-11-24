@@ -574,6 +574,22 @@
 /* Orrery tiers on tablets/desktops: compact name + tagline top-left under the HUD pills, so the
    orrery can fill the screen. Phones (<=720px) and the lite tier keep the big hero above. */
 @media (min-width: 721px) {
+  /* soft scrim so ring arcs passing under the name/tagline stay quiet */
+  .hero-overlay--orrery::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 90px;
+    width: 700px;
+    height: 290px;
+    background: radial-gradient(
+      closest-side ellipse at 38% 50%,
+      rgba(7, 8, 12, 0.9) 0%,
+      rgba(7, 8, 12, 0.8) 55%,
+      rgba(7, 8, 12, 0) 100%
+    );
+    z-index: -1;
+  }
   .hero-overlay--orrery .hero-overlay__name {
     justify-self: start;
     text-align: left;

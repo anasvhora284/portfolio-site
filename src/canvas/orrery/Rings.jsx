@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { AdditiveBlending, DoubleSide, Object3D } from "three";
-import { clampDelta, frontRotation } from "./model.js";
+import { SNAP, clampDelta, frontRotation } from "./model.js";
 
 // Where the focused body comes to rest: front of the orrery, a touch to the right.
 export const FRONT = Math.PI / 2 - 0.9;
@@ -41,7 +41,7 @@ export function Ring({ ring, speed, motion, target, children }) {
     if (target != null) {
       rot.current +=
         (frontRotation(rot.current, target, FRONT) - rot.current) *
-        (1 - Math.exp(-d * 3));
+        (SNAP ? 1 : 1 - Math.exp(-d * 3));
     } else if (motion) {
       rot.current += speed * d;
     }

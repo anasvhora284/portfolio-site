@@ -40,7 +40,7 @@ async function open(path) {
   await page.goto(base + path);
   return { page, errors, requests };
 }
-const ready = (page, ms = 10000) =>
+const ready = (page, ms = 20000) =>
   page.waitForSelector('[data-orrery="ready"]', { timeout: ms }).then(() => true, () => false);
 const focusOk = (page) =>
   page.evaluate(() => document.activeElement?.classList.contains("hero-overlay__focus"));
@@ -88,7 +88,7 @@ try {
 
   // --- layout: bodies / labels vs hero text ---
   if (expect === "orrery") {
-    const { page, errors } = await open("/");
+    const { page, errors } = await open("/?orrery-test");
     await page.waitForSelector(".boot-skip, .hero-overlay__focus", { timeout: 10000 });
     if (await page.locator(".boot-skip").count()) await page.keyboard.press("Enter");
     await page.waitForSelector(".hero-overlay__focus", { timeout: 10000 });
@@ -96,11 +96,11 @@ try {
     const SELS = [".hero-overlay__name", ".hero-overlay__tagline", ".hero-overlay__focus", ".hero-overlay__hint"];
     const overlaps = () =>
       page.evaluate((sels) => {
-        // Idle drift carries unfocused bodies behind HUD text at times (ring edges behind the card are
-        // fine by spec); the deterministic guarantee is for the focused body and every label.
+        // Every body still visible (opacity > 0.5) must stay off the hero text/card/hint; bodies
+        // drifting behind them fade out. Ring arcs under the name/tagline are dimmed by the hero scrim (covered by screenshots).
         const bodies = window.__ORRERY_DEBUG__?.bodies?.();
         if (!bodies?.length) return ["no bodies()"];
-        const focused = bodies.filter((b) => b.focused);
+        const focused = bodies.filter((b) => b.opacity > 0.5);
         const hits = [];
         for (const sel of sels) {
           const r = document.querySelector(sel)?.getBoundingClientRect();
@@ -119,9 +119,28 @@ try {
       }, SELS);
     const verify = async (tag) => {
       const hits = await overlaps();
-      check(`layout ${tag}: focused body + labels clear of hero text/card/hint`, !hits.length, hits.join("; "));
+      check(`layout ${tag}: bodies + labels clear of hero text/card/hint`, !hits.length, hits.join("; "));
     };
-    const settle = () => page.waitForTimeout(1800);
+    const order = await page.evaluate(() => window.__ORRERY_DEBUG__.order);
+    // ?orrery-test snaps eases: settled = expected project focused and its screen position unchanged for 8 rendered frames
+    // (frames are slow on a loaded machine, and React commits the new focus a frame or two late).
+    const settle = async (slug) => {
+      let pos = "";
+      let since = 0;
+      for (let i = 0; i < 400; i++) {
+        const st = await page.evaluate(() => {
+          const f = window.__ORRERY_DEBUG__.bodies().find((b) => b.focused);
+          return { fr: window.__ORRERY_DEBUG__.frames(), slug: f?.slug, pos: `${Math.round(f?.x)},${Math.round(f?.y)}` };
+        });
+        if (slug && st.slug !== slug) {
+          since = 0;
+        } else if (st.pos !== pos || !since) {
+          pos = st.pos;
+          since = st.fr;
+        } else if (st.fr >= since + 8) return;
+        await page.waitForTimeout(250);
+      }
+    };
     await settle();
     await page.screenshot({ path: `${outDir}/overview-1440.png` });
     await verify("0 presses 1440x900");
@@ -132,11 +151,11 @@ try {
     await page.setViewportSize({ width: 1440, height: 900 });
     await settle();
     for (let i = 0; i < 3; i++) await page.keyboard.press("ArrowRight");
-    await settle();
+    await settle(order[3]);
     await page.screenshot({ path: `${outDir}/after3.png` });
     await verify("3 presses");
     for (let i = 0; i < 4; i++) await page.keyboard.press("ArrowRight");
-    await settle();
+    await settle(order[7]);
     await page.screenshot({ path: `${outDir}/after7.png` });
     await verify("7 presses");
     await page.setViewportSize({ width: 1280, height: 720 });
@@ -152,8 +171,45 @@ try {
     check("hover sets canvas cursor state", await page.evaluate(() => document.querySelector("canvas").dataset.cursor === "pointer"));
     await page.mouse.move(2, 2);
     await page.waitForTimeout(200);
-    // mash: 10 presses in 1 s from the 8th project -> 18th = (7 + 10) % n
-    const order = await page.evaluate(() => window.__ORRERY_DEBUG__.order);
+    // every project, focused: fully in view inside the safe zone, clear of card + hint
+    const zone = async (tag) => {
+      const bad = await page.evaluate(() => {
+        const f = window.__ORRERY_DEBUG__.bodies().find((b) => b.focused);
+        const W = innerWidth, H = innerHeight;
+        const hit = (sel) => {
+          const r = document.querySelector(sel)?.getBoundingClientRect();
+          if (!r) return false;
+          const dx = f.x - Math.max(r.left, Math.min(f.x, r.right));
+          const dy = f.y - Math.max(r.top, Math.min(f.y, r.bottom));
+          return dx * dx + dy * dy < f.r * f.r;
+        };
+        const ok = f.x > 0.45 * W && f.x < 0.9 * W && f.y > 0.22 * H && f.y < 0.78 * H && !hit(".hero-overlay__hint") && !hit(".hero-overlay__focus");
+        return ok ? null : `${f.slug}@${Math.round(f.x)},${Math.round(f.y)} r${Math.round(f.r)} in ${W}x${H}`;
+      });
+      return bad && `${tag}: ${bad}`;
+    };
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.waitForTimeout(500);
+    const zoneBad = [];
+    for (let i = 0; i < order.length; i++) {
+      await settle(order[(7 + i) % order.length]);
+      const bad = await zone(`#${i}`);
+      if (bad) zoneBad.push(bad);
+      if (i === 2) await page.screenshot({ path: `${outDir}/zone-2.png` });
+      await page.keyboard.press("ArrowRight");
+    }
+    check("focused body in safe zone for all projects at 1440x900", !zoneBad.length, zoneBad.join("; "));
+    await page.setViewportSize({ width: 1280, height: 720 });
+    await page.waitForTimeout(500);
+    const zoneBad2 = [];
+    for (let i = 0; i < 5; i++) {
+      await settle(order[(7 + i) % order.length]);
+      const bad = await zone(`#${i}`);
+      if (bad) zoneBad2.push(bad);
+      await page.keyboard.press("ArrowRight");
+    }
+    check("focused body in safe zone (5 projects) at 1280x720", !zoneBad2.length, zoneBad2.join("; "));
+    // mash: 10 presses in 1 s after the zone loops (7 + n + 5 presses)
     for (let i = 0; i < 10; i++) {
       await page.keyboard.press("ArrowRight");
       await page.waitForTimeout(100);
@@ -164,7 +220,7 @@ try {
     check("mash: label agrees with card", labels.length === 1 && labels[0] === card, `${labels} vs ${card}`);
     await page.keyboard.press("Enter");
     await page.waitForURL(/\/work\//, { timeout: 5000 }).catch(() => {});
-    check("mash: lands on expected project", slugOf(page) === `/work/${order[(7 + 10) % order.length]}`, slugOf(page));
+    check("mash: lands on expected project", slugOf(page) === `/work/${order[(7 + order.length + 5 + 10) % order.length]}`, slugOf(page));
     check("layout: no console errors", errors.length === 0, errors.join(" | "));
     await page.close();
   }

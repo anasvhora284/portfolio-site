@@ -10,7 +10,8 @@ export const RINGS = [
 
 export function ringKeyOf(roles) {
   if (roles.includes("Odoo")) return "Odoo";
-  if (roles.some((r) => ["IoT", "Embedded", "ML"].includes(r))) return "Hardware";
+  if (roles.some((r) => ["IoT", "Embedded", "ML"].includes(r)))
+    return "Hardware";
   if (roles.some((r) => ["Mobile", "Android"].includes(r))) return "Mobile";
   return "Web";
 }
@@ -23,7 +24,11 @@ export function layoutBodies(projects) {
   RINGS.forEach((r, ri) => {
     const g = groups.get(r.key);
     g.forEach((p, k) =>
-      out.push({ slug: p.slug, ring: r.key, angle: (((k / g.length) * TAU + ri * 0.9) % TAU + TAU) % TAU }),
+      out.push({
+        slug: p.slug,
+        ring: r.key,
+        angle: ((((k / g.length) * TAU + ri * 0.9) % TAU) + TAU) % TAU,
+      }),
     );
   });
   return out;
@@ -32,7 +37,11 @@ export function layoutBodies(projects) {
 // Ring rotation that puts the body at frontAngle, shortest way from currentRot.
 export function frontRotation(currentRot, bodyAngle, frontAngle) {
   const d = frontAngle - bodyAngle - currentRot;
-  return currentRot + (((d + Math.PI) % TAU) + TAU) % TAU - Math.PI;
+  return currentRot + ((((d + Math.PI) % TAU) + TAU) % TAU) - Math.PI;
 }
 
 export const clampDelta = (dt) => Math.min(dt, 0.05);
+
+// `?orrery-test` makes every ease land instantly, so layout checks do not depend on frame rate.
+export const SNAP =
+  typeof location !== "undefined" && location.search.includes("orrery-test");

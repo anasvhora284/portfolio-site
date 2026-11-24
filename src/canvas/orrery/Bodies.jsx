@@ -1,4 +1,6 @@
 import { AdditiveBlending } from "three";
+import { useRef } from "react";
+import { useFrame } from "@react-three/fiber";
 import { Html } from "@react-three/drei";
 import "./orrery.css";
 import { Glow } from "./Glow.jsx";
@@ -6,6 +8,8 @@ import { Glow } from "./Glow.jsx";
 export function Body({
   color,
   hardware,
+  slug,
+  fadeRef,
   hovered,
   focused,
   label,
@@ -13,8 +17,21 @@ export function Body({
   position,
   ...handlers
 }) {
+  const group = useRef();
+  // fadeRef[slug] (0..1) scales every material's own base opacity.
+  useFrame(() => {
+    const f = fadeRef.current[slug] ?? 1;
+    group.current.traverse((o) => {
+      const m = o.material;
+      if (!m) return;
+      m.userData.base ??= m.opacity;
+      m.userData.t ??= m.transparent;
+      m.transparent = m.userData.t || f < 1;
+      m.opacity = m.userData.base * f;
+    });
+  });
   return (
-    <group position={position}>
+    <group ref={group} position={position}>
       <mesh
         ref={meshRef}
         scale={focused ? 1.4 : hovered ? 1.3 : 1}

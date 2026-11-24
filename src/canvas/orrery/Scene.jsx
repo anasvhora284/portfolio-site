@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
-import { Vector3 } from "three";
+import { Vector2, Vector3 } from "three";
 import { starScreen, useUniverseStore } from "../../store/universeStore.js";
-import { RINGS, clampDelta, layoutBodies } from "./model.js";
+import { RINGS, SNAP, clampDelta, layoutBodies } from "./model.js";
 import { Lighting } from "./Lighting.jsx";
 import { Starfield } from "./Starfield.jsx";
 import { Sun } from "./Sun.jsx";
@@ -29,6 +29,15 @@ function useMotionAllowed() {
 }
 
 const tmp = new Vector3();
+const right = new Vector3();
+const sizeVec = new Vector2();
+const HUD_SELECTORS = [
+  ".hero-overlay__name",
+  ".hero-overlay__tagline",
+  ".hero-overlay__focus",
+  ".hero-overlay__hint",
+];
+const FADED = 0.12; // opacity of a body drifting behind hero text / card / hint
 
 export function Scene({ projects, order, onStarSelect, onFirstFrame }) {
   const { gl, camera, size } = useThree();
@@ -51,6 +60,34 @@ export function Scene({ projects, order, onStarSelect, onFirstFrame }) {
   );
   const focusedBody = bodies.find((b) => b.slug === focusedSlug);
   const motion = useMotionAllowed();
+  const fade = useRef({}); // slug -> current opacity
+  const rects = useRef([]);
+  const frameNo = useRef(0);
+  useEffect(() => {
+    frameNo.current = 0; // re-read HUD rects after a resize
+  }, [size]);
+
+  // Screen-space circle (CSS px, incl. glow) of every body.
+  const screenBodies = () => {
+    const { x: w, y: h } = gl.getSize(sizeVec);
+    camera.updateMatrixWorld();
+    right.setFromMatrixColumn(camera.matrixWorld, 0).multiplyScalar(GLOW_R);
+    return Object.entries(meshes.current)
+      .filter(([, m]) => m)
+      .map(([slug, m]) => {
+        const c = m.getWorldPosition(new Vector3());
+        const e = c.clone().add(right).project(camera);
+        c.project(camera);
+        return {
+          slug,
+          x: (c.x * 0.5 + 0.5) * w,
+          y: (1 - (c.y * 0.5 + 0.5)) * h,
+          r: Math.abs((e.x - c.x) * 0.5 * w),
+        };
+      });
+  };
+  const api = useRef();
+  api.current = { screenBodies };
 
   useEffect(() => {
     Object.defineProperty(window, "__ORRERY_DEBUG__", {
@@ -58,25 +95,31 @@ export function Scene({ projects, order, onStarSelect, onFirstFrame }) {
       value: {
         order,
         frames: () => gl.info.render.frame,
-        bodies: () => {
+        bodies: () =>
+          api.current.screenBodies().map((b) => ({
+            ...b,
+            focused: b.slug === useUniverseStore.getState().focusedSlug,
+            opacity: fade.current[b.slug] ?? 1,
+          })),
+        // Projected ring outlines (CSS px), for layout checks against the hero text.
+        rings: () => {
+          const { x: w, y: h } = gl.getSize(sizeVec);
           camera.updateMatrixWorld();
-          const right = new Vector3()
-            .setFromMatrixColumn(camera.matrixWorld, 0)
-            .multiplyScalar(GLOW_R);
-          return Object.entries(meshes.current)
-            .filter(([, m]) => m)
-            .map(([slug, m]) => {
-              const c = m.getWorldPosition(new Vector3());
-              const e = c.clone().add(right).project(camera);
-              c.project(camera);
+          return RINGS.flatMap((r) =>
+            Array.from({ length: 96 }, (_, i) => {
+              const a = (i / 96) * Math.PI * 2;
+              const p = new Vector3(
+                Math.cos(a) * r.radius,
+                0,
+                Math.sin(a) * r.radius,
+              );
+              p.applyMatrix4(tilt.current.matrixWorld).project(camera);
               return {
-                slug,
-                focused: slug === useUniverseStore.getState().focusedSlug,
-                x: (c.x * 0.5 + 0.5) * size.width,
-                y: (1 - (c.y * 0.5 + 0.5)) * size.height,
-                r: Math.abs((e.x - c.x) * 0.5 * size.width),
+                x: (p.x * 0.5 + 0.5) * w,
+                y: (1 - (p.y * 0.5 + 0.5)) * h,
               };
-            });
+            }),
+          );
         },
         get starScreen() {
           return { x: starScreen.x, y: starScreen.y };
@@ -86,7 +129,7 @@ export function Scene({ projects, order, onStarSelect, onFirstFrame }) {
     return () => {
       delete window.__ORRERY_DEBUG__;
     };
-  }, [gl, camera, size, order]);
+  }, [gl, camera, order]);
 
   // Canvas hover state for the site's custom cursor (see CustomCursor.jsx).
   useEffect(() => {
@@ -115,6 +158,22 @@ export function Scene({ projects, order, onStarSelect, onFirstFrame }) {
       mesh.getWorldPosition(tmp).project(camera);
       starScreen.x = (tmp.x * 0.5 + 0.5) * size.width;
       starScreen.y = (1 - (tmp.y * 0.5 + 0.5)) * size.height;
+    }
+    // Bodies that drift behind the hero text, card or hint fade out so nothing sits on them.
+    if (frameNo.current++ % 15 === 0) {
+      rects.current = HUD_SELECTORS.map((q) =>
+        document.querySelector(q)?.getBoundingClientRect(),
+      ).filter(Boolean);
+    }
+    const kf = SNAP ? 1 : 1 - Math.exp(-clampDelta(dt) * 8);
+    for (const b of screenBodies()) {
+      const hit = rects.current.some((r) => {
+        const dx = b.x - Math.max(r.left, Math.min(b.x, r.right));
+        const dy = b.y - Math.max(r.top, Math.min(b.y, r.bottom));
+        return dx * dx + dy * dy < b.r * b.r;
+      });
+      const cur = fade.current[b.slug] ?? 1;
+      fade.current[b.slug] = cur + ((hit ? FADED : 1) - cur) * kf;
     }
     if (first.current) {
       first.current = false;
@@ -148,6 +207,8 @@ export function Scene({ projects, order, onStarSelect, onFirstFrame }) {
                 .filter((b) => b.ring === r.key)
                 .map((b) => (
                   <Body
+                    fadeRef={fade}
+                    slug={b.slug}
                     key={b.slug}
                     color={r.color}
                     hardware={r.key === "Hardware"}
