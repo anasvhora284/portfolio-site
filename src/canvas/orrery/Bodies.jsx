@@ -1,5 +1,5 @@
 import { AdditiveBlending, Box3, Color, Matrix4, Sphere } from "three";
-import { useLayoutEffect, useRef } from "react";
+import { useCallback, useLayoutEffect, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Html } from "@react-three/drei";
 import "./orrery.css";
@@ -26,6 +26,13 @@ export function Body({
 }) {
   const group = useRef();
   const shape = useRef();
+  const proxy = useRef();
+  const meshRefLatest = useRef(meshRef);
+  meshRefLatest.current = meshRef;
+  const setShape = useCallback((g) => {
+    shape.current = g;
+    meshRefLatest.current(g);
+  }, []);
   const Model = HARDWARE_MODELS[slug];
   // Bounding-sphere radius of the visible shape in its own (unscaled) space; Scene projects it
   // to screen for the fade test.
@@ -35,7 +42,7 @@ export function Body({
     inv.copy(s.matrixWorld).invert();
     box.makeEmpty();
     s.traverse((o) => {
-      if (!o.geometry) return;
+      if (!o.geometry || o === proxy.current) return;
       o.geometry.boundingBox ?? o.geometry.computeBoundingBox();
       box.union(
         part
@@ -44,7 +51,10 @@ export function Body({
           .applyMatrix4(inv),
       );
     });
-    s.userData.r = box.getBoundingSphere(new Sphere()).radius;
+    const r = box.getBoundingSphere(new Sphere()).radius;
+    s.userData.r = r;
+    // hit proxy: solid footprint so hover/click is continuous across thin parts
+    proxy.current?.scale.setScalar(r);
   }, [Model]);
   // fadeRef[slug] (0..1) scales every material's own base opacity.
   useFrame(() => {
@@ -66,15 +76,18 @@ export function Body({
   return (
     <group ref={group} position={position}>
       <group
-        ref={(g) => {
-          shape.current = g;
-          meshRef(g);
-        }}
+        ref={setShape}
         scale={focused ? 1.4 : hovered ? 1.3 : 1}
         onClick={handlers.onClick}
         onPointerOver={handlers.onPointerOver}
         onPointerOut={handlers.onPointerOut}
       >
+        {hardware && (
+          <mesh ref={proxy}>
+            <sphereGeometry args={[1, 12, 8]} />
+            <meshBasicMaterial transparent opacity={0} depthWrite={false} />
+          </mesh>
+        )}
         {Model ? (
           <Model motion={motion} />
         ) : (

@@ -171,6 +171,35 @@ try {
     check("hover sets canvas cursor state", await page.evaluate(() => document.querySelector("canvas").dataset.cursor === "pointer"));
     await page.mouse.move(2, 2);
     await page.waitForTimeout(200);
+    // hover must be continuous across the drone's footprint (thin arms/plates must not drop it)
+    {
+      const droneSlug = "auto-balancing-drone";
+      const start = await page.evaluate(() => window.__ORRERY_DEBUG__.bodies().find((b) => b.focused)?.slug);
+      for (let i = 0; i < order.length; i++) {
+        const cur = await page.evaluate(() => window.__ORRERY_DEBUG__.bodies().find((b) => b.focused)?.slug);
+        if (cur === droneSlug) break;
+        await page.keyboard.press("ArrowRight");
+        await settle(order[(order.indexOf(cur) + 1) % order.length]);
+      }
+      await settle(droneSlug);
+      const d = await page.evaluate(() => window.__ORRERY_DEBUG__.bodies().find((b) => b.focused));
+      const cursors = [];
+      for (let i = 0; i < 15; i++) {
+        await page.mouse.move(d.x + (-0.6 + (1.2 * i) / 14) * d.r, d.y);
+        await page.waitForTimeout(120);
+        cursors.push(await page.evaluate(() => document.querySelector("canvas").dataset.cursor ?? "-"));
+      }
+      check("drone hover continuous across footprint", d.slug === droneSlug && cursors.every((c) => c === "pointer"), cursors.join(" "));
+      await page.mouse.move(2, 2);
+      // put focus back where the zone loop below expects it
+      for (let i = 0; i < order.length; i++) {
+        const cur = await page.evaluate(() => window.__ORRERY_DEBUG__.bodies().find((b) => b.focused)?.slug);
+        if (cur === start) break;
+        await page.keyboard.press("ArrowRight");
+        await settle(order[(order.indexOf(cur) + 1) % order.length]);
+      }
+      await page.waitForTimeout(200);
+    }
     // every project, focused: fully in view inside the safe zone, clear of card + hint
     const zone = async (tag) => {
       const bad = await page.evaluate(() => {

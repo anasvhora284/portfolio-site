@@ -1,4 +1,4 @@
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { CanvasTexture, SRGBColorSpace } from "three";
 import { Box, Cyl } from "./parts.jsx";
@@ -28,6 +28,7 @@ export function Breadboard({ motion }) {
     t.colorSpace = SRGBColorSpace;
     return t;
   }, []);
+  useEffect(() => () => holes.dispose(), [holes]);
   useFrame((s) => {
     if (!motion) return;
     leds.current.forEach((l, i) => {
