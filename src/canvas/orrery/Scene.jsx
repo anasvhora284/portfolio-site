@@ -13,7 +13,7 @@ import { Rig } from "./Rig.jsx";
 const DRIFT = [0.05, -0.035, 0.027, -0.02]; // rad/s per ring, inner -> outer
 const PARALLAX = 0.06; // ~3.5 degrees
 const BASE_TILT = 0.42; // orrery plane leans toward the camera
-const GLOW_R = 0.45; // body + glow radius in orrery units
+const HIT_PAD = 1.25; // screen hit circle = bounding sphere * this
 
 function useMotionAllowed() {
   const [ok, setOk] = useState(
@@ -71,12 +71,14 @@ export function Scene({ projects, order, onStarSelect, onFirstFrame }) {
   const screenBodies = () => {
     const { x: w, y: h } = gl.getSize(sizeVec);
     camera.updateMatrixWorld();
-    right.setFromMatrixColumn(camera.matrixWorld, 0).multiplyScalar(GLOW_R);
+    right.setFromMatrixColumn(camera.matrixWorld, 0);
     return Object.entries(meshes.current)
       .filter(([, m]) => m)
       .map(([slug, m]) => {
         const c = m.getWorldPosition(new Vector3());
-        const e = c.clone().add(right).project(camera);
+        // bounding-sphere radius of the shape (models included) in world units
+        const rw = (m.userData.r ?? 0.3) * m.getWorldScale(tmp).x * HIT_PAD;
+        const e = c.clone().addScaledVector(right, rw).project(camera);
         c.project(camera);
         return {
           slug,
@@ -212,6 +214,7 @@ export function Scene({ projects, order, onStarSelect, onFirstFrame }) {
                     key={b.slug}
                     color={r.color}
                     hardware={r.key === "Hardware"}
+                    motion={motion}
                     hovered={hovered === b.slug}
                     focused={focusedSlug === b.slug}
                     label={

@@ -5,7 +5,8 @@ export function Lighting() {
   return (
     <>
       <color attach="background" args={["#07080c"]} />
-      <ambientLight intensity={0.25} />
+      <ambientLight intensity={0.55} />
+      <directionalLight position={[3, 6, 5]} intensity={1.6} />
       <Environment resolution={256}>
         <Lightformer
           form="rect"
