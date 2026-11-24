@@ -1,4 +1,4 @@
-import { lazy, Suspense, useCallback, useEffect, useMemo, useRef } from "react";
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useLocation, useNavigate } from "react-router-dom";
 import { projects, siteSettings } from "../generated/content.manifest.js";
@@ -8,6 +8,7 @@ import {
   playDoorOpen,
   playDoorClose,
 } from "../audio/useCinematicAudio.js";
+import { CanvasBoundary } from "../canvas/CanvasBoundary.jsx";
 import { BootSequence } from "./BootSequence.jsx";
 import { CustomCursor } from "./CustomCursor.jsx";
 import { HudChrome } from "./HudChrome.jsx";
@@ -20,6 +21,7 @@ import { ContactScreen } from "./ContactScreen.jsx";
 import "./UniverseShell.css";
 
 const LazyCanvas = lazy(() => import("../canvas/UniverseCanvas.jsx"));
+const LazyOrrery = lazy(() => import("../canvas/orrery/OrreryCanvas.jsx"));
 
 export default function UniverseShell() {
   const location = useLocation();
@@ -27,6 +29,19 @@ export default function UniverseShell() {
   const bootPhase = useUniverseStore((s) => s.bootPhase);
   const panel = useUniverseStore((s) => s.panel);
   const targetSlug = useUniverseStore((s) => s.targetSlug);
+
+  const tier = useUniverseStore((s) => s.qualityTier);
+  /** Deep links: keep the Orrery chunk off the panel's first paint until idle. */
+  const [orreryAllowed, setOrreryAllowed] = useState(() => location.pathname === "/");
+  useEffect(() => {
+    if (orreryAllowed) return undefined;
+    if (window.requestIdleCallback) {
+      const id = window.requestIdleCallback(() => setOrreryAllowed(true));
+      return () => window.cancelIdleCallback(id);
+    }
+    const id = window.setTimeout(() => setOrreryAllowed(true), 1500);
+    return () => window.clearTimeout(id);
+  }, [orreryAllowed]);
 
   const { playWarp } = useCinematicAudio();
 
@@ -425,7 +440,15 @@ export default function UniverseShell() {
             }
           >
             <Suspense fallback={<div className="universe-canvas-fallback" aria-hidden />}>
-              <LazyCanvas projects={projects} onStarSelect={onStarSelect} />
+              {tier === "lite" ? (
+                <LazyCanvas projects={projects} onStarSelect={onStarSelect} />
+              ) : orreryAllowed ? (
+                <CanvasBoundary
+                  fallback={<LazyCanvas projects={projects} onStarSelect={onStarSelect} />}
+                >
+                  <LazyOrrery projects={projects} onStarSelect={onStarSelect} />
+                </CanvasBoundary>
+              ) : null}
             </Suspense>
             <div className="universe-depth-overlay" aria-hidden />
           </div>
