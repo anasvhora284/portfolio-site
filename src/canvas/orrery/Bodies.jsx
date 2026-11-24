@@ -1,12 +1,23 @@
 import { AdditiveBlending } from "three";
+import { Html } from "@react-three/drei";
+import "./orrery.css";
 import { Glow } from "./Glow.jsx";
 
-export function Body({ color, hardware, hovered, meshRef, ...handlers }) {
+export function Body({
+  color,
+  hardware,
+  hovered,
+  focused,
+  label,
+  meshRef,
+  position,
+  ...handlers
+}) {
   return (
-    <group position={handlers.position}>
+    <group position={position}>
       <mesh
         ref={meshRef}
-        scale={hovered ? 1.3 : 1}
+        scale={focused ? 1.4 : hovered ? 1.3 : 1}
         onClick={handlers.onClick}
         onPointerOver={handlers.onPointerOver}
         onPointerOut={handlers.onPointerOut}
@@ -24,7 +35,7 @@ export function Body({ color, hardware, hovered, meshRef, ...handlers }) {
           clearcoatRoughness={0.03}
           envMapIntensity={1.6}
           emissive={color}
-          emissiveIntensity={hovered ? 0.25 : 0.04}
+          emissiveIntensity={focused || hovered ? 0.25 : 0.04}
           flatShading={hardware}
         />
       </mesh>
@@ -43,8 +54,18 @@ export function Body({ color, hardware, hovered, meshRef, ...handlers }) {
       <Glow
         color={color}
         scale={hovered ? 1.4 : 0.9}
-        opacity={hovered ? 0.7 : 0.3}
+        opacity={focused || hovered ? 0.7 : 0.3}
       />
+      {label ? (
+        <Html
+          center
+          position={[0, 0.6, 0]}
+          zIndexRange={[10, 0]}
+          style={{ pointerEvents: "none" }}
+        >
+          <div className="orrery-label">{label}</div>
+        </Html>
+      ) : null}
     </group>
   );
 }

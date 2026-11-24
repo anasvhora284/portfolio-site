@@ -86,6 +86,89 @@ try {
     await page.close();
   }
 
+  // --- layout: bodies / labels vs hero text ---
+  if (expect === "orrery") {
+    const { page, errors } = await open("/");
+    await page.waitForSelector(".boot-skip, .hero-overlay__focus", { timeout: 10000 });
+    if (await page.locator(".boot-skip").count()) await page.keyboard.press("Enter");
+    await page.waitForSelector(".hero-overlay__focus", { timeout: 10000 });
+    check("layout: orrery ready", await ready(page));
+    const SELS = [".hero-overlay__name", ".hero-overlay__tagline", ".hero-overlay__focus", ".hero-overlay__hint"];
+    const overlaps = () =>
+      page.evaluate((sels) => {
+        // Idle drift carries unfocused bodies behind HUD text at times (ring edges behind the card are
+        // fine by spec); the deterministic guarantee is for the focused body and every label.
+        const bodies = window.__ORRERY_DEBUG__?.bodies?.();
+        if (!bodies?.length) return ["no bodies()"];
+        const focused = bodies.filter((b) => b.focused);
+        const hits = [];
+        for (const sel of sels) {
+          const r = document.querySelector(sel)?.getBoundingClientRect();
+          if (!r) continue;
+          for (const b of focused) {
+            const dx = b.x - Math.max(r.left, Math.min(b.x, r.right));
+            const dy = b.y - Math.max(r.top, Math.min(b.y, r.bottom));
+            if (dx * dx + dy * dy < b.r * b.r) hits.push(`${b.slug}@${Math.round(b.x)},${Math.round(b.y)} on ${sel}`);
+          }
+          for (const el of document.querySelectorAll(".orrery-label, .orrery-pane")) {
+            const l = el.getBoundingClientRect();
+            if (l.left < r.right && l.right > r.left && l.top < r.bottom && l.bottom > r.top) hits.push(`${el.className} "${el.textContent}" on ${sel}`);
+          }
+        }
+        return hits;
+      }, SELS);
+    const verify = async (tag) => {
+      const hits = await overlaps();
+      check(`layout ${tag}: focused body + labels clear of hero text/card/hint`, !hits.length, hits.join("; "));
+    };
+    const settle = () => page.waitForTimeout(1800);
+    await settle();
+    await page.screenshot({ path: `${outDir}/overview-1440.png` });
+    await verify("0 presses 1440x900");
+    await page.setViewportSize({ width: 1280, height: 720 });
+    await settle();
+    await page.screenshot({ path: `${outDir}/overview-1280.png` });
+    await verify("0 presses 1280x720");
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await settle();
+    for (let i = 0; i < 3; i++) await page.keyboard.press("ArrowRight");
+    await settle();
+    await page.screenshot({ path: `${outDir}/after3.png` });
+    await verify("3 presses");
+    for (let i = 0; i < 4; i++) await page.keyboard.press("ArrowRight");
+    await settle();
+    await page.screenshot({ path: `${outDir}/after7.png` });
+    await verify("7 presses");
+    await page.setViewportSize({ width: 1280, height: 720 });
+    await settle();
+    await page.screenshot({ path: `${outDir}/after7-1280.png` });
+    await verify("7 presses 1280x720");
+    await page.mouse.move(2, 2);
+    await page.waitForTimeout(300);
+    check("one label with pointer parked top-left", (await page.locator(".orrery-label").count()) === 1);
+    const fb = await page.evaluate(() => window.__ORRERY_DEBUG__.bodies().find((b) => b.focused));
+    await page.mouse.move(fb.x, fb.y);
+    await page.waitForTimeout(300);
+    check("hover sets canvas cursor state", await page.evaluate(() => document.querySelector("canvas").dataset.cursor === "pointer"));
+    await page.mouse.move(2, 2);
+    await page.waitForTimeout(200);
+    // mash: 10 presses in 1 s from the 8th project -> 18th = (7 + 10) % n
+    const order = await page.evaluate(() => window.__ORRERY_DEBUG__.order);
+    for (let i = 0; i < 10; i++) {
+      await page.keyboard.press("ArrowRight");
+      await page.waitForTimeout(100);
+    }
+    await page.waitForTimeout(1500);
+    const card = await page.locator(".hero-overlay__focus-name").innerText();
+    const labels = await page.locator(".orrery-label").allInnerTexts();
+    check("mash: label agrees with card", labels.length === 1 && labels[0] === card, `${labels} vs ${card}`);
+    await page.keyboard.press("Enter");
+    await page.waitForURL(/\/work\//, { timeout: 5000 }).catch(() => {});
+    check("mash: lands on expected project", slugOf(page) === `/work/${order[(7 + 10) % order.length]}`, slugOf(page));
+    check("layout: no console errors", errors.length === 0, errors.join(" | "));
+    await page.close();
+  }
+
   // --- deep link ---
   if (expect === "orrery") {
     const { page, errors } = await open("/work/maths-website");

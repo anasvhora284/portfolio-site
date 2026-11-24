@@ -1,7 +1,10 @@
 import { useEffect, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { AdditiveBlending, DoubleSide, Object3D } from "three";
-import { clampDelta } from "./model.js";
+import { clampDelta, frontRotation } from "./model.js";
+
+// Where the focused body comes to rest: front of the orrery, a touch to the right.
+export const FRONT = Math.PI / 2 - 0.9;
 
 const TICKS = 180;
 
@@ -28,10 +31,21 @@ function Ticks({ radius }) {
 }
 
 // One brass ring with ticks and a faint tinted band; children (bodies) ride along with the slow drift.
-export function Ring({ ring, speed, motion, children }) {
+// `target` is the focused body's angle on this ring (or null): the ring eases it to FRONT,
+// otherwise it drifts.
+export function Ring({ ring, speed, motion, target, children }) {
   const group = useRef();
+  const rot = useRef(0);
   useFrame((_, dt) => {
-    if (motion) group.current.rotation.y -= speed * clampDelta(dt);
+    const d = clampDelta(dt);
+    if (target != null) {
+      rot.current +=
+        (frontRotation(rot.current, target, FRONT) - rot.current) *
+        (1 - Math.exp(-d * 3));
+    } else if (motion) {
+      rot.current += speed * d;
+    }
+    group.current.rotation.y = -rot.current;
   });
   return (
     <group ref={group}>
