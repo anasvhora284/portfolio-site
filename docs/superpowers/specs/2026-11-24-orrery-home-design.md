@@ -23,7 +23,7 @@ Why the Orrery over the Workbench (Anas agreed): it fits the existing identity, 
 ## Non-goals
 
 - No changes to `/work`, `/work/:slug`, `/about`, `/contact`, the case-study screen, or content/manifest data.
-- No new copy, no redesign of the HUD or hero overlay.
+- No new copy and no HUD redesign. *Changed 2026-11-24 after Anas reviewed a build:* while the Orrery is shown, the hero name + tagline switch to a compact layout at the top-left (under the HUD brand/social pills), like the approved prototype, so the orrery can fill the screen. The big centred hero stays for the 2D `lite` tier and on phones (existing docked style).
 - The spike's own HTML overlay (title, legend, its "Now viewing" panel) is **not** carried over; the site's existing overlays stay. A small discipline legend may be added if it fits the existing HUD style (builder's call), but nothing may sit over the hero name.
 
 ## Anti-goals (failure even if it "works")
@@ -47,6 +47,8 @@ Why the Orrery over the Workbench (Anas agreed): it fits the existing identity, 
 - `three` and friends must only be imported inside the lazily loaded chunk so the prerender step (`scripts/prerender.mjs`, Vite `ssrLoadModule`) never evaluates them.
 
 ## Behaviour (decided)
+
+- **Composition** (*Anas, 2026-11-24*: "similar to the demo, zoomed in, and as you change the planet comes"): the overview matches the prototype screenshot `/tmp/spike-orrery-1-initial.png` — the orrery is large and fills most of the viewport (outer ring may run off the edges), sun right of centre, compact name top-left, "Now viewing" card bottom-left. Changing project brings the planet round to the front and the camera glides in toward it (closer than the overview, never filling the screen with one body), like the prototype's second screenshot but calmer.
 
 - **Selection**: when `focusedSlug` changes, the focused body's ring rotates the shortest way so the body comes to the front-right of the orrery; other rings keep a slow idle drift. Camera eases (critically damped, ~0.8–1.2 s) to a framing where the focused body sits right of centre, the sun stays in frame, and at least part of every ring stays visible. There is a minimum camera distance; it never fills the screen with one body.
 - **Labels**: only the focused and the hovered body show a name label. Others are unlabeled (the "Now viewing" card already names the focused project).
