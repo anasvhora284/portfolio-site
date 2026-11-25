@@ -16,10 +16,11 @@
   justify-self: center;
   text-align: center;
   padding-top: clamp(8px, 2vh, 24px);
-  font-family: var(--font-display);
+  font-family: "Orrery", var(--font-display);
+  text-transform: uppercase;
   font-size: clamp(64px, 11vw, 170px);
-  line-height: 0.88;
-  letter-spacing: -0.02em;
+  line-height: 0.9;
+  letter-spacing: 0.02em;
   font-weight: 600;
   /* Bodoni's display cut (auto opsz ≈ 96 at this size) has near-invisible
      hairlines under the gold gradient — pin a sturdier optical size. */
@@ -40,7 +41,7 @@
   background: none;
   -webkit-text-fill-color: transparent;
   -webkit-text-stroke: 1.25px rgba(255, 244, 220, 0.58);
-  font-style: italic;
+  font-style: normal;
   margin-top: 0.02em;
 }
 

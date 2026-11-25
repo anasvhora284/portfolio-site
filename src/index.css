@@ -18,6 +18,15 @@
   font-display: swap;
 }
 
+/* Orrery: custom caps-only display face (see scripts/font/build-orrery.py). */
+@font-face {
+  font-family: "Orrery";
+  src: url("/fonts/Orrery-Caps.woff2") format("woff2");
+  font-weight: 400 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 *,
 *::before,
 *::after {

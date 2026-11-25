@@ -173,11 +173,11 @@
 .boot-title {
   position: relative;
   margin: 0;
-  font-family: var(--font-display);
+  font-family: "Orrery", var(--font-display);
   font-weight: 500;
   font-size: clamp(40px, 7.5vw, 104px);
   line-height: 1;
-  letter-spacing: -0.01em;
+  letter-spacing: 0.02em;
 }
 
 .boot-title__ghost {
