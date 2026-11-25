@@ -2,32 +2,38 @@ import { useEffect, useRef, useState } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import { Html } from "@react-three/drei";
 import { Vector2, Vector3 } from "three";
+import { loadPaneImage, paneSrc, readySrc } from "./paneImage.js";
 
 const GAP = 28; // px between the planet's screen circle and the pane
-const MAX_W = 320;
+const MAX_PANE_W = 320;
+const MIN_PANE_W = 200;
 const MARGIN = 16;
 const c = new Vector3();
 const e = new Vector3();
 const right = new Vector3();
 const sz = new Vector2();
 
-const paneSrc = (p) =>
-  p?.imageKind === "logo" ? p.thumb : (p?.image ?? p?.thumb);
-
 // Hologram pane: sits right of the focused planet (the side away from the hero overlay), 16:10
 // cover-cropped. Only the focused body mounts one, so the browser fetches/decodes just that image.
-// ponytail: plain <img>, not a texture; neighbours are not prefetched and the source is not downscaled
-// (thumb is 720 px; real screenshots are whatever the manifest ships).
+// Plain <img> (not a texture); sources wider than 1024 px are downscaled once by paneImage.js.
 export function Pane({ project, shape }) {
   const src = paneSrc(project);
   const { camera, gl } = useThree();
   const width = useThree((s) => s.size.width);
   const box = useRef();
-  const [shown, setShown] = useState(false);
+  const last = useRef({ w: -1, x: -1 });
+  const [url, setUrl] = useState(() => readySrc(src) ?? null);
+  const [timer, setTimer] = useState(false);
   useEffect(() => {
-    const t = setTimeout(() => setShown(true), 300);
-    return () => clearTimeout(t);
-  }, []);
+    let live = true;
+    loadPaneImage(src).then((u) => live && setUrl(u));
+    const t = setTimeout(() => setTimer(true), 300);
+    return () => {
+      live = false;
+      clearTimeout(t);
+    };
+  }, [src]);
+  const shown = timer && !!url;
   useFrame(() => {
     const el = box.current;
     const m = shape.current;
@@ -42,16 +48,23 @@ export function Pane({ project, shape }) {
     c.project(camera);
     const r = Math.abs((e.x - c.x) * 0.5 * w);
     const x = (c.x * 0.5 + 0.5) * w + r + GAP;
-    el.style.width = `${Math.max(0, Math.min(MAX_W, w - x - MARGIN))}px`;
+    const pw = Math.round(Math.min(MAX_PANE_W, w - x - MARGIN));
+    const tx = Math.round(r + GAP);
+    const L = last.current;
+    if (pw === L.w && tx === L.x) return;
+    L.w = pw;
+    L.x = tx;
+    el.style.display = pw < MIN_PANE_W ? "none" : "";
+    el.style.width = `${pw}px`;
     // Html's wrapper is already at the planet centre; shift to the pane's left edge.
-    el.style.transform = `translate(${r + GAP}px, -50%)`;
+    el.style.transform = `translate(${tx}px, -50%)`;
   });
   if (!src || width <= 720) return null;
   return (
     <Html position={[0, 0, 0]} zIndexRange={[5, 0]} style={{ pointerEvents: "none" }}>
       <div ref={box} className="orrery-pane" data-shown={shown}>
         <div className="orrery-pane__frame">
-          <img src={src} alt="" decoding="async" draggable={false} />
+          {url && <img src={url} alt="" decoding="async" draggable={false} />}
         </div>
       </div>
     </Html>

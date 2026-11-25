@@ -9,6 +9,7 @@ import { Sun } from "./Sun.jsx";
 import { Ring } from "./Rings.jsx";
 import { Body } from "./Bodies.jsx";
 import { Rig } from "./Rig.jsx";
+import { loadPaneImage, paneSrc } from "./paneImage.js";
 
 const DRIFT = [0.05, -0.035, 0.027, -0.02]; // rad/s per ring, inner -> outer
 const PARALLAX = 0.06; // ~3.5 degrees
@@ -64,11 +65,20 @@ export function Scene({ projects, order, onStarSelect, onFirstFrame }) {
   );
   const focusedBody = bodies.find((b) => b.slug === focusedSlug);
   const motion = useMotionAllowed();
+  // preload + pre-downscale the pane images of the neighbours in sortOrder
+  useEffect(() => {
+    const i = order.indexOf(focusedSlug);
+    if (i < 0) return;
+    for (const d of [-1, 1]) {
+      const slug = order[(i + d + order.length) % order.length];
+      loadPaneImage(paneSrc(bySlug[slug]));
+    }
+  }, [focusedSlug, order, bySlug]);
   const fade = useRef({}); // slug -> current opacity
   const rects = useRef([]);
-  const frameNo = useRef(0);
+  const rectsAt = useRef(0);
   useEffect(() => {
-    frameNo.current = 0; // re-read HUD rects after a resize
+    rectsAt.current = 0; // re-read HUD rects after a resize
   }, [size]);
 
   // Screen-space circle (CSS px, incl. glow) of every body.
@@ -166,7 +176,10 @@ export function Scene({ projects, order, onStarSelect, onFirstFrame }) {
       starScreen.y = (1 - (tmp.y * 0.5 + 0.5)) * size.height;
     }
     // Bodies that drift behind the hero text, card or hint fade out so nothing sits on them.
-    if (frameNo.current++ % 15 === 0) {
+    // Time-based (not per-frame): frames can be slow, and the card moves/resizes as focus changes.
+    const now = performance.now();
+    if (now - rectsAt.current > 100) {
+      rectsAt.current = now;
       rects.current = HUD_SELECTORS.map((q) =>
         document.querySelector(q)?.getBoundingClientRect(),
       ).filter(Boolean);

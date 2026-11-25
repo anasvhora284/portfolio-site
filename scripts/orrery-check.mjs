@@ -121,6 +121,29 @@ try {
       const hits = await overlaps();
       check(`layout ${tag}: bodies + labels clear of hero text/card/hint`, !hits.length, hits.join("; "));
     };
+    // No visible (opacity > 0.5) body may sit on the "Now viewing" card; sample over ~3 s.
+    const cardHits = async (tag) => {
+      const bad = [];
+      for (let i = 0; i < 6; i++) {
+        bad.push(
+          ...(await page.evaluate(() => {
+            const r = document.querySelector(".hero-overlay__focus")?.getBoundingClientRect();
+            if (!r) return [];
+            return window.__ORRERY_DEBUG__
+              .bodies()
+              .filter((b) => b.opacity > 0.5)
+              .filter((b) => {
+                const dx = b.x - Math.max(r.left, Math.min(b.x, r.right));
+                const dy = b.y - Math.max(r.top, Math.min(b.y, r.bottom));
+                return dx * dx + dy * dy < b.r * b.r;
+              })
+              .map((b) => `${b.slug}@${Math.round(b.x)},${Math.round(b.y)} o${b.opacity.toFixed(2)}`);
+          })),
+        );
+        await page.waitForTimeout(500);
+      }
+      check(`card: no visible body on the Now-viewing card (${tag})`, !bad.length, bad.join("; "));
+    };
     const order = await page.evaluate(() => window.__ORRERY_DEBUG__.order);
     // ?orrery-test snaps eases: settled = expected project focused and its screen position unchanged for 8 rendered frames
     // (frames are slow on a loaded machine, and React commits the new focus a frame or two late).
@@ -144,6 +167,7 @@ try {
     await settle();
     await page.screenshot({ path: `${outDir}/overview-1440.png` });
     await verify("0 presses 1440x900");
+    await cardHits("0 presses");
     await page.setViewportSize({ width: 1280, height: 720 });
     await settle();
     await page.screenshot({ path: `${outDir}/overview-1280.png` });
@@ -154,6 +178,7 @@ try {
     await settle(order[3]);
     await page.screenshot({ path: `${outDir}/after3.png` });
     await verify("3 presses");
+    await cardHits("3 presses");
     for (let i = 0; i < 4; i++) await page.keyboard.press("ArrowRight");
     await settle(order[7]);
     await page.screenshot({ path: `${outDir}/after7.png` });
@@ -268,6 +293,10 @@ try {
         await page.waitForTimeout(400);
       }
       await page.waitForTimeout(1500);
+      // a loaded machine can still be easing/loading: wait for a laid-out pane (absent for imageless projects)
+      await page
+        .waitForFunction(() => (document.querySelector(".orrery-pane__frame")?.getBoundingClientRect().width ?? 0) >= 200, null, { timeout: 6000 })
+        .catch(() => {});
     };
     const paneInfo = () =>
       page.evaluate(() => {
@@ -277,7 +306,7 @@ try {
         const r = p.querySelector(".orrery-pane__frame").getBoundingClientRect();
         const dx = f.x - Math.max(r.left, Math.min(f.x, r.right));
         const dy = f.y - Math.max(r.top, Math.min(f.y, r.bottom));
-        return { n: 1, src: p.querySelector("img")?.getAttribute("src"), w: r.width, hitsBody: dx * dx + dy * dy < f.r * f.r, inView: r.right <= innerWidth && r.left >= 0 && r.top >= 0 && r.bottom <= innerHeight };
+        return { n: 1, src: p.querySelector("img")?.getAttribute("src")?.slice(0, 60), w: r.width, hitsBody: dx * dx + dy * dy < f.r * f.r, inView: r.right <= innerWidth && r.left >= 0 && r.top >= 0 && r.bottom <= innerHeight };
       });
     await goTo("strong-integrity-guide");
     check("pane: none for strong-integrity-guide", (await paneInfo()).n === 0);
@@ -286,14 +315,16 @@ try {
     check("pane: input-leaf shows its thumb", il.n === 1 && /input-leaf.*\.webp/.test(il.src ?? ""), il.src);
     await page.screenshot({ path: `${outDir}/pane-input-leaf.png` });
     check("pane: clear of body, in view", il.n === 1 && !il.hitsBody && il.inView, JSON.stringify(il));
-    for (const slug of ["maths-website", "auto-balancing-drone"]) {
+    for (const slug of ["maths-website", "auto-balancing-drone", "matrimony-pwa"]) {
       await goTo(slug);
       const pi = await paneInfo();
       check(`pane: ${slug} clear of body, in view`, pi.n === 1 && !pi.hitsBody && pi.inView, JSON.stringify(pi));
       await page.screenshot({ path: `${outDir}/pane-${slug}.png` });
+      const nw = await page.evaluate(() => document.querySelector(".orrery-pane img")?.naturalWidth ?? 0);
+      check(`pane: ${slug} image loaded and <= 1024 px wide`, nw > 0 && nw <= 1024, String(nw));
     }
     await page.setViewportSize({ width: 390, height: 844 });
-    await page.waitForTimeout(800);
+    await page.waitForFunction(() => !document.querySelector(".orrery-pane"), null, { timeout: 8000 }).catch(() => {});
     check("pane: absent at 390x844", (await page.locator(".orrery-pane").count()) === 0);
     check("pane: no console errors", errors.length === 0, errors.join(" | "));
     await page.close();
