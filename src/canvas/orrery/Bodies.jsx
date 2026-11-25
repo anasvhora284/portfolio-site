@@ -6,6 +6,7 @@ import "./orrery.css";
 import { Glow } from "./Glow.jsx";
 import { HARDWARE_MODELS } from "./models/index.js";
 import { Pane } from "./Pane.jsx";
+import { useUniverseStore } from "../../store/universeStore.js";
 
 const HL = new Color("#e8c547");
 const box = new Box3();
@@ -35,6 +36,7 @@ export function Body({
     shape.current = g;
     meshRefLatest.current(g);
   }, []);
+  const balanced = useUniverseStore((s) => s.qualityTier) === "balanced";
   const Model = HARDWARE_MODELS[slug];
   // Bounding-sphere radius of the visible shape in its own (unscaled) space; Scene projects it
   // to screen for the fade test.
@@ -103,17 +105,28 @@ export function Body({
             ) : (
               <sphereGeometry args={[0.28, 48, 32]} />
             )}
-            <meshPhysicalMaterial
-              color={color}
-              metalness={hardware ? 0.9 : 0.15}
-              roughness={hardware ? 0.18 : 0.04}
-              clearcoat={1}
-              clearcoatRoughness={0.03}
-              envMapIntensity={1.6}
-              emissive={color}
-              emissiveIntensity={focused || hovered ? 0.25 : 0.04}
-              flatShading={hardware}
-            />
+            {balanced ? (
+              <meshStandardMaterial
+                color={color}
+                metalness={hardware ? 0.9 : 0.15}
+                roughness={hardware ? 0.25 : 0.2}
+                emissive={color}
+                emissiveIntensity={focused || hovered ? 0.25 : 0.04}
+                flatShading={hardware}
+              />
+            ) : (
+              <meshPhysicalMaterial
+                color={color}
+                metalness={hardware ? 0.9 : 0.15}
+                roughness={hardware ? 0.18 : 0.04}
+                clearcoat={1}
+                clearcoatRoughness={0.03}
+                envMapIntensity={1.6}
+                emissive={color}
+                emissiveIntensity={focused || hovered ? 0.25 : 0.04}
+                flatShading={hardware}
+              />
+            )}
           </mesh>
         )}
       </group>

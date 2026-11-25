@@ -4,7 +4,7 @@ import { Stars } from "@react-three/drei";
 import { clampDelta } from "./model.js";
 
 // drei Stars already twinkles through its time uniform; `speed` is zeroed when motion is off.
-export function Starfield({ motion }) {
+export function Starfield({ motion, count }) {
   const ref = useRef();
   useFrame((_, dt) => {
     if (motion && ref.current) ref.current.rotation.y += clampDelta(dt) * 0.004;
@@ -14,7 +14,7 @@ export function Starfield({ motion }) {
       <Stars
         radius={60}
         depth={50}
-        count={2500}
+        count={count}
         factor={3}
         saturation={0}
         fade

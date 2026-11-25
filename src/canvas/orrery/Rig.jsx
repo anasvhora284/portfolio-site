@@ -2,7 +2,7 @@ import { useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import { MathUtils, Vector3 } from "three";
 import { useUniverseStore } from "../../store/universeStore.js";
-import { SNAP, clampDelta } from "./model.js";
+import { clampDelta, snapping } from "./model.js";
 
 // Calibration knobs.
 const OMEGA = 4.5; // critically damped spring, settles in ~1 s
@@ -65,7 +65,7 @@ export function Rig({ meshes, ringIndex }) {
       camera.position.copy(tp.current);
       look.current.copy(tl.current);
     }
-    const d = SNAP ? 1e3 : clampDelta(dt);
+    const d = snapping() ? 1e3 : clampDelta(dt);
     damp(camera.position, pv.current, tp.current, d);
     damp(look.current, lv.current, tl.current, d);
     camera.lookAt(look.current);

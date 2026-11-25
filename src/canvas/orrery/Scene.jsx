@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import { Vector2, Vector3 } from "three";
 import { starScreen, useUniverseStore } from "../../store/universeStore.js";
-import { RINGS, SNAP, clampDelta, layoutBodies } from "./model.js";
+import { RINGS, clampDelta, ease, layoutBodies, snapping } from "./model.js";
 import { Lighting } from "./Lighting.jsx";
 import { Starfield } from "./Starfield.jsx";
 import { Sun } from "./Sun.jsx";
@@ -38,11 +38,13 @@ const HUD_SELECTORS = [
   ".hero-overlay__focus",
   ".hero-overlay__hint",
 ];
+const TEXT_BOUNDS = new Set([".hero-overlay__name", ".hero-overlay__tagline"]);
 const FADED = 0.12; // opacity of a body drifting behind hero text / card / hint
 
 export function Scene({ projects, order, onStarSelect, onFirstFrame }) {
   const { gl, camera, size } = useThree();
   const focusedSlug = useUniverseStore((s) => s.focusedSlug);
+  const tier = useUniverseStore((s) => s.qualityTier);
   const bodies = useMemo(() => layoutBodies(projects), [projects]);
   const meshes = useRef({});
   const [hovered, setHovered] = useState(null);
@@ -180,11 +182,18 @@ export function Scene({ projects, order, onStarSelect, onFirstFrame }) {
     const now = performance.now();
     if (now - rectsAt.current > 100) {
       rectsAt.current = now;
-      rects.current = HUD_SELECTORS.map((q) =>
-        document.querySelector(q)?.getBoundingClientRect(),
-      ).filter(Boolean);
+      const phone = matchMedia("(max-width: 720px)").matches;
+      rects.current = HUD_SELECTORS.map((q) => {
+        const el = document.querySelector(q);
+        if (!el) return null;
+        // phones: measure the text itself; the docked tagline box is stretched far below its text
+        if (!phone || !TEXT_BOUNDS.has(q)) return el.getBoundingClientRect();
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        return range.getBoundingClientRect();
+      }).filter(Boolean);
     }
-    const kf = SNAP ? 1 : 1 - Math.exp(-clampDelta(dt) * 8);
+    const kf = snapping() ? 1 : 1 - Math.exp(-clampDelta(dt) * 8);
     for (const b of screenBodies()) {
       const hit = rects.current.some((r) => {
         const dx = b.x - Math.max(r.left, Math.min(b.x, r.right));
@@ -198,6 +207,7 @@ export function Scene({ projects, order, onStarSelect, onFirstFrame }) {
       first.current = false;
       onFirstFrame();
     }
+    if (ease.hold > 0) ease.hold--;
   });
 
   const click = (slug) => (e) => {
@@ -209,7 +219,7 @@ export function Scene({ projects, order, onStarSelect, onFirstFrame }) {
   return (
     <>
       <Lighting />
-      <Starfield motion={motion} />
+      <Starfield motion={motion} count={tier === "balanced" ? 1000 : 2500} />
       <group position={[0, -0.9, -1.2]} scale={0.82}>
         <Rig meshes={meshes} ringIndex={ringIndex} />
         <group ref={tilt} rotation={[BASE_TILT, 0, 0]}>

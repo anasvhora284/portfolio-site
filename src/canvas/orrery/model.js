@@ -45,3 +45,8 @@ export const clampDelta = (dt) => Math.min(dt, 0.05);
 // `?orrery-test` makes every ease land instantly, so layout checks do not depend on frame rate.
 export const SNAP =
   typeof location !== "undefined" && location.search.includes("orrery-test");
+
+// Frames left in which eases land instantly: set on mount and on every resume from a panel pause,
+// so a camera/ring that was frozen mid-glide (or never settled behind a deep-linked panel) catches up.
+export const ease = { hold: 0 };
+export const snapping = () => SNAP || ease.hold > 0;

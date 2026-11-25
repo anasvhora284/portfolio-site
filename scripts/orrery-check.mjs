@@ -381,6 +381,107 @@ try {
     check("deep link: no console errors", errors.length === 0, errors.join(" | "));
     await page.close();
   }
+  // --- phone: 390x844 touch ---
+  if (expect === "orrery" && want("phone")) {
+    const pctx = await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
+    const page = await pctx.newPage();
+    const errors = [];
+    // CDP-synthesised swipes are not cancelable once "scrolling", which Chrome reports as a console error
+    page.on("console", (m) => m.type() === "error" && !/cancel a touchmove/.test(m.text()) && errors.push(m.text()));
+    page.on("pageerror", (e) => errors.push(String(e)));
+    await page.goto(base + "/?orrery-test");
+    await page.waitForSelector(".boot-skip, .hero-overlay__focus", { timeout: 10000 });
+    if (await page.locator(".boot-skip").count()) await page.keyboard.press("Enter");
+    await page.waitForSelector(".hero-overlay__focus", { timeout: 10000 });
+    check("phone: orrery ready", await ready(page));
+    await page.waitForTimeout(1500);
+    const hits = () =>
+      page.evaluate(() => {
+        const f = document.querySelector(".hero-overlay__focus")?.getBoundingClientRect();
+        const labels = [...document.querySelectorAll(".orrery-label")];
+        return {
+          n: labels.length,
+          overlap: labels.some((el) => {
+            const l = el.getBoundingClientRect();
+            return f && l.left < f.right && l.right > f.left && l.top < f.bottom && l.bottom > f.top;
+          }),
+        };
+      });
+    const h0 = await hits();
+    check("phone: label clear of the focus card", h0.n >= 1 && !h0.overlap, JSON.stringify(h0));
+    check(
+      "phone: focused body visible (not faded behind hero text)",
+      await page.evaluate(() => window.__ORRERY_DEBUG__.bodies().find((b) => b.focused)?.opacity > 0.5),
+    );
+    await page.screenshot({ path: `${outDir}/phone-overview.png` });
+    const name0 = await page.locator(".hero-overlay__focus-name").innerText();
+    const cdp = await pctx.newCDPSession(page);
+    const touch = (type, y) => cdp.send("Input.dispatchTouchEvent", { type, touchPoints: type === "touchEnd" ? [] : [{ x: 195, y }] });
+    await touch("touchStart", 600);
+    for (let y = 600; y >= 450; y -= 25) await touch("touchMove", y);
+    await touch("touchEnd");
+    await page.waitForFunction((n) => document.querySelector(".hero-overlay__focus-name")?.textContent !== n, name0, { timeout: 5000 }).catch(() => {});
+    const name1 = await page.locator(".hero-overlay__focus-name").innerText();
+    check("phone: swipe up changes the card name", name1 !== name0, `${name0} -> ${name1}`);
+    await page.waitForTimeout(1500);
+    await page.screenshot({ path: `${outDir}/phone-swiped.png` });
+    check("phone: no console errors", errors.length === 0, errors.join(" | "));
+    await pctx.close();
+  }
+
+  // --- pause behind panels + deep-link-then-close ---
+  if (expect === "orrery" && want("pause")) {
+    const frames = (page) => page.evaluate(() => window.__ORRERY_DEBUG__.frames());
+    const settled = async (page) => {
+      let prev = await frames(page);
+      for (let i = 0; i < 20; i++) {
+        await page.waitForTimeout(500);
+        const cur = await frames(page);
+        if (cur === prev) return cur;
+        prev = cur;
+      }
+      return null;
+    };
+    const grew = (page, f0) =>
+      page.waitForFunction((n) => window.__ORRERY_DEBUG__.frames() > n, f0, { timeout: 8000 }).then(() => true, () => false);
+    {
+      const { page, errors } = await open("/?orrery-test");
+      await page.waitForSelector(".boot-skip, .hero-overlay__focus", { timeout: 10000 });
+      if (await page.locator(".boot-skip").count()) await page.keyboard.press("Enter");
+      await page.waitForSelector(".hero-overlay__focus", { timeout: 10000 });
+      await ready(page);
+      check("pause: frames advance on home", await grew(page, await frames(page)));
+      await page.keyboard.press("Enter");
+      await page.waitForURL(/\/work\//, { timeout: 5000 });
+      const b = await settled(page); // pause lands ~600 ms after open, later when the dive animation hogs the main thread
+      check("pause: frames stop after opening a case study", b != null, `last ${b}`);
+      await page.keyboard.press("Escape");
+      await page.waitForURL((u) => u.pathname === "/", { timeout: 5000 });
+      check("pause: frames resume after Esc", await grew(page, b));
+      // Work index (opaque panel): paused immediately
+      await page.locator(".hud-nav__label", { hasText: "Work" }).first().click();
+      await page.waitForSelector(".work", { timeout: 5000 });
+      check("pause: frames stop behind the work index", (await settled(page)) != null);
+      check("pause: no console errors", errors.length === 0, errors.join(" | "));
+      await page.close();
+    }
+    // Review Focus 5: deep link, close, dive: the dive origin must be on screen
+    {
+      const { page } = await open("/work/maths-website");
+      await page.waitForSelector("#case-title", { state: "visible", timeout: 10000 });
+      check("deep link: orrery ready behind the panel", await ready(page, 30000));
+      await page.waitForTimeout(1500);
+      await page.keyboard.press("Escape");
+      await page.waitForURL((u) => u.pathname === "/", { timeout: 5000 });
+      await page.waitForTimeout(500);
+      await page.keyboard.press("Enter");
+      await page.waitForURL(/\/work\//, { timeout: 5000 }).catch(() => {});
+      const ss = await page.evaluate(() => ({ ...window.__ORRERY_DEBUG__.starScreen, w: innerWidth, h: innerHeight }));
+      check("deep link, Esc, Enter dives (URL changes)", slugOf(page).startsWith("/work/"), slugOf(page));
+      check("deep link, Esc, Enter: starScreen inside the viewport", ss.x > 0 && ss.x < ss.w && ss.y > 0 && ss.y < ss.h, JSON.stringify(ss));
+      await page.close();
+    }
+  }
 } catch (e) {
   check("script ran to completion", false, String(e));
 }
