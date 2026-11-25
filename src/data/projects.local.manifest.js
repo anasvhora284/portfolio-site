@@ -9,6 +9,8 @@ import PaySlipProImage from "../assets/Images/Projects/PaySlipProImage.webp";
 import AutoVoyageImage from "../assets/Images/Projects/AutoVoyage.webp";
 import InputLeafImage from "../assets/Images/Projects/InputLeaf.webp";
 import GamingCafeImage from "../assets/Images/Projects/GamingCafe.webp";
+import PristineAuraImage from "../assets/Images/Projects/PristineAura.webp";
+import StrongIntegrityImage from "../assets/Images/Projects/StrongIntegrity.webp";
 import { blocksFromPlainText } from "../lib/blocksFromPlainText.js";
 
 /**
@@ -1013,6 +1015,7 @@ export const projects = [
   {
     name: "Strong Integrity Guide",
     slug: "strong-integrity-guide",
+    image: StrongIntegrityImage,
     tagline: "STRONG integrity on a rooted phone, documented.",
     description:
       "A tested, step-by-step guide to passing MEETS_STRONG_INTEGRITY on a rooted Android phone with an unlocked bootloader, using TEESimulator and your own device-minted RKP keybox instead of leaked keyboxes. Covers KernelSU-Next, SUSFS, Zygisk and troubleshooting.",
@@ -1082,6 +1085,7 @@ export const projects = [
   {
     name: "Pristine Aura",
     slug: "pristine-aura",
+    image: PristineAuraImage,
     tagline: "A clothing store, rebuilt and finally live.",
     description:
       "A full-stack clothing store for my cousin's business: React storefront, Express and PostgreSQL backend, a from-scratch admin panel, Razorpay and email integrations, running on a free cloud VM. It began as a frontend nobody launched in 2024.",
