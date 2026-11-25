@@ -21,7 +21,8 @@ import { ContactScreen } from "./ContactScreen.jsx";
 import "./UniverseShell.css";
 
 const LazyCanvas = lazy(() => import("../canvas/UniverseCanvas.jsx"));
-const LazyOrrery = lazy(() => import("../canvas/orrery/OrreryCanvas.jsx"));
+const loadOrrery = () => import("../canvas/orrery/OrreryCanvas.jsx");
+const LazyOrrery = lazy(loadOrrery);
 
 export default function UniverseShell() {
   const location = useLocation();
@@ -42,6 +43,11 @@ export default function UniverseShell() {
     const id = window.setTimeout(() => setOrreryAllowed(true), 1500);
     return () => window.clearTimeout(id);
   }, [orreryAllowed]);
+
+  // Start the chunk during boot (not after) once the deep-link deferral allows it.
+  useEffect(() => {
+    if (tier !== "lite" && orreryAllowed) loadOrrery();
+  }, [tier, orreryAllowed]);
 
   const { playWarp } = useCinematicAudio();
 

@@ -25,6 +25,7 @@ export function Pane({ project, shape }) {
   const [url, setUrl] = useState(() => readySrc(src) ?? null);
   const [timer, setTimer] = useState(false);
   useEffect(() => {
+    if (width <= 720) return undefined;
     let live = true;
     loadPaneImage(src).then((u) => live && setUrl(u));
     const t = setTimeout(() => setTimer(true), 300);
@@ -32,7 +33,7 @@ export function Pane({ project, shape }) {
       live = false;
       clearTimeout(t);
     };
-  }, [src]);
+  }, [src, width]);
   const shown = timer && !!url;
   useFrame(() => {
     const el = box.current;

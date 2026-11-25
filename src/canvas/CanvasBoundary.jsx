@@ -1,4 +1,5 @@
 import { Component } from "react";
+import { useUniverseStore } from "../store/universeStore.js";
 
 /** Renders `fallback` if the child tree throws or WebGL is unavailable. */
 export class CanvasBoundary extends Component {
@@ -10,6 +11,7 @@ export class CanvasBoundary extends Component {
 
   componentDidCatch(err) {
     console.warn("Orrery failed, falling back to 2D map:", err);
+    useUniverseStore.getState().setQualityTier("lite");
   }
 
   render() {

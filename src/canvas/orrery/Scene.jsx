@@ -32,6 +32,9 @@ function useMotionAllowed() {
 const tmp = new Vector3();
 const right = new Vector3();
 const sizeVec = new Vector2();
+const c0 = new Vector3();
+const c1 = new Vector3();
+const out = []; // reused by screenBodies(); callers must not keep it
 const HUD_SELECTORS = [
   ".hero-overlay__name",
   ".hero-overlay__tagline",
@@ -69,13 +72,14 @@ export function Scene({ projects, order, onStarSelect, onFirstFrame }) {
   const motion = useMotionAllowed();
   // preload + pre-downscale the pane images of the neighbours in sortOrder
   useEffect(() => {
+    if (size.width <= 720) return; // phones never show the pane
     const i = order.indexOf(focusedSlug);
     if (i < 0) return;
     for (const d of [-1, 1]) {
       const slug = order[(i + d + order.length) % order.length];
       loadPaneImage(paneSrc(bySlug[slug]));
     }
-  }, [focusedSlug, order, bySlug]);
+  }, [focusedSlug, order, bySlug, size.width]);
   const fade = useRef({}); // slug -> current opacity
   const rects = useRef([]);
   const rectsAt = useRef(0);
@@ -88,21 +92,24 @@ export function Scene({ projects, order, onStarSelect, onFirstFrame }) {
     const { x: w, y: h } = gl.getSize(sizeVec);
     camera.updateMatrixWorld();
     right.setFromMatrixColumn(camera.matrixWorld, 0);
-    return Object.entries(meshes.current)
-      .filter(([, m]) => m)
-      .map(([slug, m]) => {
-        const c = m.getWorldPosition(new Vector3());
-        // bounding-sphere radius of the shape (models included) in world units
-        const rw = (m.userData.r ?? 0.3) * m.getWorldScale(tmp).x * HIT_PAD;
-        const e = c.clone().addScaledVector(right, rw).project(camera);
-        c.project(camera);
-        return {
-          slug,
-          x: (c.x * 0.5 + 0.5) * w,
-          y: (1 - (c.y * 0.5 + 0.5)) * h,
-          r: Math.abs((e.x - c.x) * 0.5 * w),
-        };
-      });
+    let n = 0;
+    for (const slug in meshes.current) {
+      const m = meshes.current[slug];
+      if (!m) continue;
+      const c = m.getWorldPosition(c0);
+      // bounding-sphere radius of the shape (models included) in world units
+      const rw = (m.userData.r ?? 0.3) * m.getWorldScale(tmp).x * HIT_PAD;
+      const e = c1.copy(c).addScaledVector(right, rw).project(camera);
+      c.project(camera);
+      const o = (out[n] ??= {});
+      o.slug = slug;
+      o.x = (c.x * 0.5 + 0.5) * w;
+      o.y = (1 - (c.y * 0.5 + 0.5)) * h;
+      o.r = Math.abs((e.x - c.x) * 0.5 * w);
+      n++;
+    }
+    out.length = n;
+    return out;
   };
   const api = useRef();
   api.current = { screenBodies };
@@ -201,7 +208,9 @@ export function Scene({ projects, order, onStarSelect, onFirstFrame }) {
         return dx * dx + dy * dy < b.r * b.r;
       });
       const cur = fade.current[b.slug] ?? 1;
-      fade.current[b.slug] = cur + ((hit ? FADED : 1) - cur) * kf;
+      const target = hit ? FADED : 1;
+      const next = cur + (target - cur) * kf;
+      fade.current[b.slug] = Math.abs(target - next) < 1e-3 ? target : next;
     }
     if (first.current) {
       first.current = false;
@@ -212,6 +221,7 @@ export function Scene({ projects, order, onStarSelect, onFirstFrame }) {
 
   const click = (slug) => (e) => {
     e.stopPropagation();
+    if ((fade.current[slug] ?? 1) < 0.5) return;
     const focused = useUniverseStore.getState().focusedSlug === slug;
     onStarSelect(slug, focused ? { open: true } : undefined);
   };
@@ -261,6 +271,7 @@ export function Scene({ projects, order, onStarSelect, onFirstFrame }) {
                     onClick={click(b.slug)}
                     onPointerOver={(e) => {
                       e.stopPropagation();
+                      if ((fade.current[b.slug] ?? 1) < 0.5) return; // faded under the hero text
                       setHovered(b.slug);
                     }}
                     onPointerOut={() => {

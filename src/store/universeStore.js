@@ -26,6 +26,7 @@ const initialTier = /** @type {'cinema' | 'balanced' | 'lite'} */ (
         saveData: Boolean(navigator.connection?.saveData),
         narrow: window.matchMedia("(max-width: 768px)").matches,
         cores: navigator.hardwareConcurrency || 8,
+        noWebgl: !window.WebGLRenderingContext,
       })
 );
 
