@@ -66,7 +66,11 @@ export function Body({
       if (!m) return;
       m.userData.base ??= m.opacity;
       m.userData.t ??= m.transparent;
-      m.transparent = m.userData.t || f < 1;
+      const tr = m.userData.t || f < 1;
+      if (m.transparent !== tr) {
+        m.transparent = tr;
+        m.needsUpdate = true; // the OPAQUE shader define depends on it, else alpha stays 1
+      }
       m.opacity = m.userData.base * f;
       if (Model && m.emissive) {
         m.userData.e ??= m.emissive.clone();

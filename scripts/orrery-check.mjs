@@ -4,6 +4,8 @@ import { mkdirSync } from "node:fs";
 
 const [base, outDir, ...rest] = process.argv.slice(2);
 const flag = (n) => rest.includes(n);
+const only = rest.find((a) => a.startsWith("--only="))?.slice(7).split(",");
+const want = (n) => !only || only.includes(n);
 const expect = rest[rest.indexOf("--expect") + 1] === "2d" ? "2d" : "orrery";
 mkdirSync(outDir, { recursive: true });
 
@@ -44,11 +46,64 @@ const ready = (page, ms = 20000) =>
   page.waitForSelector('[data-orrery="ready"]', { timeout: ms }).then(() => true, () => false);
 const focusOk = (page) =>
   page.evaluate(() => document.activeElement?.classList.contains("hero-overlay__focus"));
+// No visible (opacity > 0.5) body may sit on the "Now viewing" card; sample over ~3 s.
+const cardHits = async (page, tag) => {
+  const bad = [];
+  for (let i = 0; i < 4; i++) {
+    bad.push(
+      ...(await page.evaluate(() => {
+        const r = document.querySelector(".hero-overlay__focus")?.getBoundingClientRect();
+        if (!r) return [];
+        return window.__ORRERY_DEBUG__
+          .bodies()
+          .filter((b) => b.opacity > 0.5)
+          .filter((b) => {
+            const dx = b.x - Math.max(r.left, Math.min(b.x, r.right));
+            const dy = b.y - Math.max(r.top, Math.min(b.y, r.bottom));
+            return dx * dx + dy * dy < b.r * b.r;
+          })
+          .map((b) => `${b.slug}@${Math.round(b.x)},${Math.round(b.y)} o${b.opacity.toFixed(2)}`);
+      })),
+    );
+    await page.waitForTimeout(500);
+  }
+  check(`card: no visible body on the Now-viewing card (${tag})`, !bad.length, bad.join("; "));
+  // The reported opacity must reach the pixels: a body the fade logic calls faded (< 0.5) over the card
+  // must not render bright (a stale shader once ignored material.opacity).
+  const faded = await page.evaluate(() => {
+    const r = document.querySelector(".hero-overlay__focus")?.getBoundingClientRect();
+    if (!r) return [];
+    return window.__ORRERY_DEBUG__
+      .bodies()
+      .filter((b) => b.opacity < 0.5 && b.x > r.left && b.x < r.right && b.y > r.top && b.y < r.bottom)
+      .map((b) => ({ slug: b.slug, x: b.x, y: b.y }));
+  });
+  const lit = [];
+  for (const b of faded) {
+    const buf = await page.screenshot({ clip: { x: Math.round(b.x) - 6, y: Math.round(b.y) - 6, width: 12, height: 12 } });
+    const lum = await page.evaluate(async (data) => {
+      const img = new Image();
+      img.src = "data:image/png;base64," + data;
+      await img.decode();
+      const c = document.createElement("canvas");
+      c.width = c.height = 12;
+      const x = c.getContext("2d");
+      x.drawImage(img, 0, 0);
+      const d = x.getImageData(0, 0, 12, 12).data;
+      let sum = 0;
+      for (let i = 0; i < d.length; i += 4) sum += d[i] * 0.3 + d[i + 1] * 0.59 + d[i + 2] * 0.11;
+      return sum / (d.length / 4); // mean: thin card text / ring strokes stay dim, a lit sphere does not
+    }, buf.toString("base64"));
+    if (lum > 130) lit.push(`${b.slug} mean lum ${Math.round(lum)}`);
+  }
+  check(`card: faded bodies over the card really render faded (${tag})`, !lit.length, lit.join("; "));
+};
+
 const slugOf = (page) => new URL(page.url()).pathname;
 
 try {
   // --- home ---
-  {
+  if (want("home")) {
     const { page, errors } = await open("/");
     await page.waitForSelector(".boot-skip, .hero-overlay__focus", { timeout: 10000 });
     // reduced-motion visitors skip boot on their own; Enter would then open the hero card.
@@ -87,7 +142,7 @@ try {
   }
 
   // --- layout: bodies / labels vs hero text ---
-  if (expect === "orrery") {
+  if (expect === "orrery" && want("layout")) {
     const { page, errors } = await open("/?orrery-test");
     await page.waitForSelector(".boot-skip, .hero-overlay__focus", { timeout: 10000 });
     if (await page.locator(".boot-skip").count()) await page.keyboard.press("Enter");
@@ -121,29 +176,6 @@ try {
       const hits = await overlaps();
       check(`layout ${tag}: bodies + labels clear of hero text/card/hint`, !hits.length, hits.join("; "));
     };
-    // No visible (opacity > 0.5) body may sit on the "Now viewing" card; sample over ~3 s.
-    const cardHits = async (tag) => {
-      const bad = [];
-      for (let i = 0; i < 6; i++) {
-        bad.push(
-          ...(await page.evaluate(() => {
-            const r = document.querySelector(".hero-overlay__focus")?.getBoundingClientRect();
-            if (!r) return [];
-            return window.__ORRERY_DEBUG__
-              .bodies()
-              .filter((b) => b.opacity > 0.5)
-              .filter((b) => {
-                const dx = b.x - Math.max(r.left, Math.min(b.x, r.right));
-                const dy = b.y - Math.max(r.top, Math.min(b.y, r.bottom));
-                return dx * dx + dy * dy < b.r * b.r;
-              })
-              .map((b) => `${b.slug}@${Math.round(b.x)},${Math.round(b.y)} o${b.opacity.toFixed(2)}`);
-          })),
-        );
-        await page.waitForTimeout(500);
-      }
-      check(`card: no visible body on the Now-viewing card (${tag})`, !bad.length, bad.join("; "));
-    };
     const order = await page.evaluate(() => window.__ORRERY_DEBUG__.order);
     // ?orrery-test snaps eases: settled = expected project focused and its screen position unchanged for 8 rendered frames
     // (frames are slow on a loaded machine, and React commits the new focus a frame or two late).
@@ -167,7 +199,7 @@ try {
     await settle();
     await page.screenshot({ path: `${outDir}/overview-1440.png` });
     await verify("0 presses 1440x900");
-    await cardHits("0 presses");
+    await cardHits(page, "0 presses");
     await page.setViewportSize({ width: 1280, height: 720 });
     await settle();
     await page.screenshot({ path: `${outDir}/overview-1280.png` });
@@ -178,7 +210,7 @@ try {
     await settle(order[3]);
     await page.screenshot({ path: `${outDir}/after3.png` });
     await verify("3 presses");
-    await cardHits("3 presses");
+    await cardHits(page, "3 presses");
     for (let i = 0; i < 4; i++) await page.keyboard.press("ArrowRight");
     await settle(order[7]);
     await page.screenshot({ path: `${outDir}/after7.png` });
@@ -280,7 +312,7 @@ try {
   }
 
   // --- screenshot pane ---
-  if (expect === "orrery") {
+  if (expect === "orrery" && want("pane")) {
     const { page, errors } = await open("/?orrery-test");
     await page.waitForSelector(".boot-skip, .hero-overlay__focus", { timeout: 10000 });
     if (await page.locator(".boot-skip").count()) await page.keyboard.press("Enter");
@@ -317,6 +349,7 @@ try {
     check("pane: clear of body, in view", il.n === 1 && !il.hitsBody && il.inView, JSON.stringify(il));
     for (const slug of ["maths-website", "auto-balancing-drone", "matrimony-pwa"]) {
       await goTo(slug);
+      if (slug !== "auto-balancing-drone") await cardHits(page, slug);
       const pi = await paneInfo();
       check(`pane: ${slug} clear of body, in view`, pi.n === 1 && !pi.hitsBody && pi.inView, JSON.stringify(pi));
       await page.screenshot({ path: `${outDir}/pane-${slug}.png` });
@@ -331,7 +364,7 @@ try {
   }
 
   // --- deep link ---
-  if (expect === "orrery") {
+  if (expect === "orrery" && want("deeplink")) {
     const { page, errors } = await open("/work/maths-website");
     await page.waitForSelector("#case-title", { state: "visible", timeout: 10000 });
     await page.waitForTimeout(3000); // let the idle load fire
