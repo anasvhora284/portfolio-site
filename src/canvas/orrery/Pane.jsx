@@ -16,7 +16,7 @@ const sz = new Vector2();
 // Hologram pane: sits right of the focused planet (the side away from the hero overlay), 16:10
 // cover-cropped. Only the focused body mounts one, so the browser fetches/decodes just that image.
 // Plain <img> (not a texture); sources wider than 1024 px are downscaled once by paneImage.js.
-export function Pane({ project, shape }) {
+export function Pane({ project, shape, onOpen }) {
   const src = paneSrc(project);
   const { camera, gl } = useThree();
   const width = useThree((s) => s.size.width);
@@ -63,7 +63,12 @@ export function Pane({ project, shape }) {
   if (!src || width <= 720) return null;
   return (
     <Html position={[0, 0, 0]} zIndexRange={[5, 0]} style={{ pointerEvents: "none" }}>
-      <div ref={box} className="orrery-pane" data-shown={shown}>
+      <div
+        ref={box}
+        className="orrery-pane"
+        data-shown={shown}
+        onClick={() => onOpen?.({ stopPropagation() {} })}
+      >
         <div className="orrery-pane__frame">
           {url && <img src={url} alt="" decoding="async" draggable={false} />}
         </div>

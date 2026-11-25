@@ -148,7 +148,7 @@ export function Body({
         scale={hovered ? 1.4 : 0.9}
         opacity={focused || hovered ? 0.7 : 0.3}
       />
-      {focused && project ? <Pane key={slug} project={project} shape={shape} /> : null}
+      {focused && project ? <Pane key={slug} project={project} shape={shape} onOpen={handlers.onClick} /> : null}
       {label ? (
         <Html
           center
