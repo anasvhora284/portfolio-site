@@ -371,7 +371,7 @@ try {
     // in-page clock: when #case-title entered the DOM vs when the Orrery chunk was requested
     const t = await page.evaluate(() => {
       const title = performance.getEntriesByType("mark").find((m) => m.name === "case-title");
-      const req = performance.getEntriesByType("resource").find((r) => r.name.includes("Orrery"));
+      const req = performance.getEntriesByType("resource").find((r) => r.name.includes("OrreryCanvas"));
       return { title: title?.startTime, req: req?.startTime };
     });
     check("deep link: Orrery chunk requested after case title rendered", t.title != null && (t.req == null || t.req >= t.title), JSON.stringify(t));
