@@ -160,7 +160,7 @@ export function CaseStudyScreen({ project, onClose }) {
           </div>
 
           {plate ? (
-            <figure className="case__plate">
+            <figure className={`case__plate${plate === project.image ? " case__plate--shot" : ""}`}>
               <img src={plate} alt="" decoding="async" />
             </figure>
           ) : null}

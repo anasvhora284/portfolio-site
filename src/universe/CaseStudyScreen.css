@@ -209,6 +209,12 @@
   }
 }
 
+/* A real screenshot used as the plate: show all of it, no zoom or drift. */
+.case__plate--shot img {
+  animation: none;
+  transform: none;
+}
+
 .case__demo {
   margin: 20px 0 0;
 }
