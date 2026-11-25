@@ -18,6 +18,8 @@
   pointer-events: none;
 }
 .orrery-pane__frame {
+  pointer-events: auto;
+  cursor: pointer;
   aspect-ratio: 16 / 10;
   overflow: hidden;
   border-radius: 6px;
