@@ -173,7 +173,7 @@
 .boot-title {
   position: relative;
   margin: 0;
-  font-family: "Orrery", var(--font-display);
+  font-family: "Orrery", "Bodoni Moda", serif;
   font-weight: 500;
   font-size: clamp(40px, 7.5vw, 104px);
   line-height: 1;

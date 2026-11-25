@@ -109,15 +109,13 @@
 
 .case__title {
   margin: 0;
-  font-family: var(--font-display);
+  font-family: "Orrery", "Bodoni Moda", serif;
   font-variation-settings: "opsz" 28;
   font-weight: 600;
-  font-size: clamp(52px, 10vw, 148px);
-  line-height: 0.95;
-  letter-spacing: -0.02em;
+  font-size: clamp(48px, 8.8vw, 132px);
+  line-height: 0.98;
+  letter-spacing: 0;
   color: #fff8e5;
-  /* Didone horizontals are hairlines; a hint of stroke keeps hyphens visible. */
-  -webkit-text-stroke: 0.012em #fff8e5;
 }
 
 /* Words rise out of a mask, one after another, once the dive lands. */

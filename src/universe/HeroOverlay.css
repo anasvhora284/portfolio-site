@@ -16,7 +16,7 @@
   justify-self: center;
   text-align: center;
   padding-top: clamp(8px, 2vh, 24px);
-  font-family: "Orrery", var(--font-display);
+  font-family: "Orrery", "Bodoni Moda", serif;
   text-transform: uppercase;
   font-size: clamp(64px, 11vw, 170px);
   line-height: 0.9;
@@ -151,7 +151,7 @@
 }
 
 .hero-overlay__focus-name {
-  font-family: var(--font-display);
+  font-family: "Orrery", "Bodoni Moda", serif;
   font-size: 26px;
   line-height: 1.15;
   color: #fff8e5;
